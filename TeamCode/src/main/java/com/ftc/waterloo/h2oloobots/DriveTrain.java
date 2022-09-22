@@ -50,10 +50,10 @@ public class DriveTrain {
         bl = hardwareMap.dcMotor.get("back_left");
         br = hardwareMap.dcMotor.get("back_right");
 
-        fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        fl.setZeroPowerBehavior(zeroPowerBehavior);
+        fr.setZeroPowerBehavior(zeroPowerBehavior);
+        bl.setZeroPowerBehavior(zeroPowerBehavior);
+        br.setZeroPowerBehavior(zeroPowerBehavior);
 
         if (RUN_USING_ENCODER) {
             fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -66,6 +66,23 @@ public class DriveTrain {
             bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
+    }
+
+    public void FourMotorInit(HardwareMap hardwareMap, Telemetry telemetry) {
+
+        fl = hardwareMap.dcMotor.get("front_left");
+        fr = hardwareMap.dcMotor.get("front_right");
+        bl = hardwareMap.dcMotor.get("back_left");
+        br = hardwareMap.dcMotor.get("back_right");
+
+        fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        telemetry.addLine("Drivetrain Initialised");
+        telemetry.update();
+
     }
 
     double fldir = 0;
@@ -92,12 +109,12 @@ public class DriveTrain {
 
     double speedMul = 1;
 
-    public void MecanumTeleOp(double FBInput, double LRInput, double PivotInput, boolean RUN_USING_ENCODER) {
+    public void MecanumTeleOp(double FBInput, double LRInput, double PivotInput, AttachmentControl attachmentControl) {
 
-        fr.setPower(speedMul * (-FBInput - LRInput - (PivotInput * 0.8)));
-        br.setPower(speedMul * (-FBInput + LRInput - (PivotInput * 0.8)));
-        fl.setPower(speedMul * (FBInput - LRInput - (PivotInput * 0.8)));
-        bl.setPower(speedMul * (FBInput + LRInput - (PivotInput * 0.8)));
+        fr.setPower(speedMul * (-FBInput - LRInput - (PivotInput)));
+        br.setPower(speedMul * (-FBInput + LRInput - (PivotInput)));
+        fl.setPower(speedMul * (FBInput - LRInput - (PivotInput)));
+        bl.setPower(speedMul * (FBInput + LRInput - (PivotInput)));
 
     }
 
