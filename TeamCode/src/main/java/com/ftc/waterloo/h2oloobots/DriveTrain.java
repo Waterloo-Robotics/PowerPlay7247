@@ -30,25 +30,19 @@ public class DriveTrain {
         }
     }
 
-    public void TwoWheelDriveTeleOp(double FBInput, double PivotInput, boolean RUN_USING_ENCODER, Telemetry telemetry) {
+    public void TwoWheelDriveTeleOp(double FBInput, double PivotInput, boolean RUN_USING_ENCODER) {
 
         right.setPower(FBInput - PivotInput);
         left.setPower(-FBInput - PivotInput);
-
-        if (RUN_USING_ENCODER) {
-            telemetry.addData("Right Encoder", String.valueOf(right.getCurrentPosition()));
-            telemetry.addData("Left Encoder", String.valueOf(left.getCurrentPosition()));
-            telemetry.update();
-        }
 
     }
 
     public void FourMotorInit(boolean RUN_USING_ENCODER, HardwareMap hardwareMap, DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
 
-        fl = hardwareMap.dcMotor.get("front_left");
-        fr = hardwareMap.dcMotor.get("front_right");
-        bl = hardwareMap.dcMotor.get("back_left");
-        br = hardwareMap.dcMotor.get("back_right");
+        fl = hardwareMap.dcMotor.get("fl");
+        fr = hardwareMap.dcMotor.get("fr");
+        bl = hardwareMap.dcMotor.get("bl");
+        br = hardwareMap.dcMotor.get("br");
 
         fl.setZeroPowerBehavior(zeroPowerBehavior);
         fr.setZeroPowerBehavior(zeroPowerBehavior);
@@ -68,20 +62,17 @@ public class DriveTrain {
         }
     }
 
-    public void FourMotorInit(HardwareMap hardwareMap, Telemetry telemetry) {
+    public void FourMotorInit(HardwareMap hardwareMap) {
 
-        fl = hardwareMap.dcMotor.get("front_left");
-        fr = hardwareMap.dcMotor.get("front_right");
-        bl = hardwareMap.dcMotor.get("back_left");
-        br = hardwareMap.dcMotor.get("back_right");
+        fl = hardwareMap.dcMotor.get("fl");
+        fr = hardwareMap.dcMotor.get("fr");
+        bl = hardwareMap.dcMotor.get("bl");
+        br = hardwareMap.dcMotor.get("br");
 
         fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        telemetry.addLine("Drivetrain Initialised");
-        telemetry.update();
 
     }
 
@@ -90,20 +81,12 @@ public class DriveTrain {
     double bldir = 0;
     double brdir = 0;
 
-    public void FWDTeleOp(double FBInput, double PivotInput, boolean RUN_USING_ENCODER, Telemetry telemetry) {
+    public void FWDTeleOp(double FBInput, double PivotInput, boolean RUN_USING_ENCODER) {
 
         fr.setPower(-FBInput - PivotInput);
         fl.setPower(FBInput - PivotInput);
         br.setPower(-FBInput - PivotInput);
         bl.setPower(FBInput - PivotInput);
-
-        if (RUN_USING_ENCODER) {
-            telemetry.addData("Front Right Encoder", String.valueOf(fr.getCurrentPosition()));
-            telemetry.addData("Front Left Encoder", String.valueOf(fl.getCurrentPosition()));
-            telemetry.addData("Back Right Encoder", String.valueOf(br.getCurrentPosition()));
-            telemetry.addData("Back Left Encoder", String.valueOf(bl.getCurrentPosition()));
-            telemetry.update();
-        }
 
     }
 

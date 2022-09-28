@@ -17,13 +17,10 @@ public class AttachmentControl {
     public static ColorSensor color;
     public static DistanceSensor distance;
 
-    public void attachmentInit(HardwareMap hardwareMap, Telemetry telemetry) {
+    public void attachmentInit(HardwareMap hardwareMap) {
 
         color = hardwareMap.colorSensor.get("color");
         distance = (DistanceSensor) hardwareMap.get(DistanceSensor.class, "distance");
-
-        telemetry.addLine("Attachments Initialised");
-        telemetry.update();
 
     }
 

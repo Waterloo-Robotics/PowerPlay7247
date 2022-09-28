@@ -25,6 +25,13 @@ public class TelemetryControl {
 
 //    Tele1 tele1 = new Tele1();
 
+    public void telemetryInit(Telemetry telemetry) {
+
+        packet.addLine("Robot Initialised");
+        telemetry.addLine("Robot Initialised");
+
+    }
+
     public void telemetryUpdate(Telemetry telemetry, String caption, String value) {
 
         telemetry.addData(caption, value);
