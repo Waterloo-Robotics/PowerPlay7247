@@ -92,12 +92,12 @@ public class DriveTrain {
 
     double speedMul = 1;
 
-    public void MecanumTeleOp(double FBInput, double LRInput, double PivotInput, AttachmentControl attachmentControl) {
+    public void MecanumTeleOp(double FBInput, double LRInput, double PivotInput) {
 
-        fr.setPower(speedMul * (-FBInput - LRInput - (PivotInput)));
-        br.setPower(speedMul * (-FBInput + LRInput - (PivotInput)));
-        fl.setPower(speedMul * (FBInput - LRInput - (PivotInput)));
-        bl.setPower(speedMul * (FBInput + LRInput - (PivotInput)));
+        fr.setPower(speedMul * (FBInput + LRInput + (PivotInput)));
+        br.setPower(speedMul * (FBInput - LRInput + (PivotInput)));
+        fl.setPower(speedMul * (-FBInput + LRInput + (PivotInput)));
+        bl.setPower(speedMul * (-FBInput - LRInput + (PivotInput)));
 
     }
 

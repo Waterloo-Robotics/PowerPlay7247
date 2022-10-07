@@ -33,7 +33,7 @@ public class TeleOp extends LinearOpMode {
             blpower = driveTrain.bl.getPower();
             brpower = driveTrain.br.getPower();
 
-            driveTrain.MecanumTeleOp(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, attachmentControl);
+            driveTrain.MecanumTeleOp(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
 
             telemetryControl.telemetryUpdate(telemetry, "Distance (Distance sensor)", String.valueOf(AttachmentControl.distance.getDistance(DistanceUnit.CM)));
             telemetryControl.telemetryUpdate(telemetry, "Distance (Color sensor)", String.valueOf(((DistanceSensor) AttachmentControl.color).getDistance(DistanceUnit.CM)));
