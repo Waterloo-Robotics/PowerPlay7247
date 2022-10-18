@@ -1,25 +1,51 @@
 package com.ftc.waterloo.h2oloobots;
 
+import static java.lang.Thread.sleep;
+
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
+@Config
 public class DriveTrain {
 
-    public DcMotor fl, fr, bl, br;
+    public DcMotorEx fl, fr, bl, br;
 
-    public DcMotor left, right;
+    public DcMotorEx left, right;
 
     double COUNTS_PER_INCH;
 
     double COUNTS_PER_DEGREE;
 
-    public void TwoWheelInit(boolean RUN_USING_ENCODER, HardwareMap hardwareMap) {
+    public enum Direction {
+        FORWARD,
+        BACKWARD,
+        RIGHT,
+        LEFT
+    }
 
-        left = hardwareMap.dcMotor.get("left");
-        right = hardwareMap.dcMotor.get("right");
+    int fldirweight, frdirweight, bldirweight, brdirweight;
+
+    public static double flweightco = 1.0;
+    public static double frweightco = 1.0;
+    public static double blweightco = 1.0;
+    public static double brweightco = 1.0;
+    double cpr = 537.7;
+    int counter = 0;
+    double flvelo, frvelo, blvelo, brvelo;
+    double flveloavg, frveloavg, blveloavg, brveloavg;
+
+    public void TwoWheelInit(boolean RUN_USING_ENCODER, @NonNull HardwareMap hardwareMap) {
+
+        left = (DcMotorEx) hardwareMap.dcMotor.get("left");
+        right = (DcMotorEx) hardwareMap.dcMotor.get("right");
 
         if (RUN_USING_ENCODER) {
             left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -37,12 +63,12 @@ public class DriveTrain {
 
     }
 
-    public void FourMotorInit(boolean RUN_USING_ENCODER, HardwareMap hardwareMap, DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
+    public void FourMotorInit(boolean RUN_USING_ENCODER, @NonNull HardwareMap hardwareMap, DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
 
-        fl = hardwareMap.dcMotor.get("fl");
-        fr = hardwareMap.dcMotor.get("fr");
-        bl = hardwareMap.dcMotor.get("bl");
-        br = hardwareMap.dcMotor.get("br");
+        fl = (DcMotorEx) hardwareMap.dcMotor.get("fl");
+        fr = (DcMotorEx) hardwareMap.dcMotor.get("fr");
+        bl = (DcMotorEx) hardwareMap.dcMotor.get("bl");
+        br = (DcMotorEx) hardwareMap.dcMotor.get("br");
 
         fl.setZeroPowerBehavior(zeroPowerBehavior);
         fr.setZeroPowerBehavior(zeroPowerBehavior);
@@ -62,12 +88,12 @@ public class DriveTrain {
         }
     }
 
-    public void FourMotorInit(HardwareMap hardwareMap) {
+    public void FourMotorInit(@NonNull HardwareMap hardwareMap) {
 
-        fl = hardwareMap.dcMotor.get("fl");
-        fr = hardwareMap.dcMotor.get("fr");
-        bl = hardwareMap.dcMotor.get("bl");
-        br = hardwareMap.dcMotor.get("br");
+        fl = (DcMotorEx) hardwareMap.dcMotor.get("fl");
+        fr = (DcMotorEx) hardwareMap.dcMotor.get("fr");
+        bl = (DcMotorEx) hardwareMap.dcMotor.get("bl");
+        br = (DcMotorEx) hardwareMap.dcMotor.get("br");
 
         fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -94,10 +120,10 @@ public class DriveTrain {
 
     public void MecanumTeleOp(double FBInput, double LRInput, double PivotInput) {
 
-        fr.setPower(speedMul * (FBInput + LRInput + (PivotInput)));
-        br.setPower(speedMul * (FBInput - LRInput + (PivotInput)));
         fl.setPower(speedMul * (-FBInput + LRInput + (PivotInput)));
         bl.setPower(speedMul * (-FBInput - LRInput + (PivotInput)));
+        fr.setPower(speedMul * (FBInput + LRInput + (PivotInput)));
+        br.setPower(speedMul * (FBInput - LRInput + (PivotInput)));
 
     }
 
@@ -113,7 +139,7 @@ public class DriveTrain {
 
     public void EncoderAutoInit(double GEAR_RATIO, double COUNTS_PER_REVOLUTION) {
 
-        double WHEEL_DIAMETER_INCHES = 96 / 25.4;
+        double WHEEL_DIAMETER_INCHES = 100 / 25.4;
 
         COUNTS_PER_INCH = (COUNTS_PER_REVOLUTION * GEAR_RATIO) / (WHEEL_DIAMETER_INCHES * 3.1415);
 
@@ -193,6 +219,106 @@ public class DriveTrain {
         waitTimer.reset();
         while (waitTimer.seconds() <= 0.125) {
 
+        }
+
+    }
+
+    public void weightConfig(Telemetry telemetry, TelemetryControl telemetryControl, double flpos, double frpos, double blpos, double brpos, double speed, @NonNull Direction direction, double DIST_REV) {
+
+        flveloavg = 0;
+        frveloavg = 0;
+        blveloavg = 0;
+        brveloavg = 0;
+
+        flvelo = 0;
+        frvelo = 0;
+        blvelo = 0;
+        brvelo = 0;
+
+        switch (direction) {
+            case BACKWARD:
+                fldirweight = -1;
+                frdirweight = 1;
+                bldirweight = -1;
+                brdirweight = 1;
+                break;
+
+            case FORWARD:
+                fldirweight = 1;
+                frdirweight = -1;
+                bldirweight = 1;
+                brdirweight = -1;
+                break;
+
+            case RIGHT:
+                fldirweight = 1;
+                frdirweight = 1;
+                bldirweight = -1;
+                brdirweight = -1;
+                break;
+
+            case LEFT:
+                fldirweight = -1;
+                frdirweight = -1;
+                bldirweight = 1;
+                brdirweight = 1;
+                break;
+
+        }
+
+        fl.setTargetPosition((int) (fl.getCurrentPosition() + (fldirweight * cpr) * DIST_REV));
+        fr.setTargetPosition((int) (fr.getCurrentPosition() + (frdirweight * cpr) * DIST_REV));
+        bl.setTargetPosition((int) (bl.getCurrentPosition() + (bldirweight * cpr) * DIST_REV));
+        br.setTargetPosition((int) (br.getCurrentPosition() + (brdirweight * cpr) * DIST_REV));
+
+        fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        while (fl.getCurrentPosition() != fl.getTargetPosition() && fr.getCurrentPosition() != fr.getTargetPosition() && bl.getCurrentPosition() != bl.getTargetPosition() && br.getCurrentPosition() != br.getTargetPosition()){
+            counter++;
+            flpos = fl.getCurrentPosition();
+            flvelo = fl.getVelocity(AngleUnit.DEGREES);
+            flveloavg = (flveloavg + flvelo);
+            fl.setPower(speed * flweightco * fldirweight);
+            telemetryControl.telemetryUpdate(telemetry, "fl pos", String.valueOf(flpos));
+            telemetryControl.telemetryUpdate(telemetry, "fl velo", String.valueOf(flvelo));
+            telemetryControl.telemetryUpdate(telemetry, "flveloavg", String.valueOf(flveloavg));
+            telemetryControl.telemetryUpdate(telemetry, "fl avg velo", String.valueOf(flveloavg / counter));
+            frpos = fr.getCurrentPosition();
+            frvelo = fr.getVelocity(AngleUnit.DEGREES);
+            frveloavg = (frveloavg + frvelo);
+            fr.setPower(speed * frweightco * frdirweight);
+            telemetryControl.telemetryUpdate(telemetry, "fr pos", String.valueOf(frpos));
+            telemetryControl.telemetryUpdate(telemetry, "fr velo", String.valueOf(frvelo));
+            telemetryControl.telemetryUpdate(telemetry, "fr avg velo", String.valueOf(frveloavg / counter));
+            blpos = bl.getCurrentPosition();
+            blvelo = bl.getVelocity(AngleUnit.DEGREES);
+            blveloavg = (blveloavg + blvelo);
+            bl.setPower(speed * blweightco * bldirweight);
+            telemetryControl.telemetryUpdate(telemetry, "bl pos", String.valueOf(blpos));
+            telemetryControl.telemetryUpdate(telemetry, "bl velo", String.valueOf(blvelo));
+            telemetryControl.telemetryUpdate(telemetry, "bl avg velo", String.valueOf(blveloavg / counter));
+            brpos = br.getCurrentPosition();
+            brvelo = br.getVelocity(AngleUnit.DEGREES);
+            brveloavg = (brveloavg + brvelo);
+            br.setPower(speed * brweightco * brdirweight);
+            telemetryControl.telemetryUpdate(telemetry, "br pos", String.valueOf(brpos));
+            telemetryControl.telemetryUpdate(telemetry, "br velo", String.valueOf(brvelo));
+            telemetryControl.telemetryUpdate(telemetry, "br avg velo", String.valueOf(brveloavg / counter));
+            telemetryControl.update(telemetry);
+        }
+
+        fl.setPower(0);
+        fr.setPower(0);
+        bl.setPower(0);
+        br.setPower(0);
+
+        try {
+            sleep(30000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
     }

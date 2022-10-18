@@ -35,7 +35,7 @@ public class TelemetryControl {
     public void telemetryUpdate(Telemetry telemetry, String caption, String value) {
 
         telemetry.addData(caption, value);
-        packet.put(caption, value);
+        packet.put(caption, caption + ": " + value);
 
     }
 

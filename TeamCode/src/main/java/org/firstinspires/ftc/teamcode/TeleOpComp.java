@@ -15,7 +15,7 @@ public class TeleOpComp extends LinearOpMode {
 
     public void runOpMode() {
 
-        driveTrain.FourMotorInit(false, hardwareMap, DcMotor.ZeroPowerBehavior.FLOAT);
+        driveTrain.FourMotorInit(true, hardwareMap, DcMotor.ZeroPowerBehavior.FLOAT);
         telemetryControl.telemetryInit(telemetry);
 
         waitForStart();
