@@ -21,6 +21,7 @@ public class LocalizationTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        StandardTrackingWheelLocalizer localizer = new StandardTrackingWheelLocalizer(hardwareMap);
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -38,9 +39,9 @@ public class LocalizationTest extends LinearOpMode {
             drive.update();
 
             Pose2d poseEstimate = drive.getPoseEstimate();
-//            telemetry.addData("left", SampleMecanumDrive.leftFront.getCurrentPosition());
-//            telemetry.addData("right", SampleMecanumDrive.rightFront.getCurrentPosition());
-//            telemetry.addData("horiz", SampleMecanumDrive.leftRear.getCurrentPosition());
+            telemetry.addData("left", StandardTrackingWheelLocalizer.leftEncoder.getCurrentPosition());
+            telemetry.addData("right", StandardTrackingWheelLocalizer.rightEncoder.getCurrentPosition());
+            telemetry.addData("horiz", StandardTrackingWheelLocalizer.frontEncoder.getCurrentPosition());
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", poseEstimate.getHeading());

@@ -44,8 +44,14 @@ public class AttachmentControl {
 
     public void revMotorTest(double motor1Input, double motor2Input) {
 
-        REV_Motor1.setVelocity(revToVelo(31.25) * motor1Input);
-        REV_Motor2.setVelocity(revToVelo(31.25) * motor2Input);
+//        REV_Motor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        REV_Motor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//
+//        REV_Motor1.setVelocity(revToVelo(125) * motor1Input);
+//        REV_Motor2.setVelocity(revToVelo(125) * motor2Input);
+
+        REV_Motor1.setPower(1);
+        REV_Motor2.setPower(1);
 
     }
 

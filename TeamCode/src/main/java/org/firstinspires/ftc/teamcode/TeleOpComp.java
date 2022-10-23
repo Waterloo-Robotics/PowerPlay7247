@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.ftc.waterloo.h2oloobots.DriveTrain;
 import com.ftc.waterloo.h2oloobots.TelemetryControl;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -7,15 +8,17 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @TeleOp
+@Config
 public class TeleOpComp extends LinearOpMode {
 
     DriveTrain driveTrain = new DriveTrain();
     TelemetryControl telemetryControl = new TelemetryControl();
     double flpower, frpower, blpower, brpower;
+    public static DcMotor.ZeroPowerBehavior zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
 
     public void runOpMode() {
 
-        driveTrain.FourMotorInit(true, hardwareMap, DcMotor.ZeroPowerBehavior.FLOAT);
+        driveTrain.FourMotorInit(false, hardwareMap, zeroPowerBehavior);
         telemetryControl.telemetryInit(telemetry);
 
         waitForStart();

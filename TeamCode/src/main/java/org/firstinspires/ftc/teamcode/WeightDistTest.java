@@ -44,7 +44,7 @@ public class WeightDistTest extends LinearOpMode {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void runOpMode(){
 
-        driveTrain.FourMotorInit(true, hardwareMap, DcMotor.ZeroPowerBehavior.BRAKE);
+        driveTrain.FourMotorInit(false, hardwareMap, DcMotor.ZeroPowerBehavior.BRAKE);
         telemetryControl.telemetryInit(telemetry);
 //        fl = (DcMotorEx) hardwareMap.dcMotor.get("fl");
 //        fr = (DcMotorEx) hardwareMap.dcMotor.get("fr");

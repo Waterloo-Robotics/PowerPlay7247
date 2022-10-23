@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -75,6 +76,11 @@ public class DriveTrain {
         bl.setZeroPowerBehavior(zeroPowerBehavior);
         br.setZeroPowerBehavior(zeroPowerBehavior);
 
+//        fl.setDirection(DcMotorSimple.Direction.REVERSE);
+//        fr.setDirection(DcMotorSimple.Direction.REVERSE);
+//        bl.setDirection(DcMotorSimple.Direction.REVERSE);
+//        br.setDirection(DcMotorSimple.Direction.REVERSE);
+
         if (RUN_USING_ENCODER) {
             fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -100,6 +106,11 @@ public class DriveTrain {
         bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+//        fl.setDirection(DcMotorSimple.Direction.REVERSE);
+//        fr.setDirection(DcMotorSimple.Direction.REVERSE);
+//        bl.setDirection(DcMotorSimple.Direction.REVERSE);
+//        br.setDirection(DcMotorSimple.Direction.REVERSE);
+
     }
 
     double fldir = 0;
@@ -116,7 +127,7 @@ public class DriveTrain {
 
     }
 
-    double speedMul = 1;
+    double speedMul = 0.75;
 
     public void MecanumTeleOp(double FBInput, double LRInput, double PivotInput) {
 

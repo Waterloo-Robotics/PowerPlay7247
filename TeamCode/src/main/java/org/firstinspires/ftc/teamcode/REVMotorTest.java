@@ -23,7 +23,14 @@ public class REVMotorTest extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            attachmentControl.revEncoderTest(gamepad1.b, isBPressed);
+//            attachmentControl.revEncoderTest(gamepad1.b, isBPressed);
+
+            attachmentControl.revMotorTest(gamepad1.left_stick_x, gamepad1.right_stick_x);
+            telemetryControl.telemetryUpdate(telemetry, "REV1 Revs", String.valueOf(AttachmentControl.REV_Motor1.getCurrentPosition() / 288));
+            telemetryControl.telemetryUpdate(telemetry, "REV1 Speed", String.valueOf(AttachmentControl.REV_Motor1.getVelocity() / 288 * 60));
+            telemetryControl.telemetryUpdate(telemetry, "REV2 Revs", String.valueOf(AttachmentControl.REV_Motor2.getCurrentPosition() / 288));
+            telemetryControl.telemetryUpdate(telemetry, "REV2 Speed", String.valueOf(AttachmentControl.REV_Motor2.getVelocity() / 288 * 60));
+            telemetryControl.update(telemetry);
 
         }
 
