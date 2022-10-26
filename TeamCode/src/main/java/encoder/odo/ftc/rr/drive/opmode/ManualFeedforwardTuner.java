@@ -3,6 +3,7 @@ package encoder.odo.ftc.rr.drive.opmode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.kinematics.Kinematics;
 import com.acmerobotics.roadrunner.profile.MotionProfile;
@@ -11,6 +12,7 @@ import com.acmerobotics.roadrunner.profile.MotionState;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import encoder.odo.ftc.rr.drive.SampleMecanumDrive;
@@ -45,6 +47,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
     public static double DISTANCE = 72; // in
 
     private FtcDashboard dashboard = FtcDashboard.getInstance();
+    TelemetryPacket packet = new TelemetryPacket();
 
     private SampleMecanumDrive drive;
 
@@ -116,11 +119,16 @@ public class ManualFeedforwardTuner extends LinearOpMode {
 
                     Pose2d poseVelo = Objects.requireNonNull(drive.getPoseVelocity(), "poseVelocity() must not be null. Ensure that the getWheelVelocities() method has been overridden in your localizer.");
                     double currentVelo = poseVelo.getX();
-
                     // update telemetry
                     telemetry.addData("targetVelocity", motionState.getV());
                     telemetry.addData("measuredVelocity", currentVelo);
                     telemetry.addData("error", motionState.getV() - currentVelo);
+                    dashboard.getTelemetry().addData("targetVelocity", motionState.getV());
+                    dashboard.getTelemetry().addData("measuredVelocity", currentVelo);
+                    dashboard.getTelemetry().addData("error", motionState.getV() - currentVelo);
+
+                    telemetry.update();
+                    dashboard.getTelemetry().update();
                     break;
                 case DRIVER_MODE:
                     if (gamepad1.b) {
@@ -141,6 +149,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
             }
 
             telemetry.update();
+            dashboard.getTelemetry().update();
         }
     }
 }
