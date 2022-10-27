@@ -20,8 +20,7 @@ public class AttachmentControl {
     public static ColorSensor color;
     public static DistanceSensor distance;
 
-    public static DcMotorEx REV_Motor1;
-    public static DcMotorEx REV_Motor2;
+    public static DcMotorEx shoulder;
 
     public static double cpr = 288;
 
@@ -31,57 +30,16 @@ public class AttachmentControl {
 
 //        color = hardwareMap.colorSensor.get("color");
 //        distance = (DistanceSensor) hardwareMap.get(DistanceSensor.class, "distance");
-        REV_Motor1 = (DcMotorEx) hardwareMap.dcMotor.get("REV1");
-        REV_Motor2 = (DcMotorEx) hardwareMap.dcMotor.get("REV2");
-        REV_Motor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        REV_Motor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        REV_Motor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        REV_Motor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        REV_Motor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        REV_Motor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shoulder = (DcMotorEx) hardwareMap.dcMotor.get("shoulder");
+        shoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shoulder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
     }
 
-    public void revMotorTest(double motor1Input, double motor2Input) {
+    public void setShoulderManual(double speed) {
 
-//        REV_Motor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        REV_Motor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//
-//        REV_Motor1.setVelocity(revToVelo(125) * motor1Input);
-//        REV_Motor2.setVelocity(revToVelo(125) * motor2Input);
-
-        REV_Motor1.setPower(1);
-        REV_Motor2.setPower(1);
-
-    }
-
-    public void revEncoderTest(boolean button, boolean isButtonPressed) {
-
-        if (button) {
-
-            if (!isButtonPressed) {
-
-                REV_Motor1.setTargetPosition((int) (REV_Motor1.getCurrentPosition() + cpr / 360 * deg));
-                REV_Motor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                REV_Motor1.setVelocity(revToVelo(31.25));
-
-                isButtonPressed = true;
-
-            } else {};
-
-        }
-
-        if (REV_Motor1.getCurrentPosition() != REV_Motor1.getTargetPosition()) {
-
-            REV_Motor1.setVelocity(revToVelo(62.5));
-
-        } else {
-
-            REV_Motor1.setVelocity(0);
-
-        }
-
-
+        shoulder.setPower(speed * 0.5);
 
     }
 
