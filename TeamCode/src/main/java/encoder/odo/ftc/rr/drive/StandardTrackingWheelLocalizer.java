@@ -12,19 +12,6 @@ import encoder.odo.ftc.rr.util.Encoder;
 import java.util.Arrays;
 import java.util.List;
 
-/*
- * Sample tracking wheel localizer implementation assuming the standard configuration:
- *
- *    /--------------\
- *    |     ____     |
- *    |     ----     |
- *    | ||        || |
- *    | ||        || |
- *    |              |
- *    |              |
- *    \--------------/
- *
- */
 @Config
 public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer {
     public static double TICKS_PER_REV = 8192;
@@ -49,8 +36,6 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
         leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "fl"));
         rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "fr"));
         frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "bl"));
-
-        // TODO: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
 
         leftEncoder.setDirection(Encoder.Direction.REVERSE);
         frontEncoder.setDirection(Encoder.Direction.REVERSE);
