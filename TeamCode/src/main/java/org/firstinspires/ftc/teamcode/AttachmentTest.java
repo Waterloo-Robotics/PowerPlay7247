@@ -20,7 +20,8 @@ public class AttachmentTest extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            attachmentControl.setShoulderManual(gamepad1.left_stick_y);
+            attachmentControl.setShoulderManual(-gamepad1.left_stick_y);
+            attachmentControl.setElbowManual(gamepad1.left_stick_x);
 
             telemetryControl.telemetryUpdate(telemetry, "Shoulder Pos", String.valueOf(AttachmentControl.shoulder.getCurrentPosition()));
             telemetryControl.update(telemetry);

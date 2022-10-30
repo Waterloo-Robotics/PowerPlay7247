@@ -21,6 +21,7 @@ public class AttachmentControl {
     public static DistanceSensor distance;
 
     public static DcMotorEx shoulder;
+    public static DcMotorEx elbow;
 
     public static double cpr = 288;
 
@@ -35,11 +36,22 @@ public class AttachmentControl {
         shoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         shoulder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        elbow = (DcMotorEx) hardwareMap.dcMotor.get("elbow");
+        elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        elbow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
     }
 
     public void setShoulderManual(double speed) {
 
         shoulder.setPower(speed * 0.5);
+
+    }
+
+    public void setElbowManual(double speed) {
+
+        elbow.setPower(speed * 0.5);
 
     }
 
