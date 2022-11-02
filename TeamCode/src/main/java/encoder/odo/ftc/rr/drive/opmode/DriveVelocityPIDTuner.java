@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
 import com.acmerobotics.roadrunner.profile.MotionState;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
@@ -16,6 +17,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 import encoder.odo.ftc.rr.drive.SampleMecanumDrive;
 
 import java.util.List;
+import java.util.Objects;
 
 import static encoder.odo.ftc.rr.drive.DriveConstants.MAX_ACCEL;
 import static encoder.odo.ftc.rr.drive.DriveConstants.MAX_VEL;
@@ -47,6 +49,7 @@ import static encoder.odo.ftc.rr.drive.DriveConstants.kV;
  * user to reset the position of the bot in the event that it drifts off the path.
  * Pressing B/O (Xbox/PS4) will cede control back to the tuning process.
  */
+@Disabled
 @Config
 @Autonomous(group = "drive")
 public class DriveVelocityPIDTuner extends LinearOpMode {
@@ -126,7 +129,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
 
                     // update telemetry
                     telemetry.addData("targetVelocity", motionState.getV());
-                    for (int i = 0; i < velocities.size(); i++) {
+                    for (int i = 0; i < Objects.requireNonNull(velocities).size(); i++) {
                         telemetry.addData("measuredVelocity" + i, velocities.get(i));
                         telemetry.addData(
                                 "error" + i,

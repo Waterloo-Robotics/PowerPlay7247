@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi;
 import com.acmerobotics.dashboard.config.Config;
 import com.ftc.waterloo.h2oloobots.DriveTrain;
 import com.ftc.waterloo.h2oloobots.TelemetryControl;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -14,6 +15,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import java.util.Arrays;
 
+@Disabled
 @Config
 @TeleOp
 public class WeightDistTest extends LinearOpMode {
