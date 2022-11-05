@@ -1,22 +1,23 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.ftc.waterloo.h2oloobots.AttachmentControl;
+import com.ftc.waterloo.h2oloobots.TelemetryControl;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Disabled
 @TeleOp
 public class ColorSensorTest extends LinearOpMode {
 
-    AttachmentControl attachmentControl = new AttachmentControl();
-
     public void runOpMode() {
 
-        attachmentControl.attachmentInit(hardwareMap);
+        TelemetryControl telemetryControl = new TelemetryControl(telemetry);
+        AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl);
 
         waitForStart();
 

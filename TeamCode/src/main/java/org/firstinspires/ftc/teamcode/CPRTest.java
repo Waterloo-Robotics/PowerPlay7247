@@ -12,8 +12,6 @@ public class CPRTest extends LinearOpMode {
 
     public DcMotor motor;
 
-    TelemetryControl telemetryControl = new TelemetryControl();
-
     int motorPos;
 
     public void runOpMode() {
@@ -23,14 +21,16 @@ public class CPRTest extends LinearOpMode {
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
+        TelemetryControl telemetryControl = new TelemetryControl(telemetry);
+
         waitForStart();
 
         while (opModeIsActive()) {
 
             motorPos = motor.getCurrentPosition();
 
-            telemetryControl.telemetryUpdate(telemetry, "Motor Position", String.valueOf(motorPos));
-            telemetryControl.update(telemetry);
+            telemetryControl.telemetryUpdate("Motor Position", String.valueOf(motorPos));
+            telemetryControl.update();
 
         }
 

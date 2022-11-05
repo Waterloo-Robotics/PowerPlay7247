@@ -12,9 +12,6 @@ import org.firstinspires.ftc.teamcode.R;
 
 public class TelemetryControl {
 
-    AttachmentControl attachmentControl = new AttachmentControl();
-    DriveTrain driveTrain = new DriveTrain();
-
     FtcDashboard dashboard = FtcDashboard.getInstance();
     TelemetryPacket packet = new TelemetryPacket();
 
@@ -23,23 +20,26 @@ public class TelemetryControl {
     double bldir = 0;
     double brdir = 0;
 
+    Telemetry telemetryLocal;
+
 //    Tele1 tele1 = new Tele1();
 
-    public void telemetryInit(Telemetry telemetry) {
+    public TelemetryControl(Telemetry telemetry) {
 
         packet.addLine("Robot Initialised");
         telemetry.addLine("Robot Initialised");
+        telemetryLocal = telemetry;
 
     }
 
-    public void telemetryUpdate(Telemetry telemetry, String caption, String value) {
+    public void telemetryUpdate(String caption, String value) {
 
-        telemetry.addData(caption, value);
+        telemetryLocal.addData(caption, value);
         packet.put(caption, value);
 
     }
 
-    public void motorTelemetryUpdate(Telemetry telemetry, double flpower, double frpower, double blpower, double brpower) {
+    public void motorTelemetryUpdate(double flpower, double frpower, double blpower, double brpower) {
 
         fldir = getDirection(flpower);
         frdir = getDirection(frpower);
@@ -70,20 +70,20 @@ public class TelemetryControl {
                 direction = "Moving Diagonally";
             if ((frontMin == 0 && backMin != 0) || (backMin == 0 && frontMin != 0))
                 direction = "Moving Strangely";
-            telemetry.addLine(direction + " at " + Math.max(leftMax, rightMax) + "% Speed");
+            telemetryLocal.addLine(direction + " at " + Math.max(leftMax, rightMax) + "% Speed");
             packet.addLine(direction + " at " + Math.max(leftMax, rightMax) + "% Speed");
         } else {
 
-            telemetry.addLine("Stopped");
+            telemetryLocal.addLine("Stopped");
             packet.addLine("Stopped");
 
         }
 
     }
 
-    public void update(Telemetry telemetry) {
+    public void update() {
 
-        telemetry.update();
+        telemetryLocal.update();
         dashboard.sendTelemetryPacket(packet);
 
     }

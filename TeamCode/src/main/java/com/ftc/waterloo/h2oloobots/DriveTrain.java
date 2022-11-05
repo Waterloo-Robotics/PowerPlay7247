@@ -43,6 +43,12 @@ public class DriveTrain {
     double flvelo, frvelo, blvelo, brvelo;
     double flveloavg, frveloavg, blveloavg, brveloavg;
 
+    public DriveTrain(HardwareMap hardwareMap, TelemetryControl telemetryControl) {
+
+        FourMotorInit(false, hardwareMap, DcMotor.ZeroPowerBehavior.BRAKE);
+
+    }
+
     public void TwoWheelInit(boolean RUN_USING_ENCODER, @NonNull HardwareMap hardwareMap) {
 
         left = (DcMotorEx) hardwareMap.dcMotor.get("left");
@@ -293,32 +299,32 @@ public class DriveTrain {
             flvelo = fl.getVelocity(AngleUnit.DEGREES);
             flveloavg = (flveloavg + flvelo);
             fl.setPower(speed * flweightco * fldirweight);
-            telemetryControl.telemetryUpdate(telemetry, "fl pos", String.valueOf(flpos));
-            telemetryControl.telemetryUpdate(telemetry, "fl velo", String.valueOf(flvelo));
-            telemetryControl.telemetryUpdate(telemetry, "flveloavg", String.valueOf(flveloavg));
-            telemetryControl.telemetryUpdate(telemetry, "fl avg velo", String.valueOf(flveloavg / counter));
+            telemetryControl.telemetryUpdate("fl pos", String.valueOf(flpos));
+            telemetryControl.telemetryUpdate("fl velo", String.valueOf(flvelo));
+            telemetryControl.telemetryUpdate("flveloavg", String.valueOf(flveloavg));
+            telemetryControl.telemetryUpdate("fl avg velo", String.valueOf(flveloavg / counter));
             frpos = fr.getCurrentPosition();
             frvelo = fr.getVelocity(AngleUnit.DEGREES);
             frveloavg = (frveloavg + frvelo);
             fr.setPower(speed * frweightco * frdirweight);
-            telemetryControl.telemetryUpdate(telemetry, "fr pos", String.valueOf(frpos));
-            telemetryControl.telemetryUpdate(telemetry, "fr velo", String.valueOf(frvelo));
-            telemetryControl.telemetryUpdate(telemetry, "fr avg velo", String.valueOf(frveloavg / counter));
+            telemetryControl.telemetryUpdate("fr pos", String.valueOf(frpos));
+            telemetryControl.telemetryUpdate("fr velo", String.valueOf(frvelo));
+            telemetryControl.telemetryUpdate("fr avg velo", String.valueOf(frveloavg / counter));
             blpos = bl.getCurrentPosition();
             blvelo = bl.getVelocity(AngleUnit.DEGREES);
             blveloavg = (blveloavg + blvelo);
             bl.setPower(speed * blweightco * bldirweight);
-            telemetryControl.telemetryUpdate(telemetry, "bl pos", String.valueOf(blpos));
-            telemetryControl.telemetryUpdate(telemetry, "bl velo", String.valueOf(blvelo));
-            telemetryControl.telemetryUpdate(telemetry, "bl avg velo", String.valueOf(blveloavg / counter));
+            telemetryControl.telemetryUpdate("bl pos", String.valueOf(blpos));
+            telemetryControl.telemetryUpdate("bl velo", String.valueOf(blvelo));
+            telemetryControl.telemetryUpdate("bl avg velo", String.valueOf(blveloavg / counter));
             brpos = br.getCurrentPosition();
             brvelo = br.getVelocity(AngleUnit.DEGREES);
             brveloavg = (brveloavg + brvelo);
             br.setPower(speed * brweightco * brdirweight);
-            telemetryControl.telemetryUpdate(telemetry, "br pos", String.valueOf(brpos));
-            telemetryControl.telemetryUpdate(telemetry, "br velo", String.valueOf(brvelo));
-            telemetryControl.telemetryUpdate(telemetry, "br avg velo", String.valueOf(brveloavg / counter));
-            telemetryControl.update(telemetry);
+            telemetryControl.telemetryUpdate("br pos", String.valueOf(brpos));
+            telemetryControl.telemetryUpdate("br velo", String.valueOf(brvelo));
+            telemetryControl.telemetryUpdate("br avg velo", String.valueOf(brveloavg / counter));
+            telemetryControl.update();
         }
 
         fl.setPower(0);

@@ -15,15 +15,11 @@ public class TeleOp extends LinearOpMode {
 
     double flpower, frpower, blpower, brpower;
 
-    DriveTrain driveTrain = new DriveTrain();
-    AttachmentControl attachmentControl = new AttachmentControl();
-    TelemetryControl telemetryControl = new TelemetryControl();
-
     public void runOpMode() {
 
-        driveTrain.FourMotorInit(hardwareMap);
-        attachmentControl.attachmentInit(hardwareMap);
-        telemetryControl.telemetryInit(telemetry);
+        TelemetryControl telemetryControl = new TelemetryControl(telemetry);
+        DriveTrain driveTrain = new DriveTrain(hardwareMap, telemetryControl);
+        AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl);
 
 
         waitForStart();
@@ -37,13 +33,13 @@ public class TeleOp extends LinearOpMode {
 
             driveTrain.MecanumTeleOp(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
 
-            telemetryControl.telemetryUpdate(telemetry, "Distance (Distance sensor)", String.valueOf(AttachmentControl.distance.getDistance(DistanceUnit.CM)));
-            telemetryControl.telemetryUpdate(telemetry, "Distance (Color sensor)", String.valueOf(((DistanceSensor) AttachmentControl.color).getDistance(DistanceUnit.CM)));
-            telemetryControl.telemetryUpdate(telemetry, "Red Input (Color sensor)", String.valueOf(AttachmentControl.color.red()));
-            telemetryControl.telemetryUpdate(telemetry, "Green Input (Color sensor)", String.valueOf(AttachmentControl.color.green()));
-            telemetryControl.telemetryUpdate(telemetry, "Blue Input (Color sensor)", String.valueOf(AttachmentControl.color.blue()));
-            telemetryControl.motorTelemetryUpdate(telemetry, flpower, frpower, blpower, brpower);
-            telemetryControl.update(telemetry);
+            telemetryControl.telemetryUpdate("Distance (Distance sensor)", String.valueOf(AttachmentControl.distance.getDistance(DistanceUnit.CM)));
+            telemetryControl.telemetryUpdate("Distance (Color sensor)", String.valueOf(((DistanceSensor) AttachmentControl.color).getDistance(DistanceUnit.CM)));
+            telemetryControl.telemetryUpdate("Red Input (Color sensor)", String.valueOf(AttachmentControl.color.red()));
+            telemetryControl.telemetryUpdate("Green Input (Color sensor)", String.valueOf(AttachmentControl.color.green()));
+            telemetryControl.telemetryUpdate("Blue Input (Color sensor)", String.valueOf(AttachmentControl.color.blue()));
+            telemetryControl.motorTelemetryUpdate(flpower, frpower, blpower, brpower);
+            telemetryControl.update();
 
         }
 

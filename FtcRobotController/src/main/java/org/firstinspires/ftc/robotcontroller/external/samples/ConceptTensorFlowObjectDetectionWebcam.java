@@ -71,10 +71,15 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
 
     FtcDashboard dashboard = FtcDashboard.getInstance();
 
-
     private static final String[] LABELS = {
-            "Blue Cone"
+            "1 Bolt",
+            "2 Bulb",
+            "3 Panel"
     };
+
+//    private static final String[] LABELS = {
+//            "Blue Cone"
+//    };
 
     private static final String VUFORIA_KEY =
             "ARZRc7b/////AAABmdYJzscFYUPwkOkgBgmpjAgFqkg6LxHmXPnonXKPGrqHxZBHhNRmsyDoNVz/o9XfL9Dc9224rfZHzQ5gvbFPQYchZztz+A+SeQt4Ql4xUxAiYviidC0RpPC9TRRBOaaGlNLAAupCmG8jtnsbnLlVFECI4DC3Heg20nvyWce+A4anUbW+kFkQu9uGyD1JzToWPN8MV7wsnsJ+1/oe6F7+g8C9dtMW3MgktiWWuty0g4RLNrc4qz/3htZe6w2efr1e34EZ+0JJc9la+bV08IMlSlEKGy2QOPBUIODemnFxyu+JLAkleQtV+Pke4qOf9hm8jTeqhyu5rL7B9QVZQ1x5p/u1vSsFJs2ihWJ9O1TvtPCs";
@@ -98,7 +103,7 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
             // to artificially zoom in to the center of image.  For best results, the "aspectRatio" argument
             // should be set to the value of the images used to create the TensorFlow Object Detection model
             // (typically 16/9).
-            tfod.setZoom(1.0, 16.0/9.0);
+            tfod.setZoom(1, 16.0/9.0);
         }
 
         telemetry.addData(">", "Press Play to start op mode");
@@ -167,7 +172,7 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
 
         // Use loadModelFromAsset() if the TF Model is built in as an asset by Android Studio
         // Use loadModelFromFile() if you have downloaded a custom team model to the Robot Controller's FLASH.
-//        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
-        tfod.loadModelFromFile(TFOD_MODEL_FILE, LABELS);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
+//        tfod.loadModelFromFile(TFOD_MODEL_FILE, LABELS);
     }
 }

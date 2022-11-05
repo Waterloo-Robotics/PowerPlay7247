@@ -8,23 +8,27 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp
 public class AttachmentTest extends LinearOpMode {
 
-    AttachmentControl attachmentControl = new AttachmentControl();
-    TelemetryControl telemetryControl = new TelemetryControl();
 
     public void runOpMode() {
 
-        attachmentControl.attachmentInit(hardwareMap);
-        telemetryControl.telemetryInit(telemetry);
+        TelemetryControl telemetryControl = new TelemetryControl(telemetry);
+        AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl);
+
+        double shDir = 0;
+
+        double elDir = 0;
 
         waitForStart();
 
         while (opModeIsActive()) {
 
-            attachmentControl.setShoulderManual(-gamepad1.left_stick_y);
-            attachmentControl.setElbowManual(gamepad1.left_stick_x);
+            if (gamepad1.dpad_up) shDir = 1; else if (gamepad1.dpad_down) shDir = -1; else shDir = 0;
 
-            telemetryControl.telemetryUpdate(telemetry, "Shoulder Pos", String.valueOf(AttachmentControl.shoulder.getCurrentPosition()));
-            telemetryControl.update(telemetry);
+            if (gamepad1.y) elDir = -1; else if (gamepad1.a) elDir = 1; else elDir = 0;
+
+            attachmentControl.armManual(shDir, elDir, gamepad1.left_stick_x, telemetryControl);
+
+            telemetryControl.update();
 
         }
 

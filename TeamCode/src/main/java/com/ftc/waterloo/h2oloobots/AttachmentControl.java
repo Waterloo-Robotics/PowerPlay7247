@@ -23,14 +23,14 @@ public class AttachmentControl {
     public static DcMotorEx shoulder;
     public static DcMotorEx elbow;
 
+    public static DcMotorEx wrist;
+
     public static double cpr = 288;
 
     public static double deg = 10;
 
-    public void attachmentInit(HardwareMap hardwareMap) {
+    public AttachmentControl(HardwareMap hardwareMap, TelemetryControl telemetryControl) {
 
-//        color = hardwareMap.colorSensor.get("color");
-//        distance = (DistanceSensor) hardwareMap.get(DistanceSensor.class, "distance");
         shoulder = (DcMotorEx) hardwareMap.dcMotor.get("shoulder");
         shoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -40,6 +40,11 @@ public class AttachmentControl {
         elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         elbow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        wrist = (DcMotorEx) hardwareMap.dcMotor.get("wrist");
+        wrist.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        wrist.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        wrist.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
     }
 
@@ -52,6 +57,24 @@ public class AttachmentControl {
     public void setElbowManual(double speed) {
 
         elbow.setPower(speed * 0.5);
+
+    }
+
+    public void setWristManual(double speed) {
+
+        wrist.setPower(speed * 0.5);
+
+    }
+
+    public void armManual(double shoulderSpeed, double elbowSpeed, double wristSpeed, TelemetryControl telemetryControl) {
+
+        shoulder.setPower(shoulderSpeed * 0.75);
+        elbow.setPower(elbowSpeed);
+        wrist.setPower(wristSpeed * 0.25);
+
+        telemetryControl.telemetryUpdate("shoulder pos", String.valueOf(shoulder.getCurrentPosition()));
+        telemetryControl.telemetryUpdate("elbow pos", String.valueOf(elbow.getCurrentPosition()));
+        telemetryControl.telemetryUpdate("wrist pos", String.valueOf(wrist.getCurrentPosition()));
 
     }
 

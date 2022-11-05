@@ -20,9 +20,6 @@ import java.util.Arrays;
 @TeleOp
 public class WeightDistTest extends LinearOpMode {
 
-    DriveTrain driveTrain = new DriveTrain();
-    TelemetryControl telemetryControl = new TelemetryControl();
-
 //    public DcMotorEx fl, fr, bl, br;
 
     public static double speed = 0.5;
@@ -46,8 +43,8 @@ public class WeightDistTest extends LinearOpMode {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void runOpMode(){
 
-        driveTrain.FourMotorInit(false, hardwareMap, DcMotor.ZeroPowerBehavior.BRAKE);
-        telemetryControl.telemetryInit(telemetry);
+        TelemetryControl telemetryControl = new TelemetryControl(telemetry);
+        DriveTrain driveTrain = new DriveTrain(hardwareMap, telemetryControl);
 //        fl = (DcMotorEx) hardwareMap.dcMotor.get("fl");
 //        fr = (DcMotorEx) hardwareMap.dcMotor.get("fr");
 //        bl = (DcMotorEx) hardwareMap.dcMotor.get("bl");

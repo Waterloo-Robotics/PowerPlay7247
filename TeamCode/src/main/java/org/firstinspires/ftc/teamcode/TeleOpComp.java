@@ -10,16 +10,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @TeleOp
 @Config
 public class TeleOpComp extends LinearOpMode {
-
-    DriveTrain driveTrain = new DriveTrain();
-    TelemetryControl telemetryControl = new TelemetryControl();
     double flpower, frpower, blpower, brpower;
     public static DcMotor.ZeroPowerBehavior zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE;
 
     public void runOpMode() {
 
-        driveTrain.FourMotorInit(false, hardwareMap, zeroPowerBehavior);
-        telemetryControl.telemetryInit(telemetry);
+        TelemetryControl telemetryControl = new TelemetryControl(telemetry);
+        DriveTrain driveTrain = new DriveTrain(hardwareMap, telemetryControl);
 
         waitForStart();
 
@@ -31,8 +28,8 @@ public class TeleOpComp extends LinearOpMode {
             brpower = driveTrain.br.getPower();
 
             driveTrain.MecanumTeleOp(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
-            telemetryControl.motorTelemetryUpdate(telemetry, flpower, frpower, blpower, brpower);
-            telemetryControl.update(telemetry);
+            telemetryControl.motorTelemetryUpdate(flpower, frpower, blpower, brpower);
+            telemetryControl.update();
 
         }
 
