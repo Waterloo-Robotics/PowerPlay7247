@@ -13,6 +13,23 @@ If you are new to robotics or new to *FIRST* Tech Challenge, then you should con
 
 ### These will be updated weekly on Thursdays
 
+# 03.11.2022
+
+* Developed first Autonomous OpMode
+* Updated README.md (I haven't been very good at updating it sorry to the like 2 people watching this repository D:)
+
+# 27.10.2022
+
+* Further tuning of RoadRunner
+
+# 20.10.2022
+
+* Further adjustment to DriveTrain and AttachmentControl
+
+## 13.10.2022
+
+* Odometry tuning and some adjustments to DriveTrain, AttachmentControl, and TelemetryControl
+
 ## 06.10.2022
 
 * Made TeleOp OpMode
