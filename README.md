@@ -13,7 +13,7 @@ If you are new to robotics or new to *FIRST* Tech Challenge, then you should con
 
 ### These will be updated weekly on Thursdays
 
-# 03.11.2022
+## 03.11.2022
 
 * Developed first Autonomous OpMode
 * Updated README.md (I haven't been very good at updating it sorry to the like 2 people watching this repository D:)
