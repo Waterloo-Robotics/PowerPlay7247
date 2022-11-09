@@ -67,14 +67,14 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
     @SuppressLint("SdCardPath")
     private static final String TFOD_MODEL_ASSET = "PowerPlay.tflite";
     @SuppressLint("SdCardPath")
-    private static final String TFOD_MODEL_FILE  = "/sdcard/FIRST/tflitemodels/blue.tflite";
+    private static final String TFOD_MODEL_FILE  = "/sdcard/FIRST/tflitemodels/SignalSleeve.tflite";
 
     FtcDashboard dashboard = FtcDashboard.getInstance();
 
     private static final String[] LABELS = {
-            "1 Bolt",
-            "2 Bulb",
-            "3 Panel"
+            "Red",
+            "Green",
+            "Blue"
     };
 
 //    private static final String[] LABELS = {
@@ -172,7 +172,7 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
 
         // Use loadModelFromAsset() if the TF Model is built in as an asset by Android Studio
         // Use loadModelFromFile() if you have downloaded a custom team model to the Robot Controller's FLASH.
-        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
-//        tfod.loadModelFromFile(TFOD_MODEL_FILE, LABELS);
+//        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
+        tfod.loadModelFromFile(TFOD_MODEL_FILE, LABELS);
     }
 }

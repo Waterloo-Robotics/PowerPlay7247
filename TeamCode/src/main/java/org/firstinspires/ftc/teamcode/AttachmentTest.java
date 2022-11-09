@@ -26,7 +26,7 @@ public class AttachmentTest extends LinearOpMode {
 
             if (gamepad1.y) elDir = -1; else if (gamepad1.a) elDir = 1; else elDir = 0;
 
-            attachmentControl.armManual(shDir, elDir, gamepad1.left_stick_x, telemetryControl);
+            attachmentControl.armManual(shDir, elDir, gamepad1.left_stick_x, gamepad1.b, gamepad1.x, telemetryControl);
 
             telemetryControl.update();
 

@@ -23,11 +23,15 @@ public class AttachmentControl {
     public static DcMotorEx shoulder;
     public static DcMotorEx elbow;
 
+    public static Servo claw;
+
     public static DcMotorEx wrist;
 
     public static double cpr = 288;
 
     public static double deg = 10;
+
+    double clawPos = 0;
 
     public AttachmentControl(HardwareMap hardwareMap, TelemetryControl telemetryControl) {
 
@@ -45,6 +49,11 @@ public class AttachmentControl {
         wrist.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         wrist.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         wrist.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        claw = hardwareMap.servo.get("claw");
+        claw.scaleRange(0.7, 1);
+
+//        color = hardwareMap.colorSensor.get("color");
 
     }
 
@@ -66,15 +75,28 @@ public class AttachmentControl {
 
     }
 
-    public void armManual(double shoulderSpeed, double elbowSpeed, double wristSpeed, TelemetryControl telemetryControl) {
+    public void armManual(double shoulderSpeed, double elbowSpeed, double wristSpeed, boolean clawBut1, boolean clawBut2, TelemetryControl telemetryControl) {
 
         shoulder.setPower(shoulderSpeed * 0.75);
         elbow.setPower(elbowSpeed);
         wrist.setPower(wristSpeed * 0.25);
 
+        if (clawBut1) {
+
+            clawPos += 0.01;
+
+        } else if (clawBut2) {
+
+            clawPos -= 0.01;
+
+        }
+
+        claw.setPosition(clawPos);
+
         telemetryControl.telemetryUpdate("shoulder pos", String.valueOf(shoulder.getCurrentPosition()));
         telemetryControl.telemetryUpdate("elbow pos", String.valueOf(elbow.getCurrentPosition()));
         telemetryControl.telemetryUpdate("wrist pos", String.valueOf(wrist.getCurrentPosition()));
+        telemetryControl.telemetryUpdate("claw pos", String.valueOf(claw.getPosition()));
 
     }
 
