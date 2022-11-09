@@ -41,17 +41,20 @@ public class AttachmentControl {
         shoulder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         elbow = (DcMotorEx) hardwareMap.dcMotor.get("elbow");
-        elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         elbow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         wrist = (DcMotorEx) hardwareMap.dcMotor.get("wrist");
-        wrist.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         wrist.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         wrist.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        shoulder.setTargetPosition(0);
+        elbow.setTargetPosition(0);
+        wrist.setTargetPosition(0);
+
         claw = hardwareMap.servo.get("claw");
         claw.scaleRange(0.7, 1);
+        claw.setPosition(0);
 
 //        color = hardwareMap.colorSensor.get("color");
 
@@ -97,6 +100,61 @@ public class AttachmentControl {
         telemetryControl.telemetryUpdate("elbow pos", String.valueOf(elbow.getCurrentPosition()));
         telemetryControl.telemetryUpdate("wrist pos", String.valueOf(wrist.getCurrentPosition()));
         telemetryControl.telemetryUpdate("claw pos", String.valueOf(claw.getPosition()));
+
+    }
+
+    boolean up = false;
+    boolean drop = false;
+
+    ElapsedTime timer = new ElapsedTime();
+    ElapsedTime dropTimer = new ElapsedTime();
+
+    public void armAuto(boolean pickUp, boolean upButton, boolean dropButton) {
+
+        if (pickUp) {
+
+            elbow.setTargetPosition(4568);
+            wrist.setTargetPosition(16);
+            claw.setPosition(0);
+
+        } else if (upButton) {
+
+            up = true;
+
+            timer.reset();
+
+            claw.setPosition(1);
+
+        } else if (dropButton) {
+
+            dropTimer.reset();
+            drop = true;
+
+            shoulder.setTargetPosition(4532);
+            elbow.setTargetPosition(3575);
+            wrist.setTargetPosition(149);
+
+        }
+
+        if (up && timer.seconds() >= 2) {
+
+            shoulder.setTargetPosition(4532);
+            elbow.setTargetPosition(2900);
+            wrist.setTargetPosition(16);
+
+        } else if (drop && dropTimer.seconds() >= 3) {
+
+            claw.setPosition(0);
+
+        }
+
+        shoulder.setPower(0.875);
+        elbow.setPower(1);
+        wrist.setPower(0.5);
+
+        shoulder.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        wrist.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
     }
 

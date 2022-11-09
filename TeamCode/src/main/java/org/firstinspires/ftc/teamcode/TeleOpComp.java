@@ -26,6 +26,14 @@ public class TeleOpComp extends LinearOpMode {
 
         double wristDir = 0;
 
+        boolean isAPushed = false;
+
+        boolean pickUp = false;
+
+        boolean up = false;
+
+        boolean score = false;
+
         waitForStart();
 
         while (opModeIsActive()) {
@@ -38,6 +46,40 @@ public class TeleOpComp extends LinearOpMode {
 
             attachmentControl.armManual(shDir, elDir, wristDir, gamepad1.b, gamepad1.x, telemetryControl);
 
+
+            // TODO Fix this
+//            if (gamepad1.a && !isAPushed) {
+//
+//                if (up && !pickUp && !score) {
+//
+//                    up = false;
+//                    pickUp = false;
+//                    score = true;
+//
+//                } else if (!up && pickUp && !score) {
+//
+//                    up = true;
+//                    pickUp = false;
+//                    score = false;
+//
+//                } else {
+//
+//                    pickUp = true;
+//                    up = false;
+//                    score = false;
+//
+//                }
+//
+//                isAPushed = true;
+//
+//            } else if (!gamepad1.a) {
+//
+//                isAPushed = false;
+//
+//            }
+
+//            attachmentControl.armAuto(pickUp, up, score);
+
             flpower = driveTrain.fl.getPower();
             frpower = driveTrain.fr.getPower();
             blpower = driveTrain.bl.getPower();
@@ -46,8 +88,6 @@ public class TeleOpComp extends LinearOpMode {
             driveTrain.MecanumTeleOp(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
             telemetryControl.motorTelemetryUpdate(flpower, frpower, blpower, brpower);
             telemetryControl.update();
-
-            // TODO Set Up auto arm - screenshots on DH
 
         }
 
