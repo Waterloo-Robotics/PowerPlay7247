@@ -34,9 +34,19 @@ public class TeleOpComp extends LinearOpMode {
 
         boolean score = false;
 
+        boolean claw = true;
+
+        boolean isBPushed = false;
+
+        boolean yPressed = false;
+
+        AttachmentControl.claw.setPosition(0);
+
         waitForStart();
 
         while (opModeIsActive()) {
+
+            if (gamepad1.y) yPressed = true;
 
             if (gamepad1.dpad_up) shDir = 1; else if (gamepad1.dpad_down) shDir = -1; else shDir = 0;
 
@@ -44,41 +54,44 @@ public class TeleOpComp extends LinearOpMode {
 
             if (gamepad1.dpad_left) wristDir = -1; else if (gamepad1.dpad_right) wristDir = 1; else wristDir = 0;
 
-            attachmentControl.armManual(shDir, elDir, wristDir, gamepad1.b, gamepad1.x, telemetryControl);
+            if (gamepad1.b && !isBPushed) {
+
+                claw = !claw;
+
+                isBPushed = true;
+            } else if (!gamepad1.b) {
+
+                isBPushed = false;
+
+            }
+
+//            attachmentControl.armManual(shDir, elDir, wristDir, claw, telemetryControl);
 
 
             // TODO Fix this
-//            if (gamepad1.a && !isAPushed) {
-//
-//                if (up && !pickUp && !score) {
-//
-//                    up = false;
-//                    pickUp = false;
-//                    score = true;
-//
-//                } else if (!up && pickUp && !score) {
-//
-//                    up = true;
-//                    pickUp = false;
-//                    score = false;
-//
-//                } else {
-//
-//                    pickUp = true;
-//                    up = false;
-//                    score = false;
-//
-//                }
-//
-//                isAPushed = true;
-//
-//            } else if (!gamepad1.a) {
-//
-//                isAPushed = false;
-//
-//            }
+            if (gamepad1.a && !isAPushed) {
 
-//            attachmentControl.armAuto(pickUp, up, score);
+                if (pickUp && yPressed) {
+
+                    pickUp = false;
+                    score = true;
+
+                } else if (yPressed && !pickUp) {
+
+                    pickUp = true;
+                    score = false;
+
+                }
+
+                isAPushed = true;
+
+            } else if (!gamepad1.a) {
+
+                isAPushed = false;
+
+            }
+
+            attachmentControl.armAuto(pickUp, score, claw);
 
             flpower = driveTrain.fl.getPower();
             frpower = driveTrain.fr.getPower();

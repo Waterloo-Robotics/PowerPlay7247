@@ -78,23 +78,21 @@ public class AttachmentControl {
 
     }
 
-    public void armManual(double shoulderSpeed, double elbowSpeed, double wristSpeed, boolean clawBut1, boolean clawBut2, TelemetryControl telemetryControl) {
+    public void armManual(double shoulderSpeed, double elbowSpeed, double wristSpeed, boolean servoOpen, TelemetryControl telemetryControl) {
 
         shoulder.setPower(shoulderSpeed * 0.75);
         elbow.setPower(elbowSpeed);
         wrist.setPower(wristSpeed * 0.25);
 
-        if (clawBut1) {
+        if (servoOpen) {
 
-            clawPos += 0.01;
+            claw.setPosition(0);
 
-        } else if (clawBut2) {
+        } else {
 
-            clawPos -= 0.01;
+            claw.setPosition(1);
 
         }
-
-        claw.setPosition(clawPos);
 
         telemetryControl.telemetryUpdate("shoulder pos", String.valueOf(shoulder.getCurrentPosition()));
         telemetryControl.telemetryUpdate("elbow pos", String.valueOf(elbow.getCurrentPosition()));
@@ -109,52 +107,42 @@ public class AttachmentControl {
     ElapsedTime timer = new ElapsedTime();
     ElapsedTime dropTimer = new ElapsedTime();
 
-    public void armAuto(boolean pickUp, boolean upButton, boolean dropButton) {
+    public void armAuto(boolean pickUp, boolean upButton, boolean servoToggle) {
 
         if (pickUp) {
 
-            elbow.setTargetPosition(4568);
-            wrist.setTargetPosition(16);
-            claw.setPosition(0);
+            shoulder.setTargetPosition(0);
+            elbow.setTargetPosition(-2454);
+            wrist.setTargetPosition(-3);
 
         } else if (upButton) {
-
-            up = true;
-
-            timer.reset();
-
-            claw.setPosition(1);
-
-        } else if (dropButton) {
-
-            dropTimer.reset();
-            drop = true;
-
-            shoulder.setTargetPosition(4532);
-            elbow.setTargetPosition(3575);
-            wrist.setTargetPosition(149);
+            shoulder.setTargetPosition(4493);
+            elbow.setTargetPosition(-3459);
+            wrist.setTargetPosition(140);
 
         }
 
-        if (up && timer.seconds() >= 2) {
-
-            shoulder.setTargetPosition(4532);
-            elbow.setTargetPosition(2900);
-            wrist.setTargetPosition(16);
-
-        } else if (drop && dropTimer.seconds() >= 3) {
-
-            claw.setPosition(0);
-
-        }
-
-        shoulder.setPower(0.875);
+        shoulder.setPower(0.75);
         elbow.setPower(1);
         wrist.setPower(0.5);
 
         shoulder.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         wrist.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        if (servoToggle) {
+
+            if (claw.getPosition() == 0) {
+
+                claw.setPosition(1);
+
+            } else if (claw.getPosition() == 1) {
+
+                claw.setPosition(0);
+
+            }
+
+        }
 
     }
 
