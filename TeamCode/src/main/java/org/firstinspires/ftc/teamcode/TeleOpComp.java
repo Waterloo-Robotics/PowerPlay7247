@@ -18,7 +18,7 @@ public class TeleOpComp extends LinearOpMode {
 
         TelemetryControl telemetryControl = new TelemetryControl(telemetry);
         DriveTrain driveTrain = new DriveTrain(hardwareMap, telemetryControl);
-        AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl);
+        AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl, AttachmentControl.ServoPosition.open);
 
         double shDir = 0;
 
@@ -48,50 +48,50 @@ public class TeleOpComp extends LinearOpMode {
 
             if (gamepad1.y) yPressed = true;
 
-            if (gamepad1.dpad_up) shDir = 1; else if (gamepad1.dpad_down) shDir = -1; else shDir = 0;
+            if (gamepad2.dpad_up) shDir = 1; else if (gamepad2.dpad_down) shDir = -1; else shDir = 0;
 
-            if (gamepad1.y) elDir = -1; else if (gamepad1.a) elDir = 1; else elDir = 0;
+            if (gamepad2.y) elDir = -1; else if (gamepad2.a) elDir = 1; else elDir = 0;
 
-            if (gamepad1.dpad_left) wristDir = -1; else if (gamepad1.dpad_right) wristDir = 1; else wristDir = 0;
+            if (gamepad2.right_bumper) wristDir = -1; else if (gamepad2.left_bumper) wristDir = 1; else wristDir = 0;
 
-            if (gamepad1.b && !isBPushed) {
+            if (gamepad2.b && !isBPushed) {
 
                 claw = !claw;
 
                 isBPushed = true;
-            } else if (!gamepad1.b) {
+            } else if (!gamepad2.b) {
 
                 isBPushed = false;
 
             }
 
-//            attachmentControl.armManual(shDir, elDir, wristDir, claw, telemetryControl);
+            attachmentControl.armManualComp(-gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir, claw, telemetryControl);
 
 
             // TODO Fix this
-            if (gamepad1.a && !isAPushed) {
-
-                if (pickUp && yPressed) {
-
-                    pickUp = false;
-                    score = true;
-
-                } else if (yPressed && !pickUp) {
-
-                    pickUp = true;
-                    score = false;
-
-                }
-
-                isAPushed = true;
-
-            } else if (!gamepad1.a) {
-
-                isAPushed = false;
-
-            }
-
-            attachmentControl.armAuto(pickUp, score, claw);
+//            if (gamepad1.a && !isAPushed) {
+//
+//                if (pickUp && yPressed) {
+//
+//                    pickUp = false;
+//                    score = true;
+//
+//                } else if (yPressed && !pickUp) {
+//
+//                    pickUp = true;
+//                    score = false;
+//
+//                }
+//
+//                isAPushed = true;
+//
+//            } else if (!gamepad1.a) {
+//
+//                isAPushed = false;
+//
+//            }
+//
+//            attachmentControl.armAuto(pickUp, score, claw);
 
             flpower = driveTrain.fl.getPower();
             frpower = driveTrain.fr.getPower();

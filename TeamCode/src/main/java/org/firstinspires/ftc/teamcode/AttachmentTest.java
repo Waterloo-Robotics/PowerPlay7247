@@ -12,7 +12,7 @@ public class AttachmentTest extends LinearOpMode {
     public void runOpMode() {
 
         TelemetryControl telemetryControl = new TelemetryControl(telemetry);
-        AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl);
+        AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl, AttachmentControl.ServoPosition.open);
 
         double shDir = 0;
 
@@ -27,6 +27,8 @@ public class AttachmentTest extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
+
+            // TODO update these controls
 
             if (gamepad1.dpad_up) shDir = 1; else if (gamepad1.dpad_down) shDir = -1; else shDir = 0;
 

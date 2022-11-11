@@ -33,7 +33,14 @@ public class AttachmentControl {
 
     double clawPos = 0;
 
-    public AttachmentControl(HardwareMap hardwareMap, TelemetryControl telemetryControl) {
+    public enum ServoPosition {
+
+        open,
+        closed
+
+    }
+
+    public AttachmentControl(HardwareMap hardwareMap, TelemetryControl telemetryControl, ServoPosition position) {
 
         shoulder = (DcMotorEx) hardwareMap.dcMotor.get("shoulder");
         shoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -54,9 +61,18 @@ public class AttachmentControl {
 
         claw = hardwareMap.servo.get("claw");
         claw.scaleRange(0.7, 1);
-        claw.setPosition(0);
 
-//        color = hardwareMap.colorSensor.get("color");
+        switch (position) {
+
+            case open:
+                claw.setPosition(0);
+            break;
+
+            case closed:
+                claw.setPosition(1);
+            break;
+
+        }
 
     }
 
@@ -82,6 +98,29 @@ public class AttachmentControl {
 
         shoulder.setPower(shoulderSpeed * 0.75);
         elbow.setPower(elbowSpeed);
+        wrist.setPower(wristSpeed * 0.25);
+
+        if (servoOpen) {
+
+            claw.setPosition(0);
+
+        } else {
+
+            claw.setPosition(1);
+
+        }
+
+        telemetryControl.telemetryUpdate("shoulder pos", String.valueOf(shoulder.getCurrentPosition()));
+        telemetryControl.telemetryUpdate("elbow pos", String.valueOf(elbow.getCurrentPosition()));
+        telemetryControl.telemetryUpdate("wrist pos", String.valueOf(wrist.getCurrentPosition()));
+        telemetryControl.telemetryUpdate("claw pos", String.valueOf(claw.getPosition()));
+
+    }
+
+    public void armManualComp(double shoulderSpeed, double elbowSpeed, double wristSpeed, boolean servoOpen, TelemetryControl telemetryControl) {
+
+        if (shoulder.getCurrentPosition() > -300) shoulder.setPower(shoulderSpeed * 0.75);
+        if (elbow.getCurrentPosition() > -100) elbow.setPower(elbowSpeed);
         wrist.setPower(wristSpeed * 0.25);
 
         if (servoOpen) {
