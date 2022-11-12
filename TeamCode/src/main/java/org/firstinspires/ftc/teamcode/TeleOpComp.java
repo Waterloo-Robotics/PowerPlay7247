@@ -18,7 +18,7 @@ public class TeleOpComp extends LinearOpMode {
 
         TelemetryControl telemetryControl = new TelemetryControl(telemetry);
         DriveTrain driveTrain = new DriveTrain(hardwareMap, telemetryControl);
-        AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl, AttachmentControl.ServoPosition.open);
+        AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl, AttachmentControl.ServoPosition.closed);
 
         double shDir = 0;
 
@@ -34,17 +34,19 @@ public class TeleOpComp extends LinearOpMode {
 
         boolean score = false;
 
-        boolean claw = true;
+        boolean claw = false;
 
         boolean isBPushed = false;
 
         boolean yPressed = false;
 
-        AttachmentControl.claw.setPosition(0);
+        double speedMul = 0.55;
 
         waitForStart();
 
         while (opModeIsActive()) {
+
+            if (gamepad1.right_bumper) speedMul = 1; else speedMul = 0.55;
 
             if (gamepad1.y) yPressed = true;
 
@@ -65,7 +67,7 @@ public class TeleOpComp extends LinearOpMode {
 
             }
 
-            attachmentControl.armManualComp(-gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir, claw, telemetryControl);
+            attachmentControl.armManual(-gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir, claw, telemetryControl);
 
 
             // TODO Fix this
@@ -98,7 +100,7 @@ public class TeleOpComp extends LinearOpMode {
             blpower = driveTrain.bl.getPower();
             brpower = driveTrain.br.getPower();
 
-            driveTrain.MecanumTeleOp(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+            driveTrain.MecanumTeleOp(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, speedMul);
             telemetryControl.motorTelemetryUpdate(flpower, frpower, blpower, brpower);
             telemetryControl.update();
 

@@ -30,24 +30,24 @@ public class AttachmentTest extends LinearOpMode {
 
             // TODO update these controls
 
-            if (gamepad1.dpad_up) shDir = 1; else if (gamepad1.dpad_down) shDir = -1; else shDir = 0;
+            if (gamepad2.dpad_up) shDir = 1; else if (gamepad2.dpad_down) shDir = -1; else shDir = 0;
 
-            if (gamepad1.y) elDir = -1; else if (gamepad1.a) elDir = 1; else elDir = 0;
+            if (gamepad2.y) elDir = -1; else if (gamepad2.a) elDir = 1; else elDir = 0;
 
-            if (gamepad1.dpad_left) wristDir = -1; else if (gamepad1.dpad_right) wristDir = 1; else wristDir = 0;
+            if (gamepad2.right_bumper) wristDir = -1; else if (gamepad2.left_bumper) wristDir = 1; else wristDir = 0;
 
-            if (gamepad1.b && !isBPushed) {
+            if (gamepad2.b && !isBPushed) {
 
                 claw = !claw;
 
                 isBPushed = true;
-            } else if (!gamepad1.b) {
+            } else if (!gamepad2.b) {
 
                 isBPushed = false;
 
             }
 
-            attachmentControl.armManual(shDir, elDir, wristDir, claw, telemetryControl);
+            attachmentControl.armManual(-gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir, claw, telemetryControl);
 
             telemetryControl.update();
 
