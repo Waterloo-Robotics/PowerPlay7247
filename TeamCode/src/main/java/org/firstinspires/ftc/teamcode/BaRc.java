@@ -106,7 +106,7 @@ public class BaRc extends LinearOpMode {
 
                     for (Recognition recognition : updatedRecognitions) {
 
-                        if (updatedRecognitions.size() >= 1) {
+                        if (updatedRecognitions.size() == 1) {
 
                             if (recognition.getLabel() == "Green") {
 
@@ -125,6 +125,28 @@ public class BaRc extends LinearOpMode {
                                 label = Labels.RED;
 
                                 parky = -20;
+
+                            }
+
+                        } else if (updatedRecognitions.size() == 2) {
+
+                            if (recognition.getLabel() == "Blue") {
+
+                                label = Labels.BLUE;
+
+                                parky = 27;
+
+                            } else if (recognition.getLabel() == "Red"){
+
+                                label = Labels.RED;
+
+                                parky = -20;
+
+                            } else {
+
+                                label = Labels.GREEN;
+
+                                parky = 4;
 
                             }
 

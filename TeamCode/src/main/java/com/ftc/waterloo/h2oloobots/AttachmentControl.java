@@ -119,9 +119,9 @@ public class AttachmentControl {
 
     public void armManualComp(double shoulderSpeed, double elbowSpeed, double wristSpeed, boolean servoOpen, TelemetryControl telemetryControl) {
 
-        if (shoulder.getCurrentPosition() > -300) shoulder.setPower(shoulderSpeed * 0.75);
-        if (elbow.getCurrentPosition() > -100) elbow.setPower(elbowSpeed);
-        wrist.setPower(wristSpeed * 0.25);
+        if (shoulder.getCurrentPosition() > -300) shoulder.setPower(shoulderSpeed * 0.75); else shoulder.setPower(0);
+        if (elbow.getCurrentPosition() > -100) elbow.setPower(elbowSpeed); else elbow.setPower(0);
+        wrist.setPower(wristSpeed * 0.5);
 
         if (servoOpen) {
 
