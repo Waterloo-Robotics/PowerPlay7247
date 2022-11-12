@@ -144,6 +144,15 @@ public class DriveTrain {
 
     }
 
+    public void MecanumTeleOp(double FBInput, double LRInput, double PivotInput, double speed) {
+
+        fl.setPower(speed * (-FBInput + LRInput + (PivotInput)));
+        bl.setPower(speed * (-FBInput - LRInput + (PivotInput)));
+        fr.setPower(speed * (FBInput + LRInput + (PivotInput)));
+        br.setPower(speed * (FBInput - LRInput + (PivotInput)));
+
+    }
+
     public void EncoderAutoInit(double WHEEL_DIAMETER_MM, double GEAR_RATIO, double COUNTS_PER_REVOLUTION) {
 
         double WHEEL_DIAMETER_INCHES = WHEEL_DIAMETER_MM / 25.4;

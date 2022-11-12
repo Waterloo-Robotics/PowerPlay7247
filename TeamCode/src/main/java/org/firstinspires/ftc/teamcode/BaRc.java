@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import android.annotation.SuppressLint;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -24,11 +25,12 @@ import java.util.List;
 
 import encoder.odo.ftc.rr.drive.SampleMecanumDrive;
 
+@Config
 @Autonomous(name = "Blue Alliance Red Corner")
 public class BaRc extends LinearOpMode {
 
     double turn1 = 115;
-    double strafey = 3;
+    public static double strafey = -20;
 
     ElapsedTime timer = new ElapsedTime();
 
@@ -165,24 +167,22 @@ public class BaRc extends LinearOpMode {
                 .build();
 
         Trajectory moveForward1 = drive.trajectoryBuilder(strafe1.end())
-                .lineToLinearHeading(new Pose2d(48, strafey, 0))
+                .lineToLinearHeading(new Pose2d(50, strafey, 0))
                 .build();
 
-        Trajectory moveToBlack = drive.trajectoryBuilder(new Pose2d(48, strafey, Math.toRadians(turn1)))
-                .lineToLinearHeading(new Pose2d(52, 16, Math.toRadians(turn1)))
-                .build();
+//        Trajectory moveToBlack = drive.trajectoryBuilder(new Pose2d(48, strafey, Math.toRadians(turn1)))
+//                .lineToLinearHeading(new Pose2d(52, 16, Math.toRadians(turn1)))
+//                .build();
 
-        Trajectory park = drive.trajectoryBuilder(moveToBlack.end())
-                        .lineToLinearHeading(new Pose2d(52, parky, Math.toRadians(90)))
+        Trajectory park = drive.trajectoryBuilder(new Pose2d(50, strafey, Math.toRadians(90)))
+                        .lineToConstantHeading(new Vector2d(51, parky))
                         .build();
 
         drive.followTrajectory(strafe1);
 
         drive.followTrajectory(moveForward1);
 
-        drive.turn(Math.toRadians(turn1));
-
-        drive.followTrajectory(moveToBlack);
+        drive.turn(Math.toRadians(90));
 
 //        AttachmentControl.shoulder.setTargetPosition(3931);
 //        AttachmentControl.elbow.setTargetPosition(1945);
