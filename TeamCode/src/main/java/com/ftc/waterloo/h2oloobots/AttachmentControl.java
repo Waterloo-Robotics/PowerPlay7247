@@ -14,6 +14,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorColor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+// Holds All non-drivetrain programming (for the most part)
+
 @Config
 public class AttachmentControl {
 
@@ -40,6 +42,8 @@ public class AttachmentControl {
 
     }
 
+    // this initialises all attachments
+
     public AttachmentControl(HardwareMap hardwareMap, TelemetryControl telemetryControl, ServoPosition position) {
 
         shoulder = (DcMotorEx) hardwareMap.dcMotor.get("shoulder");
@@ -55,13 +59,16 @@ public class AttachmentControl {
         wrist.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         wrist.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        // did this because code was casting errors at a time, useless now (I think, don't remove just to be safe)
         shoulder.setTargetPosition(0);
         elbow.setTargetPosition(0);
         wrist.setTargetPosition(0);
 
+        // scales claw so we can use 0 and 1 always, and only have to change one number with hardware changes
         claw = hardwareMap.servo.get("claw");
         claw.scaleRange(0.7, 1);
 
+        // determines if the claw is open or closed at initialisation
         switch (position) {
 
             case open:
@@ -117,6 +124,7 @@ public class AttachmentControl {
 
     }
 
+    // supposed to have encoder limits to prevent driver error, doesn't quite work right however
     public void armManualComp(double shoulderSpeed, double elbowSpeed, double wristSpeed, boolean servoOpen, TelemetryControl telemetryControl) {
 
         if (shoulder.getCurrentPosition() > -300) shoulder.setPower(shoulderSpeed * 0.75);
@@ -146,6 +154,7 @@ public class AttachmentControl {
     ElapsedTime timer = new ElapsedTime();
     ElapsedTime dropTimer = new ElapsedTime();
 
+    // code to move the arm between 2 positions, currently does not work and will break the robot
     public void armAuto(boolean pickUp, boolean upButton, boolean servoToggle) {
 
         if (pickUp) {
@@ -161,13 +170,13 @@ public class AttachmentControl {
 
         }
 
-        shoulder.setPower(0.75);
-        elbow.setPower(1);
-        wrist.setPower(0.5);
-
         shoulder.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         wrist.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        shoulder.setPower(0.75);
+        elbow.setPower(1);
+        wrist.setPower(0.5);
 
         if (servoToggle) {
 
