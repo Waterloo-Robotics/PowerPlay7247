@@ -54,7 +54,7 @@ public class TeleOpComp extends LinearOpMode {
 
             if (gamepad2.y) elDir = -1; else if (gamepad2.a) elDir = 1; else elDir = 0;
 
-            if (gamepad2.right_bumper && AttachmentControl.wrist.getCurrentPosition() > 0) wristDir = -1; else if (gamepad2.left_bumper && AttachmentControl.wrist.getCurrentPosition() < 200) wristDir = 1; else wristDir = 0;
+            if (gamepad2.right_bumper/* && AttachmentControl.wrist.getCurrentPosition() > 0*/) wristDir = -1; else if (gamepad2.left_bumper/* && AttachmentControl.wrist.getCurrentPosition() < 200*/) wristDir = 1; else wristDir = 0;
 
             if (gamepad2.b && !isBPushed) {
 

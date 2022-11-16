@@ -121,7 +121,7 @@ public class AttachmentControl {
 
         if (shoulder.getCurrentPosition() > -300) shoulder.setPower(shoulderSpeed * 0.75); else shoulder.setPower(0);
         if (elbow.getCurrentPosition() > -100) elbow.setPower(elbowSpeed); else elbow.setPower(0);
-        wrist.setPower(wristSpeed * 0.5);
+        wrist.setPower(wristSpeed * 1);
 
         if (servoOpen) {
 
