@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
+// configures all things drivetrain for teleOp opmodes, all of autonomous is performed through roadrunner (see encoder.odo.ftc.rr)
 @Config
 public class DriveTrain {
 
@@ -49,6 +50,7 @@ public class DriveTrain {
 
     }
 
+    // initialises code for 2 motor drivebase
     public void TwoWheelInit(boolean RUN_USING_ENCODER, @NonNull HardwareMap hardwareMap) {
 
         left = (DcMotorEx) hardwareMap.dcMotor.get("left");
@@ -63,6 +65,7 @@ public class DriveTrain {
         }
     }
 
+    // simple teleOp for a 2 wheel drivebase, might need negatives and positives tuned based on drive base
     public void TwoWheelDriveTeleOp(double FBInput, double PivotInput, boolean RUN_USING_ENCODER) {
 
         right.setPower(FBInput - PivotInput);
@@ -70,6 +73,7 @@ public class DriveTrain {
 
     }
 
+    // initialises any 4 motor drive base: tank, mecanum, or other
     public void FourMotorInit(boolean RUN_USING_ENCODER, @NonNull HardwareMap hardwareMap, DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
 
         fl = (DcMotorEx) hardwareMap.dcMotor.get("fl");
@@ -82,6 +86,7 @@ public class DriveTrain {
         bl.setZeroPowerBehavior(zeroPowerBehavior);
         br.setZeroPowerBehavior(zeroPowerBehavior);
 
+        // use any of the following if motors need reversed
 //        fl.setDirection(DcMotorSimple.Direction.REVERSE);
 //        fr.setDirection(DcMotorSimple.Direction.REVERSE);
 //        bl.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -100,6 +105,7 @@ public class DriveTrain {
         }
     }
 
+    // Four Motor Init without encoder initialisation
     public void FourMotorInit(@NonNull HardwareMap hardwareMap) {
 
         fl = (DcMotorEx) hardwareMap.dcMotor.get("fl");
@@ -124,6 +130,7 @@ public class DriveTrain {
     double bldir = 0;
     double brdir = 0;
 
+    // non-mecanum 4 wheel drive teleOp
     public void FWDTeleOp(double FBInput, double PivotInput, boolean RUN_USING_ENCODER) {
 
         fr.setPower(-FBInput - PivotInput);
@@ -135,6 +142,7 @@ public class DriveTrain {
 
     double speedMul = 0.75;
 
+    // mecanum teleOp, with no speed adjusters on this end
     public void MecanumTeleOp(double FBInput, double LRInput, double PivotInput) {
 
         fl.setPower(speedMul * (-FBInput + LRInput + (PivotInput)));
@@ -144,6 +152,7 @@ public class DriveTrain {
 
     }
 
+    // mecanum TeleOp, with speed adjuster built in
     public void MecanumTeleOp(double FBInput, double LRInput, double PivotInput, double speed) {
 
         fl.setPower(speed * (-FBInput + LRInput + (PivotInput)));
@@ -153,16 +162,19 @@ public class DriveTrain {
 
     }
 
+    // Initialiser for Encoders, accounting Wheel Diameter, Gear Ratio, and Motor Counts per revolution to calculate counts per inch and counts per degree (rotation)
     public void EncoderAutoInit(double WHEEL_DIAMETER_MM, double GEAR_RATIO, double COUNTS_PER_REVOLUTION) {
 
         double WHEEL_DIAMETER_INCHES = WHEEL_DIAMETER_MM / 25.4;
 
         COUNTS_PER_INCH = (COUNTS_PER_REVOLUTION * GEAR_RATIO) / (WHEEL_DIAMETER_INCHES * 3.1415);
 
+        // 50 here may need adjusted to how many inches are read to turn 90 degrees
         COUNTS_PER_DEGREE = (COUNTS_PER_REVOLUTION * 50) / 90;
 
     }
 
+    // use in the case of not wanting to establish wheel diameter every time, just update the "100 / 25.4" to what is needed
     public void EncoderAutoInit(double GEAR_RATIO, double COUNTS_PER_REVOLUTION) {
 
         double WHEEL_DIAMETER_INCHES = 100 / 25.4;
@@ -173,6 +185,7 @@ public class DriveTrain {
 
     }
 
+    // establish powers of all 4 motors, and how long to run for for timed autonomous commands
     public void timeAutoMecanumDrive(double FRPower, double FLPower, double BRPower, double BLPower, double SECONDS) {
 
         ElapsedTime time = new ElapsedTime();
@@ -192,6 +205,13 @@ public class DriveTrain {
         fl.setPower(0);
         br.setPower(0);
         bl.setPower(0);
+
+        // uncomment this code if previous movements are bleeding into the next, causing unpredictable motion
+//        ElapsedTime waitTimer = new ElapsedTime();
+//        waitTimer.reset();
+//        while (waitTimer.seconds() <= 0.125) {
+//
+//        }
 
     }
 
@@ -241,14 +261,16 @@ public class DriveTrain {
         fl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        ElapsedTime waitTimer = new ElapsedTime();
-        waitTimer.reset();
-        while (waitTimer.seconds() <= 0.125) {
-
-        }
+        // uncomment this code if previous movements are bleeding into the next, causing unpredictable motion
+//        ElapsedTime waitTimer = new ElapsedTime();
+//        waitTimer.reset();
+//        while (waitTimer.seconds() <= 0.125) {
+//
+//        }
 
     }
 
+    // honestly ignore this lol, this was to tune the motors for the weight so when the robot was supposed to move straight it would but there are flaws in it and I don't feel like fixing them right now it's 23:00
     public void weightConfig(Telemetry telemetry, TelemetryControl telemetryControl, double flpos, double frpos, double blpos, double brpos, double speed, @NonNull Direction direction, double DIST_REV) {
 
         flveloavg = 0;

@@ -10,8 +10,10 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.teamcode.R;
 
+// All telemetry used by our code goes through here
 public class TelemetryControl {
 
+    // initialise variables required for FtcDashboard (http://192.168.43.1:8080/dash)
     FtcDashboard dashboard = FtcDashboard.getInstance();
     TelemetryPacket packet = new TelemetryPacket();
 
@@ -22,8 +24,7 @@ public class TelemetryControl {
 
     Telemetry telemetryLocal;
 
-//    Tele1 tele1 = new Tele1();
-
+    // configuring telemetry to a local value so we don't have to request it every time
     public TelemetryControl(Telemetry telemetry) {
 
         packet.addLine("Robot Initialised");
@@ -32,6 +33,7 @@ public class TelemetryControl {
 
     }
 
+    // typical telemetry.addData line with a label/title and the value of said thing
     public void telemetryUpdate(String caption, String value) {
 
         telemetryLocal.addData(caption, value);
@@ -39,6 +41,7 @@ public class TelemetryControl {
 
     }
 
+    // motor direction obtainer for debugging purposes, positives and negatives will need flipped based on drive base
     public void motorTelemetryUpdate(double flpower, double frpower, double blpower, double brpower) {
 
         fldir = getDirection(flpower);
@@ -81,6 +84,7 @@ public class TelemetryControl {
 
     }
 
+    // updates telemetry and dashboard to show new values
     public void update() {
 
         telemetryLocal.update();
