@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorColor;
@@ -29,11 +30,17 @@ public class AttachmentControl {
 
     public static DcMotorEx wrist;
 
+    public static TouchSensor bottom;
+
+    public static TouchSensor eltouch1;
+
     public static double cpr = 288;
 
     public static double deg = 10;
 
     double clawPos = 0;
+
+    TelemetryControl telemetryControlLocal;
 
     public enum ServoPosition {
 
@@ -52,10 +59,12 @@ public class AttachmentControl {
         shoulder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         elbow = (DcMotorEx) hardwareMap.dcMotor.get("elbow");
+        elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         elbow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         wrist = (DcMotorEx) hardwareMap.dcMotor.get("wrist");
+        wrist.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         wrist.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         wrist.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -81,6 +90,18 @@ public class AttachmentControl {
 
         }
 
+        eltouch1 = hardwareMap.touchSensor.get("eltouch1");
+        bottom = hardwareMap.touchSensor.get("bottom");
+
+        telemetryControlLocal = telemetryControl;
+
+    }
+
+    public void touchSensor() {
+
+        telemetryControlLocal.telemetryUpdate("Elbow Touch 1", String.valueOf(eltouch1.isPressed()));
+        telemetryControlLocal.telemetryUpdate("Bottom Touch", String.valueOf(bottom.isPressed()));
+
     }
 
     public void setShoulderManual(double speed) {
@@ -101,10 +122,17 @@ public class AttachmentControl {
 
     }
 
+    double shoulders, elbows;
+
+    int shoulderpos, elbowpos, wristpos = 0;
+
     public void armManual(double shoulderSpeed, double elbowSpeed, double wristSpeed, boolean servoOpen, TelemetryControl telemetryControl) {
 
-        shoulder.setPower(shoulderSpeed * 0.75);
-        elbow.setPower(elbowSpeed);
+        if (bottom.isPressed() && shoulderSpeed < 0) shoulders = 0; else shoulders = shoulderSpeed * 0.75;
+        if (eltouch1.isPressed() && elbowSpeed < 0) elbows = 0; else elbows = elbowSpeed;
+
+        shoulder.setPower(shoulders);
+        elbow.setPower(elbows);
         wrist.setPower(wristSpeed * 0.25);
 
         if (servoOpen) {
@@ -154,43 +182,86 @@ public class AttachmentControl {
     ElapsedTime timer = new ElapsedTime();
     ElapsedTime dropTimer = new ElapsedTime();
 
-    // code to move the arm between 2 positions, currently does not work and will break the robot
-    public void armAuto(boolean pickUp, boolean upButton, boolean servoToggle) {
+    boolean auto = false;
+    double wrists = 0;
+    // code to move the arm between 2 positions while maintaining manual control, currently code to move between the 2 positions does not work
+    public void armAuto(boolean pickUp, boolean upButton, boolean servoToggle, double shoulderSpeed, double elbowSpeed, double wristSpeed) {
 
         if (pickUp) {
 
-            shoulder.setTargetPosition(0);
-            elbow.setTargetPosition(-2454);
-            wrist.setTargetPosition(-3);
+            shoulderpos = 0;
+            elbowpos = 2600;
+            auto = true;
 
         } else if (upButton) {
-            shoulder.setTargetPosition(4493);
-            elbow.setTargetPosition(-3459);
-            wrist.setTargetPosition(140);
+
+            shoulderpos = 4176;
+            elbowpos = 3040;
+            auto = true;
+
+        } else {
+
+            if (bottom.isPressed() && shoulderSpeed < 0) shoulderpos = shoulderpos; else shoulderpos += (shoulderSpeed * 53);
+            if (eltouch1.isPressed() && elbowSpeed < 0) elbowpos = elbowpos; else elbowpos += (elbowSpeed * 53);
 
         }
+
+        if (shoulderpos <= 0 && !bottom.isPressed() && auto) {
+
+            shoulderpos -= 5;
+
+        } else if (shoulderpos <= 0 && bottom.isPressed()) {
+
+            shoulderpos = shoulder.getCurrentPosition();
+
+        }
+
+        if (auto && elbow.getCurrentPosition() <= elbow.getTargetPosition() + 10 && elbow.getCurrentPosition() >= elbow.getTargetPosition() - 10) {
+
+            shoulder.setPower(1);
+
+        } else if (elbow.getCurrentPosition() != elbow.getTargetPosition() && auto) {
+
+            shoulder.setPower(0);
+
+        } else if (auto && elbow.getCurrentPosition() == elbow.getTargetPosition() && shoulder.getTargetPosition() == shoulder.getCurrentPosition()) {
+
+            auto = false;
+
+        } else if (!auto) {
+
+            shoulder.setPower(0.875);
+
+        }
+
+        shoulder.setTargetPosition(shoulderpos);
+        elbow.setTargetPosition(elbowpos);
 
         shoulder.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        wrist.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        shoulder.setPower(0.75);
+        if (wristSpeed < 0 && wrist.getCurrentPosition() < 0) wrists = 0; else if (wristSpeed > 0 && wrist.getCurrentPosition() > 725) wrists = 0; else wrists = wristSpeed;
+
         elbow.setPower(1);
-        wrist.setPower(0.5);
+        wrist.setPower(wrists * 0.75);
 
         if (servoToggle) {
 
-            if (claw.getPosition() == 0) {
+            claw.setPosition(1);
 
-                claw.setPosition(1);
+        } else {
 
-            } else if (claw.getPosition() == 1) {
-
-                claw.setPosition(0);
-
-            }
+            claw.setPosition(0);
 
         }
+
+        telemetryControlLocal.telemetryUpdate("shoulder pos", String.valueOf(shoulder.getCurrentPosition()));
+        telemetryControlLocal.telemetryUpdate("elbow pos", String.valueOf(elbow.getCurrentPosition()));
+        telemetryControlLocal.telemetryUpdate("wrist pos", String.valueOf(wrist.getCurrentPosition()));
+        telemetryControlLocal.telemetryUpdate("shoulder target pos", String.valueOf(shoulder.getTargetPosition()));
+        telemetryControlLocal.telemetryUpdate("elbow target pos", String.valueOf(elbow.getTargetPosition()));
+        telemetryControlLocal.telemetryUpdate("claw pos", String.valueOf(claw.getPosition()));
+        telemetryControlLocal.telemetryUpdate("auto", String.valueOf(auto));
 
     }
 

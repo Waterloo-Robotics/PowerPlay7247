@@ -34,7 +34,7 @@ public class TeleOpComp extends LinearOpMode {
 
         boolean score = false;
 
-        boolean claw = false;
+        boolean claw = true;
 
         boolean isBPushed = false;
 
@@ -67,31 +67,37 @@ public class TeleOpComp extends LinearOpMode {
 
             }
 
-            attachmentControl.armManual(-gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir, claw, telemetryControl);
-
 
             // TODO Fix this
-//            if (gamepad1.a && !isAPushed) {
-//
-//                if (pickUp && yPressed) {
-//
-//                    pickUp = false;
-//                    score = true;
-//
-//                } else if (yPressed && !pickUp) {
-//
-//                    pickUp = true;
-//                    score = false;
-//
-//                }
-//
-//                isAPushed = true;
-//
-//            } else if (!gamepad1.a) {
-//
-//                isAPushed = false;
-//
-//            }
+            if (gamepad2.a && !isAPushed) {
+
+                if (!up) {
+
+                    pickUp = false;
+                    score = true;
+                    up = true;
+
+                } else if (up) {
+
+                    pickUp = true;
+                    score = false;
+                    up = false;
+
+                }
+
+                isAPushed = true;
+
+            } else if (!gamepad1.a) {
+
+                isAPushed = false;
+
+            }
+
+            attachmentControl.armAuto(pickUp, score, claw, -gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir);
+
+            pickUp = false;
+
+            score = false;
 //
 //            attachmentControl.armAuto(pickUp, score, claw);
 
@@ -101,6 +107,8 @@ public class TeleOpComp extends LinearOpMode {
             brpower = driveTrain.br.getPower();
 
             driveTrain.MecanumTeleOp(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, speedMul);
+            telemetryControl.telemetryUpdate("pickUp", String.valueOf(pickUp));
+            telemetryControl.telemetryUpdate("score", String.valueOf(score));
             telemetryControl.motorTelemetryUpdate(flpower, frpower, blpower, brpower);
             telemetryControl.update();
 

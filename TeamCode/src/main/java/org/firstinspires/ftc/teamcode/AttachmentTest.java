@@ -47,6 +47,8 @@ public class AttachmentTest extends LinearOpMode {
 
             }
 
+            attachmentControl.touchSensor();
+
             attachmentControl.armManual(-gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir, claw, telemetryControl);
 
             telemetryControl.update();
