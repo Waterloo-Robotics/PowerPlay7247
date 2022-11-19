@@ -133,7 +133,7 @@ public class AttachmentControl {
 
         shoulder.setPower(shoulders);
         elbow.setPower(elbows);
-        wrist.setPower(wristSpeed * 0.75);
+        wrist.setPower(wristSpeed * 0.5);
 
         if (servoOpen) {
 
@@ -162,7 +162,7 @@ public class AttachmentControl {
 
         shoulder.setPower(shoulders);
         elbow.setPower(elbows);
-        wrist.setPower(wristSpeed * 0.75);
+        wrist.setPower(wristSpeed * 0.5);
 
         if (servoOpen) {
 
@@ -229,7 +229,7 @@ public class AttachmentControl {
 
             shoulder.setPower(0);
 
-        } else if (auto && elbow.getCurrentPosition() <= elbow.getTargetPosition() + 10 && elbow.getCurrentPosition() >= elbow.getTargetPosition() - 10 && shoulder.getCurrentPosition() <= shoulder.getTargetPosition() + 10 && shoulder.getCurrentPosition() >= shoulder.getTargetPosition() - 10) {
+        } else if (elbow.getCurrentPosition() <= elbow.getTargetPosition() + 10 && elbow.getCurrentPosition() >= elbow.getTargetPosition() - 10 && shoulder.getCurrentPosition() <= shoulder.getTargetPosition() + 10 && shoulder.getCurrentPosition() >= shoulder.getTargetPosition() - 10) {
 
             auto = false;
 
@@ -267,6 +267,8 @@ public class AttachmentControl {
         telemetryControlLocal.telemetryUpdate("elbow target pos", String.valueOf(elbow.getTargetPosition()));
         telemetryControlLocal.telemetryUpdate("claw pos", String.valueOf(claw.getPosition()));
         telemetryControlLocal.telemetryUpdate("auto", String.valueOf(auto));
+        telemetryControlLocal.telemetryUpdate("pickUp", String.valueOf(pickUp));
+        telemetryControlLocal.telemetryUpdate("upButton", String.valueOf(upButton));
 
     }
 

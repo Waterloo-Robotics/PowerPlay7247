@@ -57,6 +57,8 @@ public class BaRc extends LinearOpMode {
 
     double parky = -20;
 
+    double parkh = 95;
+
 //    private static final String[] LABELS = {
 //            "Blue Cone"
 //    };
@@ -122,6 +124,8 @@ public class BaRc extends LinearOpMode {
 
                                 parky = 27;
 
+                                parkh = 100;
+
                             } else {
 
                                 label = Labels.RED;
@@ -148,7 +152,7 @@ public class BaRc extends LinearOpMode {
 
                                 label = Labels.GREEN;
 
-                                parky = 4;
+                                parky = 10;
 
                             }
 
@@ -163,26 +167,26 @@ public class BaRc extends LinearOpMode {
         }
 
         Trajectory strafe1 = drive.trajectoryBuilder(new Pose2d())
-                .lineToLinearHeading(new Pose2d(0, strafey, 0))
+                .lineToLinearHeading(new Pose2d(0, parky, 0))
                 .build();
 
         Trajectory moveForward1 = drive.trajectoryBuilder(strafe1.end())
-                .lineToLinearHeading(new Pose2d(50, strafey, 0))
+                .lineToLinearHeading(new Pose2d(30, parky, 0))
                 .build();
 
 //        Trajectory moveToBlack = drive.trajectoryBuilder(new Pose2d(48, strafey, Math.toRadians(turn1)))
 //                .lineToLinearHeading(new Pose2d(52, 16, Math.toRadians(turn1)))
 //                .build();
 
-        Trajectory park = drive.trajectoryBuilder(new Pose2d(50, strafey, Math.toRadians(90)))
-                        .lineToConstantHeading(new Vector2d(51, parky))
-                        .build();
+//        Trajectory park = drive.trajectoryBuilder(new Pose2d(22, strafey, Math.toRadians(parkh)))
+//                        .lineToLinearHeading(new Pose2d(23, parky, Math.toRadians(parkh)))
+//                        .build();
 
         drive.followTrajectory(strafe1);
 
         drive.followTrajectory(moveForward1);
 
-        drive.turn(Math.toRadians(90));
+//        drive.turn(Math.toRadians(parkh));
 
 //        AttachmentControl.shoulder.setTargetPosition(3931);
 //        AttachmentControl.elbow.setTargetPosition(1945);
@@ -216,7 +220,7 @@ public class BaRc extends LinearOpMode {
 //        AttachmentControl.elbow.setPower(1);
 //        AttachmentControl.wrist.setPower(1);
 
-        drive.followTrajectory(park);
+//        drive.followTrajectory(park);
 
 //        while (AttachmentControl.shoulder.getCurrentPosition() != AttachmentControl.shoulder.getTargetPosition() && AttachmentControl.elbow.getCurrentPosition() != AttachmentControl.elbow.getTargetPosition() /*&& AttachmentControl.wrist.getCurrentPosition() != AttachmentControl.wrist.getTargetPosition()*/) {
 //

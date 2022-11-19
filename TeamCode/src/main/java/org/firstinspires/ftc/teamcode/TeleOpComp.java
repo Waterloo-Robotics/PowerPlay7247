@@ -69,27 +69,29 @@ public class TeleOpComp extends LinearOpMode {
 //
 //
 //            // TODO Fix this
-//            if (gamepad2.a) {
-//
-//                pickUp = true;
-//                score = false;
-//                up = true;
-//
-//            } else if (gamepad2.y) {
-//
-//                pickUp = false;
-//                score = true;
-//                up = true;
-//
-//            } else {
-//
-//                pickUp = false;
-//                score = false;
-//
-//            }
-//
+            if (gamepad2.a) {
+
+                pickUp = true;
+                score = false;
+                up = true;
+
+            } else if (gamepad2.y) {
+
+                pickUp = false;
+                score = true;
+                up = true;
+
+            } else {
+
+                pickUp = false;
+                score = false;
+
+            }
+
 //            attachmentControl.armAuto(pickUp, score, claw, -gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir);
 //
+            pickUp = false;
+            score = false;
 //            attachmentControl.armAuto(pickUp, score, claw);
 
             if (gamepad2.dpad_up) shDir = 1; else if (gamepad2.dpad_down) shDir = -1; else shDir = 0;
