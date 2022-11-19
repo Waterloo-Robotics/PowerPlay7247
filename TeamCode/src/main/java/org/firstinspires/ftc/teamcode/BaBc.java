@@ -11,8 +11,6 @@ import com.ftc.waterloo.h2oloobots.AttachmentControl;
 import com.ftc.waterloo.h2oloobots.TelemetryControl;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -26,11 +24,11 @@ import java.util.List;
 import encoder.odo.ftc.rr.drive.SampleMecanumDrive;
 
 @Config
-@Autonomous(name = "Red Corner")
-public class BaRc extends LinearOpMode {
+@Autonomous(name = "Blue Corner")
+public class BaBc extends LinearOpMode {
 
     double turn1 = 115;
-    public static double strafey = -20;
+    public static double strafey = 27;
 
     ElapsedTime timer = new ElapsedTime();
 

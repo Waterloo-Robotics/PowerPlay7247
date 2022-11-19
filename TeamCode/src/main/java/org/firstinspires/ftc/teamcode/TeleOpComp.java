@@ -18,7 +18,7 @@ public class TeleOpComp extends LinearOpMode {
 
         TelemetryControl telemetryControl = new TelemetryControl(telemetry);
         DriveTrain driveTrain = new DriveTrain(hardwareMap, telemetryControl);
-        AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl, AttachmentControl.ServoPosition.closed);
+        AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl, AttachmentControl.ServoPosition.open);
 
         double shDir = 0;
 
@@ -48,13 +48,55 @@ public class TeleOpComp extends LinearOpMode {
 
             if (gamepad1.right_bumper) speedMul = 1; else speedMul = 0.55;
 
-            if (gamepad1.y) yPressed = true;
+//            if (gamepad1.y) yPressed = true;
+//
+//            if (gamepad2.dpad_up) shDir = 1; else if (gamepad2.dpad_down) shDir = -1; else shDir = 0;
+//
+//            if (gamepad2.y) elDir = -1; else if (gamepad2.a) elDir = 1; else elDir = 0;
+//
+//            if (gamepad2.right_bumper/* && AttachmentControl.wrist.getCurrentPosition() > 0*/) wristDir = -1; else if (gamepad2.left_bumper/* && AttachmentControl.wrist.getCurrentPosition() < 200*/) wristDir = 1; else wristDir = 0;
+//
+//            if (gamepad2.b && !isBPushed) {
+//
+//                claw = !claw;
+//
+//                isBPushed = true;
+//            } else if (!gamepad2.b) {
+//
+//                isBPushed = false;
+//
+//            }
+//
+//
+//            // TODO Fix this
+//            if (gamepad2.a) {
+//
+//                pickUp = true;
+//                score = false;
+//                up = true;
+//
+//            } else if (gamepad2.y) {
+//
+//                pickUp = false;
+//                score = true;
+//                up = true;
+//
+//            } else {
+//
+//                pickUp = false;
+//                score = false;
+//
+//            }
+//
+//            attachmentControl.armAuto(pickUp, score, claw, -gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir);
+//
+//            attachmentControl.armAuto(pickUp, score, claw);
 
             if (gamepad2.dpad_up) shDir = 1; else if (gamepad2.dpad_down) shDir = -1; else shDir = 0;
 
             if (gamepad2.y) elDir = -1; else if (gamepad2.a) elDir = 1; else elDir = 0;
 
-            if (gamepad2.right_bumper/* && AttachmentControl.wrist.getCurrentPosition() > 0*/) wristDir = -1; else if (gamepad2.left_bumper/* && AttachmentControl.wrist.getCurrentPosition() < 200*/) wristDir = 1; else wristDir = 0;
+            if (gamepad2.right_trigger > 0.1) wristDir = -gamepad2.right_trigger; else if (gamepad2.left_trigger > 0.1) wristDir = gamepad2.left_trigger; else wristDir = 0;
 
             if (gamepad2.b && !isBPushed) {
 
@@ -67,39 +109,9 @@ public class TeleOpComp extends LinearOpMode {
 
             }
 
+//            attachmentControl.touchSensor();
 
-            // TODO Fix this
-            if (gamepad2.a && !isAPushed) {
-
-                if (!up) {
-
-                    pickUp = false;
-                    score = true;
-                    up = true;
-
-                } else if (up) {
-
-                    pickUp = true;
-                    score = false;
-                    up = false;
-
-                }
-
-                isAPushed = true;
-
-            } else if (!gamepad1.a) {
-
-                isAPushed = false;
-
-            }
-
-            attachmentControl.armAuto(pickUp, score, claw, -gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir);
-
-            pickUp = false;
-
-            score = false;
-//
-//            attachmentControl.armAuto(pickUp, score, claw);
+            attachmentControl.armManualComp(-gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir, claw, telemetryControl);
 
             flpower = driveTrain.fl.getPower();
             frpower = driveTrain.fr.getPower();
@@ -107,8 +119,6 @@ public class TeleOpComp extends LinearOpMode {
             brpower = driveTrain.br.getPower();
 
             driveTrain.MecanumTeleOp(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, speedMul);
-            telemetryControl.telemetryUpdate("pickUp", String.valueOf(pickUp));
-            telemetryControl.telemetryUpdate("score", String.valueOf(score));
             telemetryControl.motorTelemetryUpdate(flpower, frpower, blpower, brpower);
             telemetryControl.update();
 

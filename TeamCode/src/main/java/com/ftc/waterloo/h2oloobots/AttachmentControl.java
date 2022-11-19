@@ -133,7 +133,7 @@ public class AttachmentControl {
 
         shoulder.setPower(shoulders);
         elbow.setPower(elbows);
-        wrist.setPower(wristSpeed * 0.25);
+        wrist.setPower(wristSpeed * 0.75);
 
         if (servoOpen) {
 
@@ -155,9 +155,14 @@ public class AttachmentControl {
     // supposed to have encoder limits to prevent driver error, doesn't quite work right however
     public void armManualComp(double shoulderSpeed, double elbowSpeed, double wristSpeed, boolean servoOpen, TelemetryControl telemetryControl) {
 
-        if (shoulder.getCurrentPosition() > -300) shoulder.setPower(shoulderSpeed * 0.75); else shoulder.setPower(0);
-        if (elbow.getCurrentPosition() > -100) elbow.setPower(elbowSpeed); else elbow.setPower(0);
-        wrist.setPower(wristSpeed * 1);
+        if (bottom.isPressed() && shoulderSpeed < 0) shoulders = 0; else shoulders = shoulderSpeed * 0.75;
+        if (eltouch1.isPressed() && elbowSpeed < 0) elbows = 0; else if (elbow.getCurrentPosition() > 3450 && elbowSpeed > 0) elbows = 0; else elbows = elbowSpeed;
+
+        if (wrist.getCurrentPosition() < -150 && wristSpeed < 0) wristSpeed = 0; else if (wrist.getCurrentPosition() > 850 && wristSpeed > 0) wristSpeed = 0;
+
+        shoulder.setPower(shoulders);
+        elbow.setPower(elbows);
+        wrist.setPower(wristSpeed * 0.75);
 
         if (servoOpen) {
 
@@ -190,19 +195,19 @@ public class AttachmentControl {
         if (pickUp) {
 
             shoulderpos = 0;
-            elbowpos = 2600;
+            elbowpos = 3040;
             auto = true;
 
         } else if (upButton) {
 
             shoulderpos = 4176;
-            elbowpos = 3040;
+            elbowpos = 3480;
             auto = true;
 
         } else {
 
             if (bottom.isPressed() && shoulderSpeed < 0) shoulderpos = shoulderpos; else shoulderpos += (shoulderSpeed * 53);
-            if (eltouch1.isPressed() && elbowSpeed < 0) elbowpos = elbowpos; else elbowpos += (elbowSpeed * 53);
+            if (eltouch1.isPressed() && elbowSpeed < 0) elbowpos = elbowpos; else if (bottom.isPressed() && elbowSpeed > 0 && elbow.getCurrentPosition() > 3140) elbowpos = elbowpos; else elbowpos += (elbowSpeed * 53);
 
         }
 
@@ -224,7 +229,7 @@ public class AttachmentControl {
 
             shoulder.setPower(0);
 
-        } else if (auto && elbow.getCurrentPosition() == elbow.getTargetPosition() && shoulder.getTargetPosition() == shoulder.getCurrentPosition()) {
+        } else if (auto && elbow.getCurrentPosition() <= elbow.getTargetPosition() + 10 && elbow.getCurrentPosition() >= elbow.getTargetPosition() - 10 && shoulder.getCurrentPosition() <= shoulder.getTargetPosition() + 10 && shoulder.getCurrentPosition() >= shoulder.getTargetPosition() - 10) {
 
             auto = false;
 

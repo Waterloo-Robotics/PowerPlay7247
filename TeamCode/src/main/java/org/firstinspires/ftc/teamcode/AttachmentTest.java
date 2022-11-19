@@ -34,7 +34,7 @@ public class AttachmentTest extends LinearOpMode {
 
             if (gamepad2.y) elDir = -1; else if (gamepad2.a) elDir = 1; else elDir = 0;
 
-            if (gamepad2.right_bumper) wristDir = -1; else if (gamepad2.left_bumper) wristDir = 1; else wristDir = 0;
+            if (gamepad2.right_trigger > 0.1) wristDir = -gamepad2.right_trigger; else if (gamepad2.left_trigger > 0.1) wristDir = gamepad2.left_trigger; else wristDir = 0;
 
             if (gamepad2.b && !isBPushed) {
 
@@ -47,9 +47,14 @@ public class AttachmentTest extends LinearOpMode {
 
             }
 
-            attachmentControl.touchSensor();
+//            attachmentControl.touchSensor();
 
             attachmentControl.armManual(-gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir, claw, telemetryControl);
+
+
+            attachmentControl.touchSensor();
+
+//            attachmentControl.armManual(-gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir, claw, telemetryControl);
 
             telemetryControl.update();
 
