@@ -195,7 +195,7 @@ public class AttachmentControl {
         if (pickUp) {
 
             shoulderpos = 0;
-            elbowpos = 3040;
+            elbowpos = 2440;
             auto = true;
 
         } else if (upButton) {
@@ -215,7 +215,7 @@ public class AttachmentControl {
 
             shoulderpos -= 5;
 
-        } else if (shoulderpos <= 0 && bottom.isPressed()) {
+        } else if (shoulderpos <= 0 && bottom.isPressed() && (shoulderpos < shoulder.getCurrentPosition() - 10)) {
 
             shoulderpos = shoulder.getCurrentPosition();
 

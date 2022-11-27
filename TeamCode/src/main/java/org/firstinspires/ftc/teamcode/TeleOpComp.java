@@ -88,10 +88,7 @@ public class TeleOpComp extends LinearOpMode {
 
             }
 
-//            attachmentControl.armAuto(pickUp, score, claw, -gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir);
 //
-            pickUp = false;
-            score = false;
 //            attachmentControl.armAuto(pickUp, score, claw);
 
             if (gamepad2.dpad_up) shDir = 1; else if (gamepad2.dpad_down) shDir = -1; else shDir = 0;
@@ -113,7 +110,12 @@ public class TeleOpComp extends LinearOpMode {
 
 //            attachmentControl.touchSensor();
 
-            attachmentControl.armManualComp(-gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir, claw, telemetryControl);
+            attachmentControl.armAuto(pickUp, score, claw, -gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir);
+
+            pickUp = false;
+            score = false;
+
+//            attachmentControl.armManualComp(-gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir, claw, telemetryControl);
 
             flpower = driveTrain.fl.getPower();
             frpower = driveTrain.fr.getPower();
