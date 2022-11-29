@@ -26,6 +26,8 @@ public class DriveTrain {
 
     double COUNTS_PER_DEGREE;
 
+    TelemetryControl telemetryControlLocal;
+
     public enum Direction {
         FORWARD,
         BACKWARD,
@@ -47,6 +49,7 @@ public class DriveTrain {
     public DriveTrain(HardwareMap hardwareMap, TelemetryControl telemetryControl) {
 
         FourMotorInit(false, hardwareMap, DcMotor.ZeroPowerBehavior.BRAKE);
+        telemetryControlLocal = telemetryControl;
 
     }
 
@@ -150,6 +153,8 @@ public class DriveTrain {
         fr.setPower(speedMul * (FBInput + LRInput + (PivotInput)));
         br.setPower(speedMul * (FBInput - LRInput + (PivotInput)));
 
+        telemetryControlLocal.motorTelemetryUpdate(fl.getPower(), fr.getPower(), bl.getPower(), br.getPower());
+
     }
 
     // mecanum TeleOp, with speed adjuster built in
@@ -159,6 +164,8 @@ public class DriveTrain {
         bl.setPower(speed * (-FBInput - LRInput + (PivotInput)));
         fr.setPower(speed * (FBInput + LRInput + (PivotInput)));
         br.setPower(speed * (FBInput - LRInput + (PivotInput)));
+
+        telemetryControlLocal.motorTelemetryUpdate(fl.getPower(), fr.getPower(), bl.getPower(), br.getPower());
 
     }
 

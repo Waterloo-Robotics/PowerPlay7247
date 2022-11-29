@@ -34,6 +34,8 @@ public class AttachmentControl {
 
     public static TouchSensor eltouch1;
 
+    public static TouchSensor eltouch2;
+
     public static double cpr = 288;
 
     public static double deg = 10;
@@ -91,6 +93,7 @@ public class AttachmentControl {
         }
 
         eltouch1 = hardwareMap.touchSensor.get("eltouch1");
+        eltouch2 = hardwareMap.touchSensor.get("eltouch2");
         bottom = hardwareMap.touchSensor.get("bottom");
 
         telemetryControlLocal = telemetryControl;
@@ -100,6 +103,7 @@ public class AttachmentControl {
     public void touchSensor() {
 
         telemetryControlLocal.telemetryUpdate("Elbow Touch 1", String.valueOf(eltouch1.isPressed()));
+        telemetryControlLocal.telemetryUpdate("Elbow Touch 2", String.valueOf(eltouch2.isPressed()));
         telemetryControlLocal.telemetryUpdate("Bottom Touch", String.valueOf(bottom.isPressed()));
 
     }
@@ -128,8 +132,8 @@ public class AttachmentControl {
 
     public void armManual(double shoulderSpeed, double elbowSpeed, double wristSpeed, boolean servoOpen, TelemetryControl telemetryControl) {
 
-        if (bottom.isPressed() && shoulderSpeed < 0) shoulders = 0; else shoulders = shoulderSpeed * 0.75;
-        if (eltouch1.isPressed() && elbowSpeed < 0) elbows = 0; else elbows = elbowSpeed;
+        if (bottom.isPressed() && shoulderSpeed < 0) shoulders = 0; else if (eltouch2.isPressed() && shoulderSpeed > 0) shoulders = 0; else shoulders = shoulderSpeed * 0.75;
+        if (eltouch1.isPressed() && elbowSpeed < 0) elbows = 0; else if (eltouch2.isPressed() && elbowSpeed > 0) elbows = 0; else elbows = elbowSpeed;
 
         shoulder.setPower(shoulders);
         elbow.setPower(elbows);
@@ -155,8 +159,8 @@ public class AttachmentControl {
     // supposed to have encoder limits to prevent driver error, doesn't quite work right however
     public void armManualComp(double shoulderSpeed, double elbowSpeed, double wristSpeed, boolean servoOpen, TelemetryControl telemetryControl) {
 
-        if (bottom.isPressed() && shoulderSpeed < 0) shoulders = 0; else shoulders = shoulderSpeed * 0.75;
-        if (eltouch1.isPressed() && elbowSpeed < 0) elbows = 0; else if (elbow.getCurrentPosition() > 3450 && elbowSpeed > 0) elbows = 0; else elbows = elbowSpeed;
+        if (bottom.isPressed() && shoulderSpeed < 0) shoulders = 0; else if (eltouch2.isPressed() && shoulderSpeed < 0) shoulders = 0; else shoulders = shoulderSpeed * 0.75;
+        if (eltouch1.isPressed() && elbowSpeed < 0) elbows = 0; else if (elbow.getCurrentPosition() > 3450 && elbowSpeed > 0) elbows = 0; else if (eltouch2.isPressed() && elbowSpeed > 0) elbows = 0; else elbows = elbowSpeed;
 
         if (wrist.getCurrentPosition() < -150 && wristSpeed < 0) wristSpeed = 0; else if (wrist.getCurrentPosition() > 850 && wristSpeed > 0) wristSpeed = 0;
 

@@ -20,13 +20,15 @@ public class TeleOpComp extends LinearOpMode {
         DriveTrain driveTrain = new DriveTrain(hardwareMap, telemetryControl);
         AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl, AttachmentControl.ServoPosition.open);
 
-        double shDir = 0;
+        // Declaring variables for joystick controls (greyed out ones are no longer used)
 
-        double elDir = 0;
+        double shDir = 0; // shoulder direction - rotates up (positive numbers) or rotates down (negative numbers)
 
-        double wristDir = 0;
+        double elDir = 0; // elbow direction- rotates down and extends out (positive numbers) or rotates up and folds in (negative numbers)
 
-        boolean isAPushed = false;
+        double wristDir = 0; // wrist direction - rotate clockwise (positive numbers) or counterclockwise . View is from the front of the motors.
+
+        boolean isAPushed = false; // automatic pickup position for arm and elbow
 
         boolean pickUp = false;
 
@@ -36,7 +38,7 @@ public class TeleOpComp extends LinearOpMode {
 
         boolean claw = true;
 
-        boolean isBPushed = false;
+        boolean isBPushed = false; // toggle for opening/closing the claw. Holding the B button just makes the claw close.
 
         boolean yPressed = false;
 
@@ -69,24 +71,24 @@ public class TeleOpComp extends LinearOpMode {
 //
 //
 //            // TODO Fix this
-            if (gamepad2.a) {
-
-                pickUp = true;
-                score = false;
-                up = true;
-
-            } else if (gamepad2.y) {
-
-                pickUp = false;
-                score = true;
-                up = true;
-
-            } else {
-
-                pickUp = false;
-                score = false;
-
-            }
+//            if (gamepad2.a) {
+//
+//                pickUp = true;
+//                score = false;
+//                up = true;
+//
+//            } else if (gamepad2.y) {
+//
+//                pickUp = false;
+//                score = true;
+//                up = true;
+//
+//            } else {
+//
+//                pickUp = false;
+//                score = false;
+//
+//            }
 
 //
 //            attachmentControl.armAuto(pickUp, score, claw);
@@ -110,12 +112,12 @@ public class TeleOpComp extends LinearOpMode {
 
 //            attachmentControl.touchSensor();
 
-            attachmentControl.armAuto(pickUp, score, claw, -gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir);
+//            attachmentControl.armAuto(pickUp, score, claw, -gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir);
 
             pickUp = false;
             score = false;
 
-//            attachmentControl.armManualComp(-gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir, claw, telemetryControl);
+            attachmentControl.armManualComp(-gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir, claw, telemetryControl);
 
             flpower = driveTrain.fl.getPower();
             frpower = driveTrain.fr.getPower();
@@ -123,7 +125,6 @@ public class TeleOpComp extends LinearOpMode {
             brpower = driveTrain.br.getPower();
 
             driveTrain.MecanumTeleOp(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, speedMul);
-            telemetryControl.motorTelemetryUpdate(flpower, frpower, blpower, brpower);
             telemetryControl.update();
 
         }
