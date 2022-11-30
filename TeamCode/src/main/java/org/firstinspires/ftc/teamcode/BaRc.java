@@ -98,6 +98,7 @@ public class BaRc extends LinearOpMode {
 
         timer.reset();
 
+
         while (timer.seconds() < 2) {
 
             dashboard.startCameraStream(tfod, 24);
@@ -188,51 +189,7 @@ public class BaRc extends LinearOpMode {
 
 //        drive.turn(Math.toRadians(parkh));
 
-//        AttachmentControl.shoulder.setTargetPosition(3931);
-//        AttachmentControl.elbow.setTargetPosition(1945);
-//        AttachmentControl.wrist.setTargetPosition(-116);
-
-//        AttachmentControl.shoulder.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        AttachmentControl.elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        AttachmentControl.wrist.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//
-//        while (AttachmentControl.shoulder.getCurrentPosition() != AttachmentControl.shoulder.getTargetPosition() && AttachmentControl.elbow.getCurrentPosition() != AttachmentControl.elbow.getTargetPosition() /*&& AttachmentControl.wrist.getCurrentPosition() != AttachmentControl.wrist.getTargetPosition()*/) {
-//
-//            AttachmentControl.shoulder.setPower(1);
-//            AttachmentControl.elbow.setPower(1);
-//            AttachmentControl.wrist.setPower(1);
-//
-//        }
-//
-//        AttachmentControl.shoulder.setPower(0);
-//        AttachmentControl.elbow.setPower(0);
-//        AttachmentControl.wrist.setPower(0);
-//
-//        AttachmentControl.claw.setPosition(0);
-//
-//        sleep(1000);
-//
-//        AttachmentControl.shoulder.setTargetPosition(0);
-//        AttachmentControl.elbow.setTargetPosition(0);
-//        AttachmentControl.wrist.setTargetPosition(0);
-//
-//        AttachmentControl.shoulder.setPower(1);
-//        AttachmentControl.elbow.setPower(1);
-//        AttachmentControl.wrist.setPower(1);
-
-//        drive.followTrajectory(park);
-
-//        while (AttachmentControl.shoulder.getCurrentPosition() != AttachmentControl.shoulder.getTargetPosition() && AttachmentControl.elbow.getCurrentPosition() != AttachmentControl.elbow.getTargetPosition() /*&& AttachmentControl.wrist.getCurrentPosition() != AttachmentControl.wrist.getTargetPosition()*/) {
-//
-//            AttachmentControl.shoulder.setPower(1);
-//            AttachmentControl.elbow.setPower(1);
-//            AttachmentControl.wrist.setPower(1);
-//
-//        }
-//
-//        AttachmentControl.shoulder.setPower(0);
-//        AttachmentControl.elbow.setPower(0);
-//        AttachmentControl.wrist.setPower(0);
+        attachmentControl.setArmPositions(4176, 3480, 703, true);
 
     }
 

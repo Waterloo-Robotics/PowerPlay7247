@@ -191,6 +191,50 @@ public class AttachmentControl {
     ElapsedTime timer = new ElapsedTime();
     ElapsedTime dropTimer = new ElapsedTime();
 
+    public void setArmTargetPositions(int shoulderp, int elbowp, int wristp) {
+
+        shoulder.setTargetPosition(shoulderp);
+        elbow.setTargetPosition(elbowp);
+        wrist.setTargetPosition(wristp);
+
+    }
+
+    public void setArmPositions(int shoulderp, int elbowp, int wristp, boolean WAIT) {
+
+        shoulder.setTargetPosition(shoulderp);
+        elbow.setTargetPosition(elbowp);
+        wrist.setTargetPosition(wristp);
+
+        shoulder.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        wrist.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        shoulder.setPower(1);
+        elbow.setPower(1);
+        wrist.setPower(1);
+
+        if (WAIT) {
+
+            while (reachedTargetPosition(shoulder) && reachedTargetPosition(elbow) && reachedTargetPosition(wrist)) {}
+
+            shoulder.setPower(0);
+            elbow.setPower(0);
+            wrist.setPower(0);
+
+            shoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            wrist.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        }
+
+    }
+
+    public boolean reachedTargetPosition(DcMotorEx motor) {
+
+        if (motor.getCurrentPosition() >= motor.getTargetPosition() - 10 && motor.getCurrentPosition() <= motor.getTargetPosition() + 10) return true; else return false;
+
+    }
+
     boolean auto = false;
     double wrists = 0;
     // code to move the arm between 2 positions while maintaining manual control, currently code to move between the 2 positions does not work
