@@ -11,7 +11,15 @@ If you are new to robotics or new to *FIRST* Tech Challenge, then you should con
 
 # Release Notes
 
-### These will be updated weekly on Thursdays
+### These will be updated at some point
+
+## 17.10.2022
+
+* Attempts to automate arm movement in TeleOp
+
+## 10.11.2022
+
+* Updated TeleOp, AttachmentTest, and Autonomous to be competition ready
 
 ## 03.11.2022
 
