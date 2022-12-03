@@ -131,7 +131,7 @@ public class BaRc extends LinearOpMode {
 
                                 label = Labels.RED;
 
-                                parky = -20;
+                                parky = -18;
 
                             }
 
@@ -186,6 +186,9 @@ public class BaRc extends LinearOpMode {
         drive.followTrajectory(strafe1);
 
         drive.followTrajectory(moveForward1);
+
+        drive.setMotorPowers(0,0,0,0);
+        sleep(3000);
 
 //        drive.turn(Math.toRadians(parkh));
 

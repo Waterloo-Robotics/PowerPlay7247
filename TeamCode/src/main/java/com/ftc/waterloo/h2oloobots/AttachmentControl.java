@@ -136,7 +136,7 @@ public class AttachmentControl {
 
         shoulder.setPower(shoulders);
         elbow.setPower(elbows);
-        wrist.setPower(wristSpeed * 0.5);
+        wrist.setPower(wristSpeed * 0.6);
 
         if (servoOpen) {
 
@@ -165,7 +165,7 @@ public class AttachmentControl {
 
         shoulder.setPower(shoulders);
         elbow.setPower(elbows);
-        wrist.setPower(wristSpeed * 0.5);
+        wrist.setPower(wristSpeed * 0.6);
 
         if (servoOpen) {
 
