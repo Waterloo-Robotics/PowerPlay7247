@@ -12,7 +12,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorColor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 // Holds All non-drivetrain programming (for the most part)
@@ -159,7 +158,7 @@ public class AttachmentControl {
     // supposed to have encoder limits to prevent driver error, doesn't quite work right however
     public void armManualComp(double shoulderSpeed, double elbowSpeed, double wristSpeed, boolean servoOpen, TelemetryControl telemetryControl) {
 
-        if (bottom.isPressed() && shoulderSpeed < 0) shoulders = 0; else if (eltouch2.isPressed() && shoulderSpeed < 0) shoulders = 0; else shoulders = shoulderSpeed * 0.75;
+        if (bottom.isPressed() && shoulderSpeed < 0) shoulders = 0; else if (eltouch2.isPressed() && shoulderSpeed < 0) shoulders = 0; else shoulders = shoulderSpeed;
         if (eltouch1.isPressed() && elbowSpeed < 0) elbows = 0; else if (elbow.getCurrentPosition() > 3450 && elbowSpeed > 0) elbows = 0; else if (eltouch2.isPressed() && elbowSpeed > 0) elbows = 0; else elbows = elbowSpeed;
 
         if (wrist.getCurrentPosition() < -150 && wristSpeed < 0) wristSpeed = 0; else if (wrist.getCurrentPosition() > 850 && wristSpeed > 0) wristSpeed = 0;
@@ -215,7 +214,7 @@ public class AttachmentControl {
 
         if (WAIT) {
 
-            while (reachedTargetPosition(shoulder) && reachedTargetPosition(elbow) && reachedTargetPosition(wrist)) {}
+            while (!reachedTargetPosition(shoulder) || !reachedTargetPosition(elbow) || !reachedTargetPosition(wrist)) {}
 
             shoulder.setPower(0);
             elbow.setPower(0);

@@ -189,7 +189,8 @@ public class BaRc extends LinearOpMode {
 
 //        drive.turn(Math.toRadians(parkh));
 
-        attachmentControl.setArmPositions(4176, 3480, 703, true);
+        //attachmentControl.setArmPositions(4176, 3480, 703, true); //1800, 1254, 624
+//        attachmentControl.setArmPositions(1800,1254,624, true);
 
     }
 
