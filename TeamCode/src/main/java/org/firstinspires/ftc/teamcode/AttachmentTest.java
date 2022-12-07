@@ -12,7 +12,7 @@ public class AttachmentTest extends LinearOpMode {
     public void runOpMode() {
 
         TelemetryControl telemetryControl = new TelemetryControl(telemetry);
-        AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl, AttachmentControl.ServoPosition.open);
+        AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl, AttachmentControl.ServoPosition.open, true);
 
         double shDir = 0;
 

@@ -73,7 +73,7 @@ public class BaRc extends LinearOpMode {
     public void runOpMode() {
 
         TelemetryControl telemetryControl = new TelemetryControl(telemetry);
-        AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl, AttachmentControl.ServoPosition.closed);
+        AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl, AttachmentControl.ServoPosition.closed, false);
 
         initVuforia();
         initTfod();
@@ -112,31 +112,33 @@ public class BaRc extends LinearOpMode {
                     for (Recognition recognition : updatedRecognitions) {
 
                         if (updatedRecognitions.size() == 1) {
-
+                            // setting the different Y-axis coordinates for the different detected object detected on the signal sleeve.
+                            // Y-axis is left/right of the robot. Left is positive value.
+                            // The value sets the robot strafing position. The coordinate value is in inch (accuracy questionable).
                             if (recognition.getLabel() == "Green") {
 
                                 label = Labels.GREEN;
 
-                                parky = 4;
+                                parky = 4; //Set y position to 4 inches to the left of the robot from starting position.
 
                             } else if (recognition.getLabel() == "Blue") {
 
                                 label = Labels.BLUE;
 
-                                parky = 27;
+                                parky = 27; //Set y position to 27 inches to the left of the robot from starting position.
 
-                                parkh = 100;
+                                // currently not used parkh = 100;
 
                             } else {
 
                                 label = Labels.RED;
 
-                                parky = -18;
+                                parky = -18; //Set y position to 18 inches to the right of the robot from starting position.
 
                             }
 
                         } else if (updatedRecognitions.size() == 2) {
-
+                            // The else if codes seems to be a useless code. Considering removal of updatedRecognitions.size() condition statement.
                             if (recognition.getLabel() == "Blue") {
 
                                 label = Labels.BLUE;
@@ -166,31 +168,22 @@ public class BaRc extends LinearOpMode {
                 }
             }
         }
-
+        // Set strafe robot trajectory based on the Y-axis coordinate set based on the object recognized by the camera
         Trajectory strafe1 = drive.trajectoryBuilder(new Pose2d())
                 .lineToLinearHeading(new Pose2d(0, parky, 0))
                 .build();
-
+        // Set forward robot trajectory to go to the center of the park zone
         Trajectory moveForward1 = drive.trajectoryBuilder(strafe1.end())
                 .lineToLinearHeading(new Pose2d(30, parky, 0))
                 .build();
 
-//        Trajectory moveToBlack = drive.trajectoryBuilder(new Pose2d(48, strafey, Math.toRadians(turn1)))
-//                .lineToLinearHeading(new Pose2d(52, 16, Math.toRadians(turn1)))
-//                .build();
-
-//        Trajectory park = drive.trajectoryBuilder(new Pose2d(22, strafey, Math.toRadians(parkh)))
-//                        .lineToLinearHeading(new Pose2d(23, parky, Math.toRadians(parkh)))
-//                        .build();
-
+        // Perform the strafing motion
         drive.followTrajectory(strafe1);
-
+        // Perform the forward motion
         drive.followTrajectory(moveForward1);
 
         drive.setMotorPowers(0,0,0,0);
         sleep(3000);
-
-//        drive.turn(Math.toRadians(parkh));
 
         //attachmentControl.setArmPositions(4176, 3480, 703, true); //1800, 1254, 624
 //        attachmentControl.setArmPositions(1800,1254,624, true);

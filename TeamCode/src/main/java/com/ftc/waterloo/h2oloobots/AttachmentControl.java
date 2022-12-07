@@ -50,9 +50,13 @@ public class AttachmentControl {
 
     }
 
+    boolean TeleOp = false;
+
     // this initialises all attachments
 
-    public AttachmentControl(HardwareMap hardwareMap, TelemetryControl telemetryControl, ServoPosition position) {
+    public AttachmentControl(HardwareMap hardwareMap, TelemetryControl telemetryControl, ServoPosition position, boolean IsTeleOp) {
+
+        TeleOp = IsTeleOp;
 
         shoulder = (DcMotorEx) hardwareMap.dcMotor.get("shoulder");
         shoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -214,15 +218,23 @@ public class AttachmentControl {
 
         if (WAIT) {
 
-            while (!reachedTargetPosition(shoulder) || !reachedTargetPosition(elbow) || !reachedTargetPosition(wrist)) {}
+            while (!reachedTargetPosition(shoulder) || !reachedTargetPosition(elbow) || !reachedTargetPosition(wrist)) {
 
-            shoulder.setPower(0);
-            elbow.setPower(0);
-            wrist.setPower(0);
+                telemetryControlLocal.telemetryUpdate("Shoulder Pos", String.valueOf(shoulder.getCurrentPosition()));
+                telemetryControlLocal.telemetryUpdate("Elbow Pos", String.valueOf(elbow.getCurrentPosition()));
+                telemetryControlLocal.telemetryUpdate("Wrist Pos", String.valueOf(wrist.getCurrentPosition()));
 
-            shoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            wrist.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                telemetryControlLocal.update();
+
+            }
+
+//            shoulder.setPower(0);
+//            elbow.setPower(0);
+//            wrist.setPower(0);
+//
+//            shoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            wrist.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         }
 

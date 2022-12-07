@@ -74,7 +74,7 @@ public class TeleOpComp extends LinearOpMode {
 
         TelemetryControl telemetryControl = new TelemetryControl(telemetry);
         DriveTrain driveTrain = new DriveTrain(hardwareMap, telemetryControl);
-        AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl, AttachmentControl.ServoPosition.open);
+        AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl, AttachmentControl.ServoPosition.open, true);
 
         // Declaring variables for joystick controls (greyed out ones are no longer used)
 

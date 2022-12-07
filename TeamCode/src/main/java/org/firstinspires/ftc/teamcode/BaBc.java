@@ -71,7 +71,7 @@ public class BaBc extends LinearOpMode {
     public void runOpMode() {
 
         TelemetryControl telemetryControl = new TelemetryControl(telemetry);
-        AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl, AttachmentControl.ServoPosition.closed);
+        AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl, AttachmentControl.ServoPosition.closed, false);
 
         initVuforia();
         initTfod();
