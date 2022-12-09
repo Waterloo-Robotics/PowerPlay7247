@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import org.firstinspires.ftc.teamcode.R;
 
 // All telemetry used by our code goes through here
@@ -81,6 +82,12 @@ public class TelemetryControl {
             packet.addLine("Stopped");
 
         }
+
+    }
+
+    public void startCameraStream(CameraStreamSource source, double maxFps) {
+
+        dashboard.startCameraStream(source, maxFps);
 
     }
 

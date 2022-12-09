@@ -101,63 +101,37 @@ public class BaRc extends LinearOpMode {
 
         while (timer.seconds() < 2) {
 
-            dashboard.startCameraStream(tfod, 24);
+            telemetryControl.startCameraStream(tfod, 24);
 
             if (tfod != null) {
 
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                 if (updatedRecognitions != null) {
-                    telemetry.addData("# Objects Detected", updatedRecognitions.size());
+                    telemetryControl.addData("# Objects Detected", updatedRecognitions.size());
 
-                    for (Recognition recognition : updatedRecognitions) {
+                    if (updatedRecognitions.size() == 1) {
+                        // setting the different Y-axis coordinates for the different detected object detected on the signal sleeve.
+                        // Y-axis is left/right of the robot. Left is positive value.
+                        // The value sets the robot strafing position. The coordinate value is in inch (accuracy questionable).
+                        if (recognition.getLabel() == "Green") {
 
-                        if (updatedRecognitions.size() == 1) {
-                            // setting the different Y-axis coordinates for the different detected object detected on the signal sleeve.
-                            // Y-axis is left/right of the robot. Left is positive value.
-                            // The value sets the robot strafing position. The coordinate value is in inch (accuracy questionable).
-                            if (recognition.getLabel() == "Green") {
+                            label = Labels.GREEN;
 
-                                label = Labels.GREEN;
+                            parky = 4; //Set y position to 4 inches to the left of the robot from starting position.
 
-                                parky = 4; //Set y position to 4 inches to the left of the robot from starting position.
+                        } else if (recognition.getLabel() == "Blue") {
 
-                            } else if (recognition.getLabel() == "Blue") {
+                            label = Labels.BLUE;
 
-                                label = Labels.BLUE;
-
-                                parky = 27; //Set y position to 27 inches to the left of the robot from starting position.
+                            parky = 27; //Set y position to 27 inches to the left of the robot from starting position.
 
                                 // currently not used parkh = 100;
 
-                            } else {
+                        } else {
 
-                                label = Labels.RED;
+                            label = Labels.RED;
 
-                                parky = -18; //Set y position to 18 inches to the right of the robot from starting position.
-
-                            }
-
-                        } else if (updatedRecognitions.size() == 2) {
-                            // The else if codes seems to be a useless code. Considering removal of updatedRecognitions.size() condition statement.
-                            if (recognition.getLabel() == "Blue") {
-
-                                label = Labels.BLUE;
-
-                                parky = 27;
-
-                            } else if (recognition.getLabel() == "Red"){
-
-                                label = Labels.RED;
-
-                                parky = -20;
-
-                            } else {
-
-                                label = Labels.GREEN;
-
-                                parky = 10;
-
-                            }
+                            parky = -18; //Set y position to 18 inches to the right of the robot from starting position.
 
                         }
 
