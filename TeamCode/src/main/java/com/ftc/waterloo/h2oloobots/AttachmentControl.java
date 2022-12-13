@@ -135,8 +135,8 @@ public class AttachmentControl {
 
     public void armManual(double shoulderSpeed, double elbowSpeed, double wristSpeed, boolean servoOpen, TelemetryControl telemetryControl) {
 
-        if (bottom.isPressed() && shoulderSpeed < 0) shoulders = 0; else if (eltouch2.isPressed() && shoulderSpeed > 0) shoulders = 0; else shoulders = shoulderSpeed * 0.75;
-        if (eltouch1.isPressed() && elbowSpeed < 0) elbows = 0; else if (eltouch2.isPressed() && elbowSpeed > 0) elbows = 0; else elbows = elbowSpeed;
+        if (!bottom.isPressed() && shoulderSpeed < 0) shoulders = 0; else if (!eltouch2.isPressed() && shoulderSpeed > 0) shoulders = 0; else shoulders = shoulderSpeed * 0.75;
+        if (!eltouch1.isPressed() && elbowSpeed < 0) elbows = 0; else if (!eltouch2.isPressed() && elbowSpeed > 0) elbows = 0; else elbows = elbowSpeed;
 
         shoulder.setPower(shoulders);
         elbow.setPower(elbows);
@@ -156,19 +156,22 @@ public class AttachmentControl {
         telemetryControl.telemetryUpdate("elbow pos", String.valueOf(elbow.getCurrentPosition()));
         telemetryControl.telemetryUpdate("wrist pos", String.valueOf(wrist.getCurrentPosition()));
         telemetryControl.telemetryUpdate("claw pos", String.valueOf(claw.getPosition()));
-
     }
 
     // supposed to have encoder limits to prevent driver error, doesn't quite work right however
     public void armManualComp(double shoulderSpeed, double elbowSpeed, double wristSpeed, boolean servoOpen, TelemetryControl telemetryControl) {
 
         if (bottom.isPressed() && shoulderSpeed < 0) shoulders = 0; else if (eltouch2.isPressed() && shoulderSpeed < 0) shoulders = 0; else shoulders = shoulderSpeed;
-        if (eltouch1.isPressed() && elbowSpeed < 0) elbows = 0; else if (elbow.getCurrentPosition() > 3450 && elbowSpeed > 0) elbows = 0; else if (eltouch2.isPressed() && elbowSpeed > 0) elbows = 0; else elbows = elbowSpeed;
+        if (eltouch1.isPressed() && elbowSpeed < 0) elbows = 0; else if (eltouch2.isPressed() && elbowSpeed > 0) elbows = 0; else elbows = elbowSpeed;
+
+        telemetryControl.telemetryUpdate("bottom", String.valueOf(bottom.isPressed()));
+        telemetryControl.telemetryUpdate("eltouch1", String.valueOf(eltouch1.isPressed()));
+        telemetryControl.telemetryUpdate("eltouch2", String.valueOf(eltouch2.isPressed()));
 
         if (wrist.getCurrentPosition() < -150 && wristSpeed < 0) wristSpeed = 0; else if (wrist.getCurrentPosition() > 850 && wristSpeed > 0) wristSpeed = 0;
 
         shoulder.setPower(shoulders);
-        elbow.setPower(elbows);
+        elbow.setPower(-elbows);
         wrist.setPower(wristSpeed * 0.6);
 
         if (servoOpen) {

@@ -107,31 +107,36 @@ public class BaRc extends LinearOpMode {
 
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                 if (updatedRecognitions != null) {
-                    telemetryControl.addData("# Objects Detected", updatedRecognitions.size());
+                    telemetryControl.telemetryUpdate("# Objects Detected", String.valueOf(updatedRecognitions.size()));
 
                     if (updatedRecognitions.size() == 1) {
                         // setting the different Y-axis coordinates for the different detected object detected on the signal sleeve.
                         // Y-axis is left/right of the robot. Left is positive value.
                         // The value sets the robot strafing position. The coordinate value is in inch (accuracy questionable).
-                        if (recognition.getLabel() == "Green") {
 
-                            label = Labels.GREEN;
+                        for (Recognition recognition : updatedRecognitions) {
 
-                            parky = 4; //Set y position to 4 inches to the left of the robot from starting position.
+                            if (recognition.getLabel() == "Green") {
 
-                        } else if (recognition.getLabel() == "Blue") {
+                                label = Labels.GREEN;
 
-                            label = Labels.BLUE;
+                                parky = 4; //Set y position to 4 inches to the left of the robot from starting position.
 
-                            parky = 27; //Set y position to 27 inches to the left of the robot from starting position.
+                            } else if (recognition.getLabel() == "Blue") {
+
+                                label = Labels.BLUE;
+
+                                parky = 27; //Set y position to 27 inches to the left of the robot from starting position.
 
                                 // currently not used parkh = 100;
 
-                        } else {
+                            } else {
 
-                            label = Labels.RED;
+                                label = Labels.RED;
 
-                            parky = -18; //Set y position to 18 inches to the right of the robot from starting position.
+                                parky = -18; //Set y position to 18 inches to the right of the robot from starting position.
+
+                            }
 
                         }
 
