@@ -168,7 +168,7 @@ public class AttachmentControl {
         telemetryControl.telemetryUpdate("eltouch1", String.valueOf(eltouch1.isPressed()));
         telemetryControl.telemetryUpdate("eltouch2", String.valueOf(eltouch2.isPressed()));
 
-        if (wrist.getCurrentPosition() < -150 && wristSpeed < 0) wristSpeed = 0; else if (wrist.getCurrentPosition() > 850 && wristSpeed > 0) wristSpeed = 0;
+//        if (wrist.getCurrentPosition() < -150 && wristSpeed < 0) wristSpeed = 0; else if (wrist.getCurrentPosition() > 850 && wristSpeed > 0) wristSpeed = 0;
 
         shoulder.setPower(shoulders);
         elbow.setPower(-elbows);
