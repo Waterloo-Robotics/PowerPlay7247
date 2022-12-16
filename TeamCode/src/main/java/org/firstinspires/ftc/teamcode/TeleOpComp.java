@@ -177,8 +177,8 @@ public class TeleOpComp extends LinearOpMode {
 
             if (gamepad2.y) elDir = -1; else if (gamepad2.a) elDir = 1; else elDir = 0;
 
+            // Changing Wrist Direction
             if (gamepad2.right_trigger > 0.1) wristDir = -gamepad2.right_trigger; else if (gamepad2.left_trigger > 0.1) wristDir = gamepad2.left_trigger; else wristDir = 0;
-
             if (gamepad2.b && !isBPushed) {
 
                 claw = !claw;

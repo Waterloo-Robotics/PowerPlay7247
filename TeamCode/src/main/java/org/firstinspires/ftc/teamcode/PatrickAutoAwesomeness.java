@@ -120,13 +120,13 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
 
                                 label = Labels.GREEN;
 
-                                parky = 4; //Set y position to 4 inches to the left of the robot from starting position.
+                                //parky = 4; //Set y position to 4 inches to the left of the robot from starting position.
 
                             } else if (recognition.getLabel() == "Blue") {
 
                                 label = Labels.BLUE;
 
-                                parky = 27; //Set y position to 27 inches to the left of the robot from starting position.
+                                //parky = 27; //Set y position to 27 inches to the left of the robot from starting position.
 
                                 // currently not used parkh = 100;
 
@@ -134,7 +134,7 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
 
                                 label = Labels.RED;
 
-                                parky = -18; //Set y position to 18 inches to the right of the robot from starting position.
+                                //parky = -18; //Set y position to 18 inches to the right of the robot from starting position.
 
                             }
 
@@ -147,19 +147,33 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
                 }
             }
         }
-        // Set strafe robot trajectory based on the Y-axis coordinate set based on the object recognized by the camera
+//        // Set strafe robot trajectory based on the Y-axis coordinate set based on the object recognized by the camera
+//        Trajectory strafe1 = drive.trajectoryBuilder(new Pose2d())
+//                .lineToLinearHeading(new Pose2d(0, parky, 0))
+//                .build();
+//        // Set forward robot trajectory to go to the center of the park zone
+//        Trajectory moveForward1 = drive.trajectoryBuilder(strafe1.end())
+//                .lineToLinearHeading(new Pose2d(30, parky, 0))
+//                .build();
+
+
+        //Calculate trajectory for scoring starting cone
         Trajectory strafe1 = drive.trajectoryBuilder(new Pose2d())
-                .lineToLinearHeading(new Pose2d(0, parky, 0))
+                .lineToLinearHeading(new Pose2d(0, 8, 0))
                 .build();
-        // Set forward robot trajectory to go to the center of the park zone
-        Trajectory moveForward1 = drive.trajectoryBuilder(strafe1.end())
-                .lineToLinearHeading(new Pose2d(30, parky, 0))
+
+        Trajectory forwardMove = drive.trajectoryBuilder(strafe1.end())
+                .lineToLinearHeading(new Pose2d(11, 8, 0))
                 .build();
+
 
         // Perform the strafing motion
         drive.followTrajectory(strafe1);
+        sleep(3000);
+        drive.followTrajectory(forwardMove);
         // Perform the forward motion
-        drive.followTrajectory(moveForward1);
+
+        //drive.followTrajectory(moveForward1);
 
         drive.setMotorPowers(0,0,0,0);
         sleep(3000);
