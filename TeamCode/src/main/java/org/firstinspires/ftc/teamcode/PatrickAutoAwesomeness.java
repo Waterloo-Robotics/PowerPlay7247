@@ -24,13 +24,11 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import java.util.List;
 
 import encoder.odo.ftc.rr.drive.SampleMecanumDrive;
+import encoder.odo.ftc.rr.trajectorysequence.TrajectorySequence;
 
 @Config
 @Autonomous(name = "Same as BaRC but good!!")
 public class PatrickAutoAwesomeness extends LinearOpMode {
-
-    double turn1 = 115;
-    public static double strafey = -20;
 
     ElapsedTime timer = new ElapsedTime();
 
@@ -55,14 +53,6 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
 
     Labels label = Labels.RED;
 
-    double parky = -20;
-
-    double parkh = 95;
-
-//    private static final String[] LABELS = {
-//            "Blue Cone"
-//    };
-
     private static final String VUFORIA_KEY =
             "ARZRc7b/////AAABmdYJzscFYUPwkOkgBgmpjAgFqkg6LxHmXPnonXKPGrqHxZBHhNRmsyDoNVz/o9XfL9Dc9224rfZHzQ5gvbFPQYchZztz+A+SeQt4Ql4xUxAiYviidC0RpPC9TRRBOaaGlNLAAupCmG8jtnsbnLlVFECI4DC3Heg20nvyWce+A4anUbW+kFkQu9uGyD1JzToWPN8MV7wsnsJ+1/oe6F7+g8C9dtMW3MgktiWWuty0g4RLNrc4qz/3htZe6w2efr1e34EZ+0JJc9la+bV08IMlSlEKGy2QOPBUIODemnFxyu+JLAkleQtV+Pke4qOf9hm8jTeqhyu5rL7B9QVZQ1x5p/u1vSsFJs2ihWJ9O1TvtPCs";
 
@@ -81,12 +71,6 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
         if (tfod != null) {
             tfod.activate();
 
-            // The TensorFlow software will scale the input images from the camera to a lower resolution.
-            // This can result in lower detection accuracy at longer distances (> 55cm or 22").
-            // If your target is at distance greater than 50 cm (20") you can increase the magnification value
-            // to artificially zoom in to the center of image.  For best results, the "aspectRatio" argument
-            // should be set to the value of the images used to create the TensorFlow Object Detection model
-            // (typically 16/9).
             tfod.setZoom(1.25, 16.0/9.0);
         }
 
@@ -97,7 +81,6 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
         waitForStart();
 
         timer.reset();
-
 
         while (timer.seconds() < 2) {
 
@@ -147,40 +130,45 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
                 }
             }
         }
-//        // Set strafe robot trajectory based on the Y-axis coordinate set based on the object recognized by the camera
-//        Trajectory strafe1 = drive.trajectoryBuilder(new Pose2d())
-//                .lineToLinearHeading(new Pose2d(0, parky, 0))
-//                .build();
-//        // Set forward robot trajectory to go to the center of the park zone
-//        Trajectory moveForward1 = drive.trajectoryBuilder(strafe1.end())
-//                .lineToLinearHeading(new Pose2d(30, parky, 0))
-//                .build();
+
+        Pose2d startPose = new Pose2d(0,0,0);
+
+        drive.setPoseEstimate(startPose);
+
+        TrajectorySequence trajSeq = drive.trajectorySequenceBuilder(startPose)
+                //.splineTo(new Vector2d(0,6),0)
+                .strafeLeft(4)
+                .forward(50)
+                .turn(Math.toRadians(90))
+                .forward(5)
+                .strafeLeft(3)
+                .build();
 
 
         //Calculate trajectory for scoring starting cone
-        Trajectory strafe1 = drive.trajectoryBuilder(new Pose2d())
-                .lineToLinearHeading(new Pose2d(0, 8, 0))
-                .build();
-
-        Trajectory forwardMove = drive.trajectoryBuilder(strafe1.end())
-                .lineToLinearHeading(new Pose2d(11, 8, 0))
-                .build();
-
-
-        // Perform the strafing motion
-        drive.followTrajectory(strafe1);
-        sleep(3000);
-        drive.followTrajectory(forwardMove);
-        // Perform the forward motion
-
-        //drive.followTrajectory(moveForward1);
-
+//        Trajectory shift_left = drive.trajectoryBuilder(new Pose2d())
+//                .lineToLinearHeading(new Pose2d(0,5,0))
+//                .build();
+//
+//        Trajectory approach_center = drive.trajectoryBuilder(shift_left.end())
+//                .lineToLinearHeading(new Pose2d(50,0,0))
+//                        .build();
+//
+//        Trajectory approach_tape = drive.trajectoryBuilder(approach_center.end().plus(new Pose2d(0, 0, Math.toRadians(90))), false)
+//                .lineToLinearHeading(new Pose2d(1,0,0))
+//                        .build();
+//
+//        drive.followTrajectory(shift_left);
+//        drive.followTrajectory(approach_center);
+//        drive.turn(Math.toRadians(90));
+//        drive.followTrajectory(approach_tape);
+        drive.followTrajectorySequence(trajSeq);
         drive.setMotorPowers(0,0,0,0);
+        attachmentControl.setArmPositions(4107,-1082,-732,true);
+        sleep(1000);
+
+
         sleep(3000);
-
-        //attachmentControl.setArmPositions(4176, 3480, 703, true); //1800, 1254, 624
-//        attachmentControl.setArmPositions(1800,1254,624, true);
-
     }
 
     private void initVuforia() {
