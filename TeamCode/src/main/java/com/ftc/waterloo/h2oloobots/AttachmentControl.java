@@ -103,6 +103,13 @@ public class AttachmentControl {
 
     }
 
+    public void openClaw(){
+        claw.setPosition(0);
+    }
+
+    public void closeClaw(){
+        claw.setPosition(1);
+    }
     public void touchSensor() {
 
         telemetryControlLocal.telemetryUpdate("Elbow Touch 1", String.valueOf(eltouch1.isPressed()));

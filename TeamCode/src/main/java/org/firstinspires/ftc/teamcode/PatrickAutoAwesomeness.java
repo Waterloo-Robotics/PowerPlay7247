@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -31,6 +32,8 @@ import encoder.odo.ftc.rr.trajectorysequence.TrajectorySequence;
 public class PatrickAutoAwesomeness extends LinearOpMode {
 
     ElapsedTime timer = new ElapsedTime();
+
+
 
     @SuppressLint("SdCardPath")
     private static final String TFOD_MODEL_ASSET = "PowerPlay.tflite";
@@ -78,6 +81,18 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
+        Pose2d startPose = new Pose2d(0,0,0);
+
+        drive.setPoseEstimate(startPose);
+
+        TrajectorySequence drive_to_stack = drive.trajectorySequenceBuilder(startPose)
+                .strafeLeft(4)
+                .forward(50)
+                .turn(Math.toRadians(90))
+                .forward(5)
+                .strafeLeft(3)
+                .build();
+
         waitForStart();
 
         timer.reset();
@@ -103,22 +118,14 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
 
                                 label = Labels.GREEN;
 
-                                //parky = 4; //Set y position to 4 inches to the left of the robot from starting position.
 
                             } else if (recognition.getLabel() == "Blue") {
 
                                 label = Labels.BLUE;
 
-                                //parky = 27; //Set y position to 27 inches to the left of the robot from starting position.
-
-                                // currently not used parkh = 100;
-
                             } else {
 
                                 label = Labels.RED;
-
-                                //parky = -18; //Set y position to 18 inches to the right of the robot from starting position.
-
                             }
 
                         }
@@ -131,41 +138,17 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
             }
         }
 
-        Pose2d startPose = new Pose2d(0,0,0);
-
-        drive.setPoseEstimate(startPose);
-
-        TrajectorySequence trajSeq = drive.trajectorySequenceBuilder(startPose)
-                //.splineTo(new Vector2d(0,6),0)
-                .strafeLeft(4)
-                .forward(50)
-                .turn(Math.toRadians(90))
-                .forward(5)
-                .strafeLeft(3)
-                .build();
-
-
-        //Calculate trajectory for scoring starting cone
-//        Trajectory shift_left = drive.trajectoryBuilder(new Pose2d())
-//                .lineToLinearHeading(new Pose2d(0,5,0))
-//                .build();
-//
-//        Trajectory approach_center = drive.trajectoryBuilder(shift_left.end())
-//                .lineToLinearHeading(new Pose2d(50,0,0))
-//                        .build();
-//
-//        Trajectory approach_tape = drive.trajectoryBuilder(approach_center.end().plus(new Pose2d(0, 0, Math.toRadians(90))), false)
-//                .lineToLinearHeading(new Pose2d(1,0,0))
-//                        .build();
-//
-//        drive.followTrajectory(shift_left);
-//        drive.followTrajectory(approach_center);
-//        drive.turn(Math.toRadians(90));
-//        drive.followTrajectory(approach_tape);
-        drive.followTrajectorySequence(trajSeq);
+        drive.followTrajectorySequence(drive_to_stack);
         drive.setMotorPowers(0,0,0,0);
-        attachmentControl.setArmPositions(4107,-1082,-732,true);
-        sleep(1000);
+        for(int i=0;i<5;i++){
+            attachmentControl.setArmPositions(4107,-1082,-732,true); // Need to rotate opposite direction
+            attachmentControl.openClaw();
+            attachmentControl.setArmPositions(0,0,0,true); //
+            attachmentControl.closeClaw();
+            //Decrement shoulder and arm position to grab each cone on the stack
+        }
+
+
 
 
         sleep(3000);
