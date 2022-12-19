@@ -114,12 +114,12 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
 
                         for (Recognition recognition : updatedRecognitions) {
 
-                            if (recognition.getLabel() == "Green") {
+                            if (recognition.getLabel().equals("Green")) {
 
                                 label = Labels.GREEN;
 
 
-                            } else if (recognition.getLabel() == "Blue") {
+                            } else if (recognition.getLabel().equals("Blue")) {
 
                                 label = Labels.BLUE;
 
