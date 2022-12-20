@@ -140,12 +140,22 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
 
         drive.followTrajectorySequence(drive_to_stack);
         drive.setMotorPowers(0,0,0,0);
+
+        int elbowScore = -1082;
+        int shoulderScore = 4107;
+        int wristScore = -732;
+        int elbowGrab = 0;
+        int shoulderGrab = 0;
+        int wristGrab = 0;
+
         for(int i=0;i<5;i++){
-            attachmentControl.setArmPositions(4107,-1082,-732,true); // Need to rotate opposite direction
+            attachmentControl.setArmPositions(shoulderScore,-elbowScore,-wristScore,true); // Need to rotate opposite direction
             attachmentControl.openClaw();
-            attachmentControl.setArmPositions(0,0,0,true); //
+            attachmentControl.setArmPositions(shoulderGrab,elbowGrab,wristGrab,true); //
             attachmentControl.closeClaw();
             //Decrement shoulder and arm position to grab each cone on the stack
+            elbowGrab = elbowGrab - 1;
+            shoulderGrab = shoulderGrab - 1;
         }
 
 

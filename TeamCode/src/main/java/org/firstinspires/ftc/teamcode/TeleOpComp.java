@@ -172,7 +172,8 @@ public class TeleOpComp extends LinearOpMode {
 
 //
 //            attachmentControl.armAuto(pickUp, score, claw);
-
+            if (gamepad2.right_bumper) { attachmentControl.armToCatch(); }
+            if (gamepad2.left_bumper) { attachmentControl.armToScore(); }
             if (gamepad2.dpad_up) shDir = 1; else if (gamepad2.dpad_down) shDir = -1; else shDir = 0;
 
             if (gamepad2.y) elDir = -1; else if (gamepad2.a) elDir = 1; else elDir = 0;

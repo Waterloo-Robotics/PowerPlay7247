@@ -347,4 +347,12 @@ public class AttachmentControl {
 
     }
 
+    public void armToScore(){
+        this.setArmPositions(4188,-4337,-37,true);
+    }
+
+    public void armToCatch(){
+        this.setArmPositions(0,-911,6,true);
+    }
+
 }
