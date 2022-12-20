@@ -87,13 +87,11 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
 
         TrajectorySequence drive_to_stack = drive.trajectorySequenceBuilder(startPose)
                 .strafeLeft(4)
-                .forward(50)
+                .forward(47)
                 .turn(Math.toRadians(90))
                 .forward(5)
-                .strafeLeft(3)
                 .build();
 
-        waitForStart();
 
         timer.reset();
 
@@ -102,61 +100,51 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
             telemetryControl.startCameraStream(tfod, 24);
 
             if (tfod != null) {
-
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                 if (updatedRecognitions != null) {
                     telemetryControl.telemetryUpdate("# Objects Detected", String.valueOf(updatedRecognitions.size()));
-
                     if (updatedRecognitions.size() == 1) {
-                        // setting the different Y-axis coordinates for the different detected object detected on the signal sleeve.
-                        // Y-axis is left/right of the robot. Left is positive value.
-                        // The value sets the robot strafing position. The coordinate value is in inch (accuracy questionable).
-
                         for (Recognition recognition : updatedRecognitions) {
-
                             if (recognition.getLabel().equals("Green")) {
-
                                 label = Labels.GREEN;
-
-
                             } else if (recognition.getLabel().equals("Blue")) {
-
                                 label = Labels.BLUE;
-
                             } else {
-
                                 label = Labels.RED;
                             }
-
                         }
-
                     }
                     telemetryControl.telemetryUpdate("Identification", String.valueOf(label));
                     telemetryControl.update();
-
                 }
             }
         }
 
+        waitForStart();
+
         drive.followTrajectorySequence(drive_to_stack);
         drive.setMotorPowers(0,0,0,0);
 
+        // Values for arm location for scoring
         int elbowScore = -1082;
         int shoulderScore = 4107;
         int wristScore = -732;
+        // Values for arm location to grab cone 5
         int elbowGrab = 0;
         int shoulderGrab = 0;
         int wristGrab = 0;
 
-        for(int i=0;i<5;i++){
+        for(int i=0;i<6;i++){
             attachmentControl.setArmPositions(shoulderScore,-elbowScore,-wristScore,true); // Need to rotate opposite direction
             attachmentControl.openClaw();
             attachmentControl.setArmPositions(shoulderGrab,elbowGrab,wristGrab,true); //
             attachmentControl.closeClaw();
             //Decrement shoulder and arm position to grab each cone on the stack
-            elbowGrab = elbowGrab - 1;
-            shoulderGrab = shoulderGrab - 1;
-        }
+            elbowGrab--;
+            shoulderGrab--;        }
+
+        //TODO
+        //Drive to park Zone
 
 
 
