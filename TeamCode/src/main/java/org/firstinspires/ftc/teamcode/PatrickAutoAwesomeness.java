@@ -89,11 +89,13 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
                 .strafeLeft(4)
                 .forward(47)
                 .turn(Math.toRadians(90))
-                .forward(5)
+                .forward(8)
                 .build();
 
 
         timer.reset();
+
+        waitForStart();
 
         while (timer.seconds() < 2) {
 
@@ -120,8 +122,6 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
             }
         }
 
-        waitForStart();
-
         drive.followTrajectorySequence(drive_to_stack);
         drive.setMotorPowers(0,0,0,0);
 
@@ -130,22 +130,20 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
         int shoulderScore = 4107;
         int wristScore = -732;
         // Values for arm location to grab cone 5
-        int elbowGrab = 0;
-        int shoulderGrab = 0;
+        int elbowGrab = -3483;
+        int shoulderGrab = 209;
         int wristGrab = 0;
 
-        for(int i=0;i<6;i++){
-            attachmentControl.setArmPositions(shoulderScore,-elbowScore,-wristScore,true); // Need to rotate opposite direction
+
+            attachmentControl.setArmPositions(shoulderScore,elbowScore,wristScore,true); // Need to rotate opposite direction
             attachmentControl.openClaw();
             attachmentControl.setArmPositions(shoulderGrab,elbowGrab,wristGrab,true); //
             attachmentControl.closeClaw();
             //Decrement shoulder and arm position to grab each cone on the stack
-            elbowGrab--;
-            shoulderGrab--;        }
+
 
         //TODO
         //Drive to park Zone
-
 
 
 

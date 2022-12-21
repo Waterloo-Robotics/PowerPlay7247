@@ -11,27 +11,75 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Autonomous(name = "ArmTestAuto")
 public class ArmTestAuto extends LinearOpMode {
 
+    ElapsedTime timer = new ElapsedTime();
+
     public void runOpMode() {
 
         TelemetryControl telemetryControl = new TelemetryControl(telemetry);
         AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl, AttachmentControl.ServoPosition.closed, false);
 
-        ElapsedTime timer = new ElapsedTime();
-
         waitForStart();
 
-        attachmentControl.setArmPositions(1800, 3000, 624, true);
+        this.score(attachmentControl);
 
-        timer.reset();
-        while (timer.seconds() < 1) {}
+        this.servo(attachmentControl, 0);
 
-        AttachmentControl.claw.setPosition(0);
+        this.pickup(attachmentControl);
 
-        timer.reset();
-        while (timer.seconds() < 1) {}
+        attachmentControl.setArmPositions(0, -3443, 4, true);
 
-        attachmentControl.setArmPositions(0, 0, 0, true);
+        this.servo(attachmentControl, 1);
+
+        this.score(attachmentControl);
+
+        this.servo(attachmentControl, 0);
+
+        this.pickup(attachmentControl);
+
+        attachmentControl.setArmPositions(0, -3432, 4, true);
+
+        this.servo(attachmentControl, 1);
+
+        this.score(attachmentControl);
+
+        this.servo(attachmentControl, 0);
+
+        this.pickup(attachmentControl);
+
+        attachmentControl.setArmPositions(0, -3608, 4, true);
+
+        this.servo(attachmentControl, 1);
+
+        this.score(attachmentControl);
+
+        this.servo(attachmentControl, 0);
+
+        attachmentControl.setArmPositions(0, -0, -0, true);
 
     }
+
+    public void score(AttachmentControl attachmentControl) {
+
+        attachmentControl.setArmPositions(4497, -1755, 4, true);
+
+        attachmentControl.setArmPositions(4497, -1755, -801, true);
+
+    }
+
+    public void pickup(AttachmentControl attachmentControl) {
+
+        attachmentControl.setArmPositions(0, -2308, 4, true);
+
+    }
+
+    public void servo(AttachmentControl attachmentControl, double position) {
+
+        AttachmentControl.claw.setPosition(position);
+
+        timer.reset();
+        while (timer.seconds() < 0.375) {}
+
+    }
+
 }
 

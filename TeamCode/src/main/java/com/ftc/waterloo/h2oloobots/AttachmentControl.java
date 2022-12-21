@@ -101,6 +101,26 @@ public class AttachmentControl {
 
         telemetryControlLocal = telemetryControl;
 
+        while (!bottom.isPressed()) {
+
+            shoulder.setPower(-1);
+
+        }
+
+        shoulder.setPower(0);
+        shoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        while (!eltouch1.isPressed()) {
+
+            elbow.setPower(-1);
+
+        }
+
+        elbow.setPower(0);
+        elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
     }
 
     public void openClaw(){
@@ -142,11 +162,11 @@ public class AttachmentControl {
 
     public void armManual(double shoulderSpeed, double elbowSpeed, double wristSpeed, boolean servoOpen, TelemetryControl telemetryControl) {
 
-        if (!bottom.isPressed() && shoulderSpeed < 0) shoulders = 0; else if (!eltouch2.isPressed() && shoulderSpeed > 0) shoulders = 0; else shoulders = shoulderSpeed * 0.75;
-        if (!eltouch1.isPressed() && elbowSpeed < 0) elbows = 0; else if (!eltouch2.isPressed() && elbowSpeed > 0) elbows = 0; else elbows = elbowSpeed;
+        if (bottom.isPressed() && shoulderSpeed < 0) shoulders = 0; else if (eltouch2.isPressed() && shoulderSpeed > 0) shoulders = 0; else shoulders = shoulderSpeed * 0.75;
+        if (eltouch1.isPressed() && elbowSpeed < 0) elbows = 0; else if (eltouch2.isPressed() && elbowSpeed > 0) elbows = 0; else elbows = elbowSpeed;
 
         shoulder.setPower(shoulders);
-        elbow.setPower(elbows);
+        elbow.setPower(-elbows);
         wrist.setPower(wristSpeed * 0.6);
 
         if (servoOpen) {
@@ -169,7 +189,7 @@ public class AttachmentControl {
     public void armManualComp(double shoulderSpeed, double elbowSpeed, double wristSpeed, boolean servoOpen, TelemetryControl telemetryControl) {
 
         if (bottom.isPressed() && shoulderSpeed < 0) shoulders = 0; else if (eltouch2.isPressed() && shoulderSpeed < 0) shoulders = 0; else shoulders = shoulderSpeed;
-        if (eltouch1.isPressed() && elbowSpeed < 0) elbows = 0; else if (eltouch2.isPressed() && elbowSpeed > 0) elbows = 0; else elbows = elbowSpeed;
+        if (eltouch1.isPressed() && elbowSpeed < 0) elbows = 0; else if (eltouch2.isPressed() && elbowSpeed < 0) elbows = 0; else elbows = elbowSpeed;
 
         telemetryControl.telemetryUpdate("bottom", String.valueOf(bottom.isPressed()));
         telemetryControl.telemetryUpdate("eltouch1", String.valueOf(eltouch1.isPressed()));
@@ -258,66 +278,53 @@ public class AttachmentControl {
 
     boolean auto = false;
     double wrists = 0;
+
+    boolean isArmAtPosition = false;
     // code to move the arm between 2 positions while maintaining manual control, currently code to move between the 2 positions does not work
     public void armAuto(boolean pickUp, boolean upButton, boolean servoToggle, double shoulderSpeed, double elbowSpeed, double wristSpeed) {
 
         if (pickUp) {
 
             shoulderpos = 0;
-            elbowpos = 2440;
+            elbowpos = -911;
+            wristpos = 6;
             auto = true;
+
+            this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
 
         } else if (upButton) {
 
-            shoulderpos = 4176;
-            elbowpos = 3480;
+            shoulderpos = 4188;
+            elbowpos = -4337;
+            wristpos = -37;
             auto = true;
+
+            this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
+
+        }
+
+        if (this.reachedTargetPosition(shoulder) && this.reachedTargetPosition(elbow) && this.reachedTargetPosition(wrist)) isArmAtPosition = true; else isArmAtPosition = false;
+
+        if (auto && !isArmAtPosition) {
+
+            this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
 
         } else {
 
-            if (bottom.isPressed() && shoulderSpeed < 0) shoulderpos = shoulderpos; else shoulderpos += (shoulderSpeed * 53);
-            if (eltouch1.isPressed() && elbowSpeed < 0) elbowpos = elbowpos; else if (bottom.isPressed() && elbowSpeed > 0 && elbow.getCurrentPosition() > 3140) elbowpos = elbowpos; else elbowpos += (elbowSpeed * 53);
-
-        }
-
-        if (shoulderpos <= 0 && !bottom.isPressed() && auto) {
-
-            shoulderpos -= 5;
-
-        } else if (shoulderpos <= 0 && bottom.isPressed() && (shoulderpos < shoulder.getCurrentPosition() - 10)) {
-
-            shoulderpos = shoulder.getCurrentPosition();
-
-        }
-
-        if (auto && elbow.getCurrentPosition() <= elbow.getTargetPosition() + 10 && elbow.getCurrentPosition() >= elbow.getTargetPosition() - 10) {
-
-            shoulder.setPower(1);
-
-        } else if (elbow.getCurrentPosition() != elbow.getTargetPosition() && auto) {
-
-            shoulder.setPower(0);
-
-        } else if (elbow.getCurrentPosition() <= elbow.getTargetPosition() + 10 && elbow.getCurrentPosition() >= elbow.getTargetPosition() - 10 && shoulder.getCurrentPosition() <= shoulder.getTargetPosition() + 10 && shoulder.getCurrentPosition() >= shoulder.getTargetPosition() - 10) {
-
             auto = false;
+            if (bottom.isPressed() && shoulderSpeed < 0) shoulders = 0; else shoulders = shoulderSpeed;
+            if (eltouch1.isPressed() && elbowSpeed < 0) elbows = 0; else if (eltouch2.isPressed() && elbowSpeed < 0) elbows = 0; else elbows = -elbowSpeed;
+            wrists = wristSpeed;
 
-        } else if (!auto) {
+            shoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            wrist.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            shoulder.setPower(0.875);
+            shoulder.setPower(shoulders);
+            elbow.setPower(elbows);
+            wrist.setPower(wristSpeed);
 
         }
-
-        shoulder.setTargetPosition(shoulderpos);
-        elbow.setTargetPosition(elbowpos);
-
-        shoulder.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        if (wristSpeed < 0 && wrist.getCurrentPosition() < 0) wrists = 0; else if (wristSpeed > 0 && wrist.getCurrentPosition() > 725) wrists = 0; else wrists = wristSpeed;
-
-        elbow.setPower(1);
-        wrist.setPower(wrists * 0.75);
 
         if (servoToggle) {
 
@@ -348,11 +355,11 @@ public class AttachmentControl {
     }
 
     public void armToScore(){
-        this.setArmPositions(4188,-4337,-37,true);
+        this.setArmPositions(4188,-4337,-37,false);
     }
 
     public void armToCatch(){
-        this.setArmPositions(0,-911,6,true);
+        this.setArmPositions(0,-911,6,false);
     }
 
 }
