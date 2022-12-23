@@ -23,6 +23,8 @@ public class AttachmentControl {
     public static DistanceSensor distance;
 
     public static DcMotorEx shoulder;
+    public static DcMotorEx shoulderHub;
+
     public static DcMotorEx elbow;
 
     public static Servo claw;
@@ -52,6 +54,8 @@ public class AttachmentControl {
 
     boolean TeleOp = false;
 
+    double elSpeed = 1;
+
     // this initialises all attachments
 
     public AttachmentControl(HardwareMap hardwareMap, TelemetryControl telemetryControl, ServoPosition position, boolean IsTeleOp) {
@@ -62,6 +66,12 @@ public class AttachmentControl {
         shoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         shoulder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        shoulderHub = (DcMotorEx) hardwareMap.dcMotor.get("shoulderHub");
+        shoulderHub.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shoulderHub.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shoulderHub.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shoulderHub.setDirection(DcMotorSimple.Direction.REVERSE);
 
         elbow = (DcMotorEx) hardwareMap.dcMotor.get("elbow");
         elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -75,6 +85,7 @@ public class AttachmentControl {
 
         // did this because code was casting errors at a time, useless now (I think, don't remove just to be safe)
         shoulder.setTargetPosition(0);
+        shoulderHub.setTargetPosition(0);
         elbow.setTargetPosition(0);
         wrist.setTargetPosition(0);
 
@@ -104,16 +115,22 @@ public class AttachmentControl {
         while (!bottom.isPressed()) {
 
             shoulder.setPower(-1);
+            shoulderHub.setPower(-1);
 
         }
 
         shoulder.setPower(0);
         shoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shoulderHub.setPower(0);
+        shoulderHub.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shoulderHub .setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         while (!eltouch1.isPressed()) {
 
-            elbow.setPower(-1);
+            if (eltouch2.isPressed()) elSpeed = -elSpeed;
+
+            elbow.setPower(elSpeed);
 
         }
 
@@ -141,6 +158,7 @@ public class AttachmentControl {
     public void setShoulderManual(double speed) {
 
         shoulder.setPower(speed * 0.5);
+        shoulderHub.setPower(speed * 0.5);
 
     }
 
@@ -166,6 +184,7 @@ public class AttachmentControl {
         if (eltouch1.isPressed() && elbowSpeed < 0) elbows = 0; else if (eltouch2.isPressed() && elbowSpeed > 0) elbows = 0; else elbows = elbowSpeed;
 
         shoulder.setPower(shoulders);
+        shoulderHub.setPower(shoulders);
         elbow.setPower(-elbows);
         wrist.setPower(wristSpeed * 0.6);
 
@@ -198,6 +217,7 @@ public class AttachmentControl {
 //        if (wrist.getCurrentPosition() < -150 && wristSpeed < 0) wristSpeed = 0; else if (wrist.getCurrentPosition() > 850 && wristSpeed > 0) wristSpeed = 0;
 
         shoulder.setPower(shoulders);
+        shoulderHub.setPower(shoulders);
         elbow.setPower(-elbows);
         wrist.setPower(wristSpeed * 0.6);
 
@@ -227,6 +247,7 @@ public class AttachmentControl {
     public void setArmTargetPositions(int shoulderp, int elbowp, int wristp) {
 
         shoulder.setTargetPosition(shoulderp);
+        shoulderHub.setTargetPosition(shoulderp);
         elbow.setTargetPosition(elbowp);
         wrist.setTargetPosition(wristp);
 
@@ -235,16 +256,19 @@ public class AttachmentControl {
     public void setArmPositions(int shoulderp, int elbowp, int wristp, boolean WAIT) {
 
         shoulder.setTargetPosition(shoulderp);
+        shoulderHub.setTargetPosition(shoulderp);
         elbow.setTargetPosition(elbowp);
         wrist.setTargetPosition(wristp);
 
         shoulder.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        shoulderHub.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         wrist.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         shoulder.setPower(1);
+        shoulderHub.setPower(1);
         elbow.setPower(1);
-        wrist.setPower(1);
+        wrist.setPower(0.75);
 
         if (WAIT) {
 
@@ -317,10 +341,12 @@ public class AttachmentControl {
             wrists = wristSpeed;
 
             shoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            shoulderHub.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             wrist.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             shoulder.setPower(shoulders);
+            shoulderHub.setPower(shoulders);
             elbow.setPower(elbows);
             wrist.setPower(wristSpeed);
 

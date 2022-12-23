@@ -1,17 +1,15 @@
 package org.firstinspires.ftc.teamcode.Tests;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.ftc.waterloo.h2oloobots.AttachmentControl;
 import com.ftc.waterloo.h2oloobots.TelemetryControl;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Disabled
 @Config
-@Autonomous(name = "ArmTestAuto")
-public class ArmTestAuto extends LinearOpMode {
+@Autonomous(name = "ArmTestAuto2")
+public class ArmTestAuto2 extends LinearOpMode {
 
     ElapsedTime timer = new ElapsedTime();
 
@@ -28,9 +26,11 @@ public class ArmTestAuto extends LinearOpMode {
 
         this.pickup(attachmentControl);
 
-        attachmentControl.setArmPositions(0, -3443, 4, true);
+        attachmentControl.setArmPositions(214, -3623, 22, true);
 
         this.servo(attachmentControl, 1);
+
+        this.pickup(attachmentControl);
 
         this.score(attachmentControl);
 
@@ -38,23 +38,25 @@ public class ArmTestAuto extends LinearOpMode {
 
         this.pickup(attachmentControl);
 
-        attachmentControl.setArmPositions(0, -3432, 4, true);
+        attachmentControl.setArmPositions(139, -3549, 4, true);
 
         this.servo(attachmentControl, 1);
-
-        this.score(attachmentControl);
-
-        this.servo(attachmentControl, 0);
 
         this.pickup(attachmentControl);
 
-        attachmentControl.setArmPositions(0, -3608, 4, true);
-
-        this.servo(attachmentControl, 1);
-
         this.score(attachmentControl);
 
         this.servo(attachmentControl, 0);
+
+//        this.pickup(attachmentControl);
+//
+//        attachmentControl.setArmPositions(0, -3608, 4, true);
+//
+//        this.servo(attachmentControl, 1);
+//
+//        this.score(attachmentControl);
+//
+//        this.servo(attachmentControl, 0);
 
         attachmentControl.setArmPositions(0, -0, -0, true);
 
@@ -62,9 +64,9 @@ public class ArmTestAuto extends LinearOpMode {
 
     public void score(AttachmentControl attachmentControl) {
 
-        attachmentControl.setArmPositions(4497, -1755, 4, true);
+        attachmentControl.setArmPositions(3929, -2078, 4, true);
 
-        attachmentControl.setArmPositions(4497, -1755, -801, true);
+        attachmentControl.setArmPositions(3929, -2078, -703, true);
 
     }
 
