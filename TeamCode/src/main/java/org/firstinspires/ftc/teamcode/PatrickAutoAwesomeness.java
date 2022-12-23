@@ -135,10 +135,10 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
         int wristGrab = 0;
 
 
-            attachmentControl.setArmPositions(shoulderScore,elbowScore,wristScore,true); // Need to rotate opposite direction
-            attachmentControl.openClaw();
-            attachmentControl.setArmPositions(shoulderGrab,elbowGrab,wristGrab,true); //
-            attachmentControl.closeClaw();
+//            attachmentControl.setArmPositions(shoulderScore,elbowScore,wristScore,true); // Need to rotate opposite direction
+//            attachmentControl.openClaw();
+//            attachmentControl.setArmPositions(shoulderGrab,elbowGrab,wristGrab,true); //
+//            attachmentControl.closeClaw();
             //Decrement shoulder and arm position to grab each cone on the stack
 
 

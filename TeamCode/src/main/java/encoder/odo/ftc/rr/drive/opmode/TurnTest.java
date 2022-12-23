@@ -10,7 +10,7 @@ import encoder.odo.ftc.rr.drive.SampleMecanumDrive;
 /*
  * This is a simple routine to test turning capabilities.
  */
-@Disabled
+//@Disabled
 @Config
 @Autonomous(group = "drive")
 public class TurnTest extends LinearOpMode {
