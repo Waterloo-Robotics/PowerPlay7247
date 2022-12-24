@@ -170,6 +170,7 @@ public class DriveTrain {
     }
 
     // Initialiser for Encoders, accounting Wheel Diameter, Gear Ratio, and Motor Counts per revolution to calculate counts per inch and counts per degree (rotation)
+    // used in timeAutoMecanumDrive
     public void EncoderAutoInit(double WHEEL_DIAMETER_MM, double GEAR_RATIO, double COUNTS_PER_REVOLUTION) {
 
         double WHEEL_DIAMETER_INCHES = WHEEL_DIAMETER_MM / 25.4;
@@ -222,6 +223,7 @@ public class DriveTrain {
 
     }
 
+    // we use odometry so this isn't needed for us but this is a good resource to have just in case, this makes a lot of programming drive encoders easier to manage with calaulations
     public void EncoderAutoMecanumDrive(double INCHES_FB, double INCHES_LR, double DEGREES_TURN, double SPEED, int time) {
 
         ElapsedTime timer = new ElapsedTime();
@@ -278,6 +280,7 @@ public class DriveTrain {
     }
 
     // honestly ignore this lol, this was to tune the motors for the weight so when the robot was supposed to move straight it would but there are flaws in it and I don't feel like fixing them right now it's 23:00
+    // update: now it is 21:00 but I still don't feel like fixing this or deleting it, it was designed to accommodate for uneven weight distribution but it is no longer needed
     public void weightConfig(Telemetry telemetry, TelemetryControl telemetryControl, double flpos, double frpos, double blpos, double brpos, double speed, @NonNull Direction direction, double DIST_REV) {
 
         flveloavg = 0;

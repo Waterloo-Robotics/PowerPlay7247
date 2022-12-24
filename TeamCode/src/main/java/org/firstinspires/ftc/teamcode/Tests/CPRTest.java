@@ -14,7 +14,7 @@ public class CPRTest extends LinearOpMode {
 
     int motorPos;
 
-    public void runOpMode() {
+    public void runOpMode() { // literally just reads encoder counts so I know which number to take off the website for counts per revolution
 
         motor = hardwareMap.dcMotor.get("REV1");
         motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

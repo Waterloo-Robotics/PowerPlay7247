@@ -9,18 +9,14 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class AttachmentTest extends LinearOpMode {
 
 
-    public void runOpMode() {
+    public void runOpMode() { // actively updated attachment test file, used to test new parts of the robot and control the arm without all the other dangerous parts of the robot active
 
         TelemetryControl telemetryControl = new TelemetryControl(telemetry);
         AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl, AttachmentControl.ServoPosition.open, true);
 
-        double shDir = 0;
+        double wristDir = 0; // variable to combine the triggers to define wrist speed
 
-        double elDir = 0;
-
-        double wristDir = 0;
-
-        boolean isBPushed = false;
+        boolean isBPushed = false; // helper variable for toggle code
 
         boolean claw = true;
 
@@ -28,15 +24,9 @@ public class AttachmentTest extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            // TODO update these controls
-
-            if (gamepad2.dpad_up) shDir = 1; else if (gamepad2.dpad_down) shDir = -1; else shDir = 0;
-
-            if (gamepad2.y) elDir = -1; else if (gamepad2.a) elDir = 1; else elDir = 0;
-
             if (gamepad2.right_trigger > 0.1) wristDir = -gamepad2.right_trigger; else if (gamepad2.left_trigger > 0.1) wristDir = gamepad2.left_trigger; else wristDir = 0;
 
-            if (gamepad2.b && !isBPushed) {
+            if (gamepad2.b && !isBPushed) { // toggle code, if you press B it switches between closed and open
 
                 claw = !claw;
 
@@ -52,8 +42,6 @@ public class AttachmentTest extends LinearOpMode {
             attachmentControl.armManual(-gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir, claw, telemetryControl);
 
             attachmentControl.touchSensor();
-
-//            attachmentControl.armManual(-gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir, claw, telemetryControl);
 
             telemetryControl.update();
 

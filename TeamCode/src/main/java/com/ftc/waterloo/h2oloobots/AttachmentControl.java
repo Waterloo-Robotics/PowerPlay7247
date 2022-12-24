@@ -1,7 +1,6 @@
 package com.ftc.waterloo.h2oloobots;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -12,31 +11,32 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
-// Holds All non-drivetrain programming (for the most part)
+// Holds All non-drivetrain physical programming (except camera stuff)
 
 @Config
 public class AttachmentControl {
 
+    // these currently don't have a use
     public static ColorSensor color;
     public static DistanceSensor distance;
 
+    // shoulderHub is the shoulder motor closer to the REV hubs
     public static DcMotorEx shoulder;
     public static DcMotorEx shoulderHub;
 
     public static DcMotorEx elbow;
 
-    public static Servo claw;
-
     public static DcMotorEx wrist;
+
+    public static Servo claw;
 
     public static TouchSensor bottom;
 
+    // eltouch1 is the touch sensor on the arm, eltouch2 is the touch sensor the elbow channel presses when it goes too far down
     public static TouchSensor eltouch1;
-
     public static TouchSensor eltouch2;
 
+    // old stuff from testing REV core hex motors, useless now
     public static double cpr = 288;
 
     public static double deg = 10;
@@ -45,7 +45,7 @@ public class AttachmentControl {
 
     TelemetryControl telemetryControlLocal;
 
-    public enum ServoPosition {
+    public enum ServoPosition { // enum to define whether the servo is open or closed on initialisation, set by opmode running
 
         open,
         closed
@@ -54,13 +54,14 @@ public class AttachmentControl {
 
     boolean TeleOp = false;
 
+    // I genuinely don't know why this exists
     double elSpeed = 1;
 
     // this initialises all attachments
 
-    public AttachmentControl(HardwareMap hardwareMap, TelemetryControl telemetryControl, ServoPosition position, boolean IsTeleOp) {
+    public AttachmentControl(HardwareMap hardwareMap, TelemetryControl telemetryControl, ServoPosition position, boolean IsTeleOp) { // initialisation period
 
-        TeleOp = IsTeleOp;
+        TeleOp = IsTeleOp; // checks for teleop variable, useless for now but I'm sure I had a use in mind at a point
 
         shoulder = (DcMotorEx) hardwareMap.dcMotor.get("shoulder");
         shoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -110,8 +111,10 @@ public class AttachmentControl {
         eltouch2 = hardwareMap.touchSensor.get("eltouch2");
         bottom = hardwareMap.touchSensor.get("bottom");
 
+        // sets local telemetryControl variable to make life nice
         telemetryControlLocal = telemetryControl;
 
+        // moves until touch sensor is pressed, then zeroes out motors
         while (!bottom.isPressed()) {
 
             shoulder.setPower(-1);
@@ -126,6 +129,8 @@ public class AttachmentControl {
         shoulderHub.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shoulderHub .setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        // oh yeah that's why that exists it's to make sure the arm doesn't kill itself
+        // right
         while (!eltouch1.isPressed()) {
 
             if (eltouch2.isPressed()) elSpeed = -elSpeed;
@@ -140,14 +145,19 @@ public class AttachmentControl {
 
     }
 
-    public void openClaw(){
+    public void openClaw() { // code to open claw easily
+
         claw.setPosition(0);
+
     }
 
-    public void closeClaw(){
+    public void closeClaw() { // code to close claw easily
+
         claw.setPosition(1);
+
     }
-    public void touchSensor() {
+
+    public void touchSensor() { // returns whether or not all three touch sensors are pressed
 
         telemetryControlLocal.telemetryUpdate("Elbow Touch 1", String.valueOf(eltouch1.isPressed()));
         telemetryControlLocal.telemetryUpdate("Elbow Touch 2", String.valueOf(eltouch2.isPressed()));
@@ -244,7 +254,7 @@ public class AttachmentControl {
     ElapsedTime timer = new ElapsedTime();
     ElapsedTime dropTimer = new ElapsedTime();
 
-    public void setArmTargetPositions(int shoulderp, int elbowp, int wristp) {
+    public void setArmTargetPositions(int shoulderp, int elbowp, int wristp) { // simple command to set the target positions for the arm
 
         shoulder.setTargetPosition(shoulderp);
         shoulderHub.setTargetPosition(shoulderp);
@@ -253,7 +263,7 @@ public class AttachmentControl {
 
     }
 
-    public void setArmPositions(int shoulderp, int elbowp, int wristp, boolean WAIT) {
+    public void setArmPositions(int shoulderp, int elbowp, int wristp, boolean WAIT) { // sets arm positions, with the option to wait until all motors reach their positions before continuing
 
         shoulder.setTargetPosition(shoulderp);
         shoulderHub.setTargetPosition(shoulderp);
@@ -294,7 +304,7 @@ public class AttachmentControl {
 
     }
 
-    public boolean reachedTargetPosition(DcMotorEx motor) {
+    public boolean reachedTargetPosition(DcMotorEx motor) { // calculation to see if the encoder position is within 10 counts of the target position, returns boolean
 
         if (motor.getCurrentPosition() >= motor.getTargetPosition() - 10 && motor.getCurrentPosition() <= motor.getTargetPosition() + 10) return true; else return false;
 
@@ -304,36 +314,36 @@ public class AttachmentControl {
     double wrists = 0;
 
     boolean isArmAtPosition = false;
-    // code to move the arm between 2 positions while maintaining manual control, currently code to move between the 2 positions does not work
+    // code to move the arm between 2 positions while maintaining manual control
     public void armAuto(boolean pickUp, boolean upButton, boolean servoToggle, double shoulderSpeed, double elbowSpeed, double wristSpeed) {
 
-        if (pickUp) {
+        if (pickUp) { // checks for pickup button, and if true sets automatic positions for a close to pickup position (to prevent hitting the wall)
 
             shoulderpos = 0;
             elbowpos = -911;
             wristpos = 6;
-            auto = true;
+            auto = true; // variable to keep track of if the button was recently pressed
 
             this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
 
-        } else if (upButton) {
+        } else if (upButton) { // checks for score button, and if true sets automatic positions for scoring
 
             shoulderpos = 4188;
             elbowpos = -4337;
             wristpos = -37;
-            auto = true;
+            auto = true; // variable to keep track of if the button was recently pressed
 
             this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
 
         }
 
-        if (this.reachedTargetPosition(shoulder) && this.reachedTargetPosition(elbow) && this.reachedTargetPosition(wrist)) isArmAtPosition = true; else isArmAtPosition = false;
+        if (this.reachedTargetPosition(shoulder) && this.reachedTargetPosition(elbow) && this.reachedTargetPosition(wrist)) isArmAtPosition = true; else isArmAtPosition = false; // checks for if the arm is at position, and sets a boolean to reflect that value
 
-        if (auto && !isArmAtPosition) {
+        if (auto && !isArmAtPosition) { // checks if autonomous is true, and if the arm hasn't reached its position, and if both of those are correct it continues with the automatic code
 
             this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
 
-        } else {
+        } else { // if the arm reaches its position, or if the autonomous arm variable is false, return manual control to the user
 
             auto = false;
             if (bottom.isPressed() && shoulderSpeed < 0) shoulders = 0; else shoulders = shoulderSpeed;
@@ -374,18 +384,22 @@ public class AttachmentControl {
 
     }
 
-    public double revToVelo(double rpm) {
+    public double revToVelo(double rpm, double cpr) { // returns a calculation of rpm converted to DcMotorEx's velocity (calculated in encoder ticks per second)
 
         return rpm / 60 * cpr;
 
     }
 
-    public void armToScore(){
+    public void armToScore() { // quick code to bring the arm to a scoring position, old and position likely needs updated
+
         this.setArmPositions(4188,-4337,-37,false);
+
     }
 
-    public void armToCatch(){
+    public void armToCatch() { // quick code to bring the arm to a pickup position, old and position likely needs updated
+
         this.setArmPositions(0,-911,6,false);
+
     }
 
 }

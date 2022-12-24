@@ -13,7 +13,7 @@ public class ArmTestAuto2 extends LinearOpMode {
 
     ElapsedTime timer = new ElapsedTime();
 
-    public void runOpMode() {
+    public void runOpMode() { // code to test moving the arm autonomously, picking up the cones from the stack of 5 then scoring on the high junction next to it
 
         TelemetryControl telemetryControl = new TelemetryControl(telemetry);
         AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl, AttachmentControl.ServoPosition.closed, false);
@@ -62,7 +62,7 @@ public class ArmTestAuto2 extends LinearOpMode {
 
     }
 
-    public void score(AttachmentControl attachmentControl) {
+    public void score(AttachmentControl attachmentControl) { // rudimentary scoring position (High junction)
 
         attachmentControl.setArmPositions(3929, -2078, 4, true);
 
@@ -70,13 +70,13 @@ public class ArmTestAuto2 extends LinearOpMode {
 
     }
 
-    public void pickup(AttachmentControl attachmentControl) {
+    public void pickup(AttachmentControl attachmentControl) { // down position to prevent hitting the wall
 
         attachmentControl.setArmPositions(0, -2308, 4, true);
 
     }
 
-    public void servo(AttachmentControl attachmentControl, double position) {
+    public void servo(AttachmentControl attachmentControl, double position) { // servo setposition function (yes I know there's a function for closing and opening the servo I forgot and am too lazy to fix it
 
         AttachmentControl.claw.setPosition(position);
 

@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @Disabled
 @TeleOp
-public class bingus extends LinearOpMode {
+public class bingus extends LinearOpMode { // old opmode to teach programming
     public DcMotor motor1;
     Servo servo1;
 
