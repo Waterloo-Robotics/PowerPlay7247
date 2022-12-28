@@ -195,7 +195,7 @@ public class TeleOpComp extends LinearOpMode {
 
 //            attachmentControl.touchSensor();
 
-            attachmentControl.armAuto(gamepad2.right_bumper, gamepad2.left_bumper, claw, -gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir);
+            attachmentControl.armCompWithAutomation(gamepad2.right_bumper, gamepad2.left_bumper, claw, -gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir);
 
             pickUp = false;
             score = false;

@@ -332,7 +332,7 @@ public class AttachmentControl {
 
     boolean isArmAtPosition = false;
     // code to move the arm between 2 positions while maintaining manual control
-    public void armAuto(boolean pickUp, boolean upButton, boolean servoToggle, double shoulderSpeed, double elbowSpeed, double wristSpeed) {
+    public void armCompWithAutomation(boolean pickUp, boolean upButton, boolean servoToggle, double shoulderSpeed, double elbowSpeed, double wristSpeed) {
 
         if (pickUp) { // checks for pickup button, and if true sets automatic positions for a close to pickup position (to prevent hitting the wall)
 

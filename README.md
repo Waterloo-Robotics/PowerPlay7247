@@ -13,7 +13,96 @@ If you are new to robotics or new to *FIRST* Tech Challenge, then you should con
 
 ### These will be updated at some point
 
-## 17.10.2022
+### And yes I'm aware I repeat over some dates I'll fix it eventually but not tonight
+
+## 19.12.2022
+
+* Removed encoder limit on wrist in armManualComp
+* Started tests with utilising arm in autonomous
+* Added functions to open and close claw
+
+## 12.12.2022
+
+* Updated automatic position setting of arm
+* Added option inside AttachmentControl to mark an opMode as TeleOp
+* Updated Autonomous
+* Deleted unnecessary files
+* Updated TelemetryControl
+* Added subpackage "Tests" to org.firstinspires.ftc.teamcode and moved files into it
+* Updated to FtcRobotController SDK 8.1.1
+
+## 2022 IA Nuclear_Meet_2022-03-12
+
+* Tweaks to odometry
+* Tweaks to autonomous
+
+## 05.12.2022
+
+* Added second touch sensor to elbow
+* Commented out buggy arm automation code from the Competition TeleOp opmode
+* Added automatic method to set all three arm motors' positions, with the option to stall the opmode until it finishes
+* Updated SDK to 8.1.0
+* Updated Readme
+* Further tweaks to automatic and manual arm code
+* Added camera vision in TeleOp, might utilise later
+* Had third competition, see 2022 IA Nuclear_Meet_2022-03-12
+
+## 28.11.2022
+
+* More tweaking of arm automation
+
+## 2022 IA Nuclear_Meet_2022-19-11
+
+* Minor adjustments to autonomous
+* Minor adjustments to arm control
+
+## 21.11.2022
+
+* Added some rudimentary explanatory comments to code
+* Added touch sensors to the arm
+* Minor adjustments to H2OLooBots library initialisation
+* Further work on arm automation
+* More tweaks to arm control
+* Added separate opmode for other side of field
+* Had second competition, see 2022 IA Nuclear_Meet_2022-19-11
+
+## 2022 IA Nuclear_Meet_2022-12-11
+
+* Changed autonomous to not run into signal cone
+* Changed TeleOp drivetrain function to have a speed multiplier
+* Changed arm controls
+* Minor autonomous tweaks
+
+## 14.11.2022
+
+* Started rough arm automation
+* Improved arm manual functionality
+* Added claw functionality
+* Improved autonomous
+* Improved arm initialisation
+* Added separate functions for testing and competition for the arm
+* Got rid of useless files
+* Changed arm controls
+* Had first competition, see 2022 IA Nuclear_Meet_2022-12-11
+
+## 07.11.2022
+
+* Updated Readme
+* Added wrist functionality
+* Changed the way that the H2OLooBots library was initialised
+* Added wrist functionality
+
+## 31.10.2022
+
+* Finished initial odometry tuning
+* Added shoulder and elbow functionality to the arm
+
+## 24.10.2022
+
+* Odometry tuning
+* Testing of different motors and sensors
+
+## 17.11.2022
 
 * Attempts to automate arm movement in TeleOp
 
