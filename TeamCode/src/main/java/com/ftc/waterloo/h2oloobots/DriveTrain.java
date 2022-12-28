@@ -279,7 +279,7 @@ public class DriveTrain {
 
     }
 
-    // honestly ignore this lol, this was to tune the motors for the weight so when the robot was supposed to move straight it would but there are flaws in it and I don't feel like fixing them right now it's 23:00
+    // honestly ignore this lol, there are flaws in it and I don't feel like fixing them right now it's 23:00
     // update: now it is 21:00 but I still don't feel like fixing this or deleting it, it was designed to accommodate for uneven weight distribution but it is no longer needed
     public void weightConfig(Telemetry telemetry, TelemetryControl telemetryControl, double flpos, double frpos, double blpos, double brpos, double speed, @NonNull Direction direction, double DIST_REV) {
 

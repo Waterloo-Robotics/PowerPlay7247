@@ -200,6 +200,7 @@ public class AttachmentControl {
 
     int shoulderpos, elbowpos, wristpos = 0;
 
+    // moves the arm manually without the aid of encoder counts, only limits are touch sensors
     public void armManual(double shoulderSpeed, double elbowSpeed, double wristSpeed, boolean servoOpen, TelemetryControl telemetryControl) {
 
         if (bottom.isPressed() && shoulderSpeed < 0) shoulders = 0; else if (eltouch2.isPressed() && shoulderSpeed > 0) shoulders = 0; else shoulders = shoulderSpeed * 0.75;
@@ -227,7 +228,7 @@ public class AttachmentControl {
         telemetryControl.telemetryUpdate("claw pos", String.valueOf(claw.getPosition()));
     }
 
-    // supposed to have encoder limits to prevent driver error, doesn't quite work right however
+    // moves the arm, supposed to have encoder limits to prevent driver error however it doesn't quite work right
     public void armManualComp(double shoulderSpeed, double elbowSpeed, double wristSpeed, boolean servoOpen, TelemetryControl telemetryControl) {
 
         if (bottom.isPressed() && shoulderSpeed < 0) shoulders = 0; else if (eltouch2.isPressed() && shoulderSpeed < 0) shoulders = 0; else shoulders = shoulderSpeed;
@@ -268,7 +269,8 @@ public class AttachmentControl {
     ElapsedTime timer = new ElapsedTime();
     ElapsedTime dropTimer = new ElapsedTime();
 
-    public void setArmTargetPositions(int shoulderp, int elbowp, int wristp) { // simple command to set the target positions for the arm
+    // simple command to set the target positions for the arm
+    public void setArmTargetPositions(int shoulderp, int elbowp, int wristp) {
 
         shoulder.setTargetPosition(shoulderp);
         shoulderHub.setTargetPosition(shoulderp);
@@ -277,7 +279,8 @@ public class AttachmentControl {
 
     }
 
-    public void setArmPositions(int shoulderp, int elbowp, int wristp, boolean WAIT) { // sets arm positions, with the option to wait until all motors reach their positions before continuing
+    // sets arm positions, with the option to wait until all motors reach their positions before continuing
+    public void setArmPositions(int shoulderp, int elbowp, int wristp, boolean WAIT) {
 
         shoulder.setTargetPosition(shoulderp);
         shoulderHub.setTargetPosition(shoulderp);
@@ -318,7 +321,8 @@ public class AttachmentControl {
 
     }
 
-    public boolean reachedTargetPosition(DcMotorEx motor) { // calculation to see if the encoder position is within 10 counts of the target position, returns boolean
+    // calculation to see if the encoder position is within 10 counts of the target position, returns boolean
+    public boolean reachedTargetPosition(DcMotorEx motor) {
 
         if (motor.getCurrentPosition() >= motor.getTargetPosition() - 10 && motor.getCurrentPosition() <= motor.getTargetPosition() + 10) return true; else return false;
 
@@ -397,19 +401,22 @@ public class AttachmentControl {
 
     }
 
-    public double revToVelo(double rpm, double cpr) { // returns a calculation of rpm converted to DcMotorEx's velocity (calculated in encoder ticks per second)
+    // returns a calculation of rpm converted to DcMotorEx's velocity (calculated in encoder ticks per second)
+    public double revToVelo(double rpm, double cpr) {
 
         return rpm / 60 * cpr;
 
     }
 
-    public void armToScore() { // quick code to bring the arm to a scoring position, old and position likely needs updated
+    // quick code to bring the arm to a scoring position, old and position likely needs updated
+    public void armToScore() {
 
         this.setArmPositions(4188,-4337,-37,false);
 
     }
 
-    public void armToCatch() { // quick code to bring the arm to a pickup position, old and position likely needs updated
+    // quick code to bring the arm to a pickup position, old and position likely needs updated
+    public void armToCatch() {
 
         this.setArmPositions(0,-911,6,false);
 

@@ -34,7 +34,7 @@ public class TelemetryControl {
 
     }
 
-    // typical telemetry.addData line with a label/title and the value of said thing
+    // typical telemetry.addData line with a label/title and a value
     public void telemetryUpdate(String caption, String value) {
 
         telemetryLocal.addData(caption, value);
@@ -85,6 +85,7 @@ public class TelemetryControl {
 
     }
 
+    // starts camera stream, no clue why this is used instead of just the single line but whatever it appears to be used so I'm not gonna touch it
     public void startCameraStream(CameraStreamSource source, double maxFps) {
 
         dashboard.startCameraStream(source, maxFps);
@@ -99,6 +100,7 @@ public class TelemetryControl {
 
     }
 
+    // gets which direction the motor is running (1 is clockwise and -1 is anticlockwise when the motor directions are all set to FORWARD
     public double getDirection(double motorPower) {
 
         if (motorPower != 0) {
