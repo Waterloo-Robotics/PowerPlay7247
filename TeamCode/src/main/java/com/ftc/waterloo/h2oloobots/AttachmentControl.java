@@ -35,6 +35,7 @@ public class AttachmentControl {
     // eltouch1 is the touch sensor on the arm, eltouch2 is the touch sensor the elbow channel presses when it goes too far down
     public static TouchSensor eltouch1;
     public static TouchSensor eltouch2;
+    public static TouchSensor wristTouch;
 
     // old stuff from testing REV core hex motors, useless now
     public static double cpr = 288;
@@ -110,6 +111,7 @@ public class AttachmentControl {
         eltouch1 = hardwareMap.touchSensor.get("eltouch1");
         eltouch2 = hardwareMap.touchSensor.get("eltouch2");
         bottom = hardwareMap.touchSensor.get("bottom");
+        wristTouch = hardwareMap.touchSensor.get("wristTouch");
 
         // sets local telemetryControl variable to make life nice
         telemetryControlLocal = telemetryControl;
@@ -142,6 +144,16 @@ public class AttachmentControl {
         elbow.setPower(0);
         elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        while (!wristTouch.isPressed()) {
+
+            wrist.setPower(0.5);
+
+        }
+
+        wrist.setPower(0);
+        wrist.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        wrist.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 
@@ -184,7 +196,7 @@ public class AttachmentControl {
 
     }
 
-    double shoulders, elbows;
+    double shoulders, elbows, wrists = 0;
 
     int shoulderpos, elbowpos, wristpos = 0;
 
@@ -192,11 +204,12 @@ public class AttachmentControl {
 
         if (bottom.isPressed() && shoulderSpeed < 0) shoulders = 0; else if (eltouch2.isPressed() && shoulderSpeed > 0) shoulders = 0; else shoulders = shoulderSpeed * 0.75;
         if (eltouch1.isPressed() && elbowSpeed < 0) elbows = 0; else if (eltouch2.isPressed() && elbowSpeed > 0) elbows = 0; else elbows = elbowSpeed;
+        if (wristTouch.isPressed() && wristSpeed > 0) wrists = 0; else wrists = wristSpeed * 0.6;
 
         shoulder.setPower(shoulders);
         shoulderHub.setPower(shoulders);
         elbow.setPower(-elbows);
-        wrist.setPower(wristSpeed * 0.6);
+        wrist.setPower(wrists);
 
         if (servoOpen) {
 
@@ -219,6 +232,7 @@ public class AttachmentControl {
 
         if (bottom.isPressed() && shoulderSpeed < 0) shoulders = 0; else if (eltouch2.isPressed() && shoulderSpeed < 0) shoulders = 0; else shoulders = shoulderSpeed;
         if (eltouch1.isPressed() && elbowSpeed < 0) elbows = 0; else if (eltouch2.isPressed() && elbowSpeed < 0) elbows = 0; else elbows = elbowSpeed;
+        if (wristTouch.isPressed() && wristSpeed > 0) wrists = 0; else wrists = wristSpeed * 0.6;
 
         telemetryControl.telemetryUpdate("bottom", String.valueOf(bottom.isPressed()));
         telemetryControl.telemetryUpdate("eltouch1", String.valueOf(eltouch1.isPressed()));
@@ -229,7 +243,7 @@ public class AttachmentControl {
         shoulder.setPower(shoulders);
         shoulderHub.setPower(shoulders);
         elbow.setPower(-elbows);
-        wrist.setPower(wristSpeed * 0.6);
+        wrist.setPower(wrists);
 
         if (servoOpen) {
 
@@ -311,7 +325,6 @@ public class AttachmentControl {
     }
 
     boolean auto = false;
-    double wrists = 0;
 
     boolean isArmAtPosition = false;
     // code to move the arm between 2 positions while maintaining manual control
@@ -348,7 +361,7 @@ public class AttachmentControl {
             auto = false;
             if (bottom.isPressed() && shoulderSpeed < 0) shoulders = 0; else shoulders = shoulderSpeed;
             if (eltouch1.isPressed() && elbowSpeed < 0) elbows = 0; else if (eltouch2.isPressed() && elbowSpeed < 0) elbows = 0; else elbows = -elbowSpeed;
-            wrists = wristSpeed;
+            if (wristTouch.isPressed() && wristSpeed > 0) wrists = 0; else wrists = wristSpeed * 0.6;
 
             shoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             shoulderHub.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -358,7 +371,7 @@ public class AttachmentControl {
             shoulder.setPower(shoulders);
             shoulderHub.setPower(shoulders);
             elbow.setPower(elbows);
-            wrist.setPower(wristSpeed);
+            wrist.setPower(wrists);
 
         }
 
