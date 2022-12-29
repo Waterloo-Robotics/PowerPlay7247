@@ -66,7 +66,7 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
     public void runOpMode() {
 
         TelemetryControl telemetryControl = new TelemetryControl(telemetry);
-        AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl, AttachmentControl.ServoPosition.closed, false);
+        AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl, AttachmentControl.ServoPosition.closed, false, true);
 
         initVuforia();
         initTfod();
@@ -86,10 +86,10 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         TrajectorySequence drive_to_stack = drive.trajectorySequenceBuilder(startPose)
-                .strafeLeft(4)
-                .forward(47)
-                .turn(Math.toRadians(90))
-                .forward(8)
+                .lineToLinearHeading(new Pose2d(0, 12, 0))
+                .lineToLinearHeading(new Pose2d(50, 12, 0))
+                .turn(Math.toRadians(-90))
+//                .lineToLinearHeading(new Pose2d(53, -3, Math.toRadians(-90)))
                 .build();
 
 

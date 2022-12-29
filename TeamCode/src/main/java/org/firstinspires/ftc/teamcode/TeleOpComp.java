@@ -10,6 +10,7 @@ import com.ftc.waterloo.h2oloobots.TelemetryControl;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -74,7 +75,7 @@ public class TeleOpComp extends LinearOpMode {
 
         TelemetryControl telemetryControl = new TelemetryControl(telemetry);
         DriveTrain driveTrain = new DriveTrain(hardwareMap, telemetryControl);
-        AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl, AttachmentControl.ServoPosition.open, true);
+        AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl, AttachmentControl.ServoPosition.open, true, true);
 
         // Declaring variables for joystick controls (greyed out ones are no longer used)
 
@@ -92,13 +93,29 @@ public class TeleOpComp extends LinearOpMode {
 
         boolean score = false;
 
-        boolean claw = true;
+        boolean claw = false;
 
         boolean isBPushed = false; // toggle for opening/closing the claw. Holding the B button just makes the claw close.
 
         boolean yPressed = false;
 
         double speedMul = 0.55;
+
+        boolean isBackPressed = false;
+
+        boolean isBackPressedOnce = false;
+
+        ElapsedTime backTimer = new ElapsedTime();
+
+        boolean autoEnabled = true;
+
+        boolean isStartPressed = false;
+
+        boolean isStartPressedOnce = false;
+
+        ElapsedTime startTimer = new ElapsedTime();
+
+        boolean colorEnabled = true;
 
         waitForStart();
 
@@ -184,18 +201,91 @@ public class TeleOpComp extends LinearOpMode {
             if (gamepad2.right_trigger > 0.1) wristDir = -gamepad2.right_trigger; else if (gamepad2.left_trigger > 0.1) wristDir = gamepad2.left_trigger; else wristDir = 0;
             if (gamepad2.b && !isBPushed) {
 
-                claw = !claw;
+                if (AttachmentControl.clawAuto) claw = false; else claw = !claw;
 
                 isBPushed = true;
+
             } else if (!gamepad2.b) {
 
                 isBPushed = false;
 
             }
 
+            if (gamepad2.back && !isBackPressed) {
+
+                if (isBackPressedOnce && backTimer.seconds() < 0.67) {
+
+                    autoEnabled = !autoEnabled;
+
+                    gamepad2.rumbleBlips(3);
+
+                    isBackPressedOnce = false;
+
+                } else {
+
+                    if (autoEnabled) {
+
+                        gamepad2.rumbleBlips(1);
+
+                    } else {
+
+                        gamepad2.rumbleBlips(2);
+
+                    }
+
+                    backTimer.reset();
+
+                    isBackPressedOnce = true;
+
+                }
+
+                isBackPressed = true;
+
+            } else if (!gamepad2.back) {
+
+                isBackPressed = false;
+
+            }
+
+            if (gamepad2.start && !isStartPressed) {
+
+                if (isStartPressedOnce && startTimer.seconds() < 0.67) {
+
+                    colorEnabled = !colorEnabled;
+
+                    gamepad2.rumbleBlips(4);
+
+                    isStartPressedOnce = false;
+
+                } else {
+
+                    if (colorEnabled) {
+
+                        gamepad2.rumbleBlips(1);
+
+                    } else {
+
+                        gamepad2.rumbleBlips(2);
+
+                    }
+
+                    startTimer.reset();
+
+                    isStartPressedOnce = true;
+
+                }
+
+                isStartPressed = true;
+
+            } else if (!gamepad2.start) {
+
+                isStartPressed = false;
+
+            }
+
 //            attachmentControl.touchSensor();
 
-            attachmentControl.armCompWithAutomation(gamepad2.right_bumper, gamepad2.left_bumper, claw, -gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir);
+            attachmentControl.armCompWithAutomation(autoEnabled, colorEnabled, gamepad2.a, gamepad2.right_bumper, gamepad2.left_bumper, claw, gamepad2.b, -gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir, gamepad2.dpad_left, gamepad2.dpad_right);
 
             pickUp = false;
             score = false;

@@ -18,7 +18,7 @@ public class ArmTestAuto extends LinearOpMode {
     public void runOpMode() {
 
         TelemetryControl telemetryControl = new TelemetryControl(telemetry);
-        AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl, AttachmentControl.ServoPosition.closed, false);
+        AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl, AttachmentControl.ServoPosition.closed, false, true);
 
         waitForStart(); // code to test moving the arm autonomously, picking up the cones from the stack of 5 then scoring on the medium junction next to it
 

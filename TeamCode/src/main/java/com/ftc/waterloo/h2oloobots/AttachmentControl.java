@@ -11,14 +11,15 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 // Holds All non-drivetrain physical programming (except camera stuff)
 
 @Config
 public class AttachmentControl {
 
-    // these currently don't have a use
-    public static ColorSensor color;
-    public static DistanceSensor distance;
+    // color sensor on claw
+    public static ColorSensor clawColor;
 
     // shoulderHub is the shoulder motor closer to the REV hubs
     public static DcMotorEx shoulder;
@@ -59,8 +60,7 @@ public class AttachmentControl {
     double elSpeed = 1;
 
     // this initialises all attachments
-
-    public AttachmentControl(HardwareMap hardwareMap, TelemetryControl telemetryControl, ServoPosition position, boolean IsTeleOp) { // initialisation period
+    public AttachmentControl(HardwareMap hardwareMap, TelemetryControl telemetryControl, ServoPosition position, boolean IsTeleOp, boolean home) { // initialisation period
 
         TeleOp = IsTeleOp; // checks for teleop variable, useless for now but I'm sure I had a use in mind at a point
 
@@ -93,17 +93,17 @@ public class AttachmentControl {
 
         // scales claw so we can use 0 and 1 always, and only have to change one number with hardware changes
         claw = hardwareMap.servo.get("claw");
-        claw.scaleRange(0.7, 1);
+        claw.scaleRange(0, 0.25);
 
         // determines if the claw is open or closed at initialisation
         switch (position) {
 
             case open:
-                claw.setPosition(0);
+                claw.setPosition(1);
             break;
 
             case closed:
-                claw.setPosition(1);
+                claw.setPosition(0);
             break;
 
         }
@@ -116,44 +116,75 @@ public class AttachmentControl {
         // sets local telemetryControl variable to make life nice
         telemetryControlLocal = telemetryControl;
 
-        // moves until touch sensor is pressed, then zeroes out motors
-        while (!bottom.isPressed()) {
+        clawColor = hardwareMap.colorSensor.get("clawColor");
 
-            shoulder.setPower(-1);
-            shoulderHub.setPower(-1);
+        if (home) {
+            // moves until touch sensor is pressed, then zeroes out motors
+
+            while (!wristTouch.isPressed()) {
+
+                wrist.setPower(0.6);
+
+            }
+
+            wrist.setPower(0);
+            wrist.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            wrist.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            // oh yeah that's why that exists it's to make sure the arm doesn't kill itself
+            // right
+            while (!eltouch1.isPressed()) {
+
+                if (eltouch2.isPressed()) elSpeed = -elSpeed;
+
+                elbow.setPower(elSpeed);
+
+            }
+
+            elbow.setPower(0);
+            elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            while (!bottom.isPressed()) {
+
+                shoulder.setPower(-1);
+                shoulderHub.setPower(-1);
+
+            }
+
+            shoulder.setPower(0);
+            shoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            shoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            shoulderHub.setPower(0);
+            shoulderHub.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            shoulderHub.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         }
 
-        shoulder.setPower(0);
-        shoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        shoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        shoulderHub.setPower(0);
-        shoulderHub.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        shoulderHub .setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
 
-        // oh yeah that's why that exists it's to make sure the arm doesn't kill itself
-        // right
-        while (!eltouch1.isPressed()) {
+    public void clawManual(boolean closeButton, boolean openButton) {
 
-            if (eltouch2.isPressed()) elSpeed = -elSpeed;
+        if (closeButton) {
 
-            elbow.setPower(elSpeed);
+            claw.setPosition(claw.getPosition() + 0.001);
+
+        } else if (openButton) {
+
+            claw.setPosition(claw.getPosition() - 0.001);
 
         }
 
-        elbow.setPower(0);
-        elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        telemetryControlLocal.telemetryUpdate("Claw Pos", String.valueOf(claw.getPosition()));
 
-        while (!wristTouch.isPressed()) {
+    }
 
-            wrist.setPower(0.5);
+    public void clawColorTelemetry() {
 
-        }
-
-        wrist.setPower(0);
-        wrist.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        wrist.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        telemetryControlLocal.telemetryUpdate("Red", String.valueOf(clawColor.red()));
+        telemetryControlLocal.telemetryUpdate("Green", String.valueOf(clawColor.green()));
+        telemetryControlLocal.telemetryUpdate("Blue", String.valueOf(clawColor.blue()));
+        telemetryControlLocal.telemetryUpdate("Distance", String.valueOf(((DistanceSensor) clawColor).getDistance(DistanceUnit.CM)));
 
     }
 
@@ -174,6 +205,7 @@ public class AttachmentControl {
         telemetryControlLocal.telemetryUpdate("Elbow Touch 1", String.valueOf(eltouch1.isPressed()));
         telemetryControlLocal.telemetryUpdate("Elbow Touch 2", String.valueOf(eltouch2.isPressed()));
         telemetryControlLocal.telemetryUpdate("Bottom Touch", String.valueOf(bottom.isPressed()));
+        telemetryControlLocal.telemetryUpdate("Wrist Touch", String.valueOf(wristTouch.isPressed()));
 
     }
 
@@ -214,11 +246,11 @@ public class AttachmentControl {
 
         if (servoOpen) {
 
-            claw.setPosition(0);
+            claw.setPosition(1);
 
         } else {
 
-            claw.setPosition(1);
+            claw.setPosition(0);
 
         }
 
@@ -248,11 +280,11 @@ public class AttachmentControl {
 
         if (servoOpen) {
 
-            claw.setPosition(0);
+            claw.setPosition(1);
 
         } else {
 
-            claw.setPosition(1);
+            claw.setPosition(0);
 
         }
 
@@ -330,27 +362,208 @@ public class AttachmentControl {
 
     boolean auto = false;
 
+    public static boolean clawAuto = false;
+
     boolean isArmAtPosition = false;
     // code to move the arm between 2 positions while maintaining manual control
-    public void armCompWithAutomation(boolean pickUp, boolean upButton, boolean servoToggle, double shoulderSpeed, double elbowSpeed, double wristSpeed) {
+    public void armCompWithAutomation(boolean autoEnabled, boolean colorSensorEnabled, boolean pickUp, boolean middlePos, boolean upButton, boolean servoToggle, boolean servoButton, double shoulderSpeed, double elbowSpeed, double wristSpeed, boolean leftWrist, boolean rightWrist) {
 
-        if (pickUp) { // checks for pickup button, and if true sets automatic positions for a close to pickup position (to prevent hitting the wall)
+        if (autoEnabled) {
+
+            if (colorSensorEnabled) {
+
+                if (middlePos && ((DistanceSensor) clawColor).getDistance(DistanceUnit.CM) > 4.5) { // checks for pickup button, and if true sets automatic positions for a close to pickup position (to prevent hitting the wall)
+
+                    shoulderpos = 0;
+                    elbowpos = -2252;
+                    wristpos = -10;
+                    auto = true; // variable to keep track of if the button was recently pressed
+
+                    this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
+
+                } else if (upButton && elbow.getCurrentPosition() > -2888 && ((DistanceSensor) clawColor).getDistance(DistanceUnit.CM) < 4.5) { // checks for score button, and if true sets automatic positions for scoring
+
+                    shoulderpos = 3972;
+                    elbowpos = -2254;
+                    wristpos = -37;
+                    auto = true; // variable to keep track of if the button was recently pressed
+
+                    this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
+
+                } else if (leftWrist && !auto) {
+
+                    shoulderpos = shoulder.getCurrentPosition();
+                    elbowpos = elbow.getCurrentPosition();
+                    wristpos = -10;
+                    auto = true; // variable to keep track of if the button was recently pressed
+
+                    this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
+
+                } else if (rightWrist && !auto) {
+
+                    shoulderpos = shoulder.getCurrentPosition();
+                    elbowpos = elbow.getCurrentPosition();
+                    wristpos = -700;
+                    auto = true; // variable to keep track of if the button was recently pressed
+
+                    this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
+
+                } else if (pickUp && shoulder.getCurrentPosition() < 100) {
+
+                    shoulderpos = 0;
+                    elbowpos = -3722;
+                    wristpos = -10;
+                    auto = true; // variable to keep track of if the button was recently pressed
+
+                    this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
+
+                } else if (((clawColor.red() > 100 || clawColor.blue() > 100)) && !auto && elbow.getCurrentPosition() < -2000 && shoulder.getCurrentPosition() < 654 && ((DistanceSensor) clawColor).getDistance(DistanceUnit.CM) < 4.5) {
+
+                    shoulder.setPower(0);
+                    elbow.setPower(0);
+                    wrist.setPower(0);
+
+                    shoulderpos = 0;
+                    elbowpos = -2254;
+                    wristpos = -10;
+                    auto = true; // variable to keep track of if the button was recently pressed
+
+                    clawTime.reset();
+
+                    this.setArmTargetPositions(shoulderpos, elbowpos, wristpos);
+
+                }
+
+            } else {
+
+                if (middlePos) { // checks for pickup button, and if true sets automatic positions for a close to pickup position (to prevent hitting the wall)
+
+                    shoulderpos = 0;
+                    elbowpos = -2252;
+                    wristpos = -10;
+                    auto = true; // variable to keep track of if the button was recently pressed
+
+                    this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
+
+                } else if (upButton && elbow.getCurrentPosition() > -2888) { // checks for score button, and if true sets automatic positions for scoring
+
+                    shoulderpos = 3972;
+                    elbowpos = -2254;
+                    wristpos = -37;
+                    auto = true; // variable to keep track of if the button was recently pressed
+
+                    this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
+
+                } else if (leftWrist && !auto) {
+
+                    shoulderpos = shoulder.getCurrentPosition();
+                    elbowpos = elbow.getCurrentPosition();
+                    wristpos = -10;
+                    auto = true; // variable to keep track of if the button was recently pressed
+
+                    this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
+
+                } else if (rightWrist && !auto) {
+
+                    shoulderpos = shoulder.getCurrentPosition();
+                    elbowpos = elbow.getCurrentPosition();
+                    wristpos = -700;
+                    auto = true; // variable to keep track of if the button was recently pressed
+
+                    this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
+
+                } else if (pickUp && shoulder.getCurrentPosition() < 100) {
+
+                    shoulderpos = 0;
+                    elbowpos = -3722;
+                    wristpos = -10;
+                    auto = true; // variable to keep track of if the button was recently pressed
+
+                    this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
+
+                }
+
+            }
+
+        }
+
+        if (this.reachedTargetPosition(shoulder) && this.reachedTargetPosition(elbow) && this.reachedTargetPosition(wrist)) isArmAtPosition = true; else isArmAtPosition = false; // checks for if the arm is at position, and sets a boolean to reflect that value
+
+        if (auto && !isArmAtPosition && autoEnabled) { // checks if autonomous is true, and if the arm hasn't reached its position, and if both of those are correct it continues with the automatic code
+
+            if (clawTime.seconds() > 0.33 && clawTime.seconds() < 0.58) {
+
+                claw.setPosition(0);
+
+                clawAuto = true;
+
+            }
+
+            if (clawTime.seconds() > 0.58) {
+
+                this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
+
+            }
+
+        } else { // if the arm reaches its position, or if the autonomous arm variable is false, return manual control to the user
+
+            auto = false;
+            if (bottom.isPressed() && shoulderSpeed < 0) shoulders = 0; else shoulders = shoulderSpeed;
+            if (eltouch1.isPressed() && elbowSpeed < 0) elbows = 0; else if (eltouch2.isPressed() && elbowSpeed > 0) elbows = 0; else elbows = -elbowSpeed;
+            if (wristTouch.isPressed() && wristSpeed > 0) wrists = 0; else wrists = wristSpeed * 0.6;
+
+            shoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            shoulderHub.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            wrist.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            shoulder.setPower(shoulders);
+            shoulderHub.setPower(shoulders);
+            elbow.setPower(elbows);
+            wrist.setPower(wrists);
+
+            if (servoButton) {
+
+                clawAuto = false;
+
+            }
+
+            if (servoToggle && !clawAuto) {
+
+                claw.setPosition(0);
+
+            } else if (!clawAuto) {
+
+                claw.setPosition(1);
+
+            }
+
+        }
+
+        telemetryControlLocal.telemetryUpdate("shoulder pos", String.valueOf(shoulder.getCurrentPosition()));
+        telemetryControlLocal.telemetryUpdate("elbow pos", String.valueOf(elbow.getCurrentPosition()));
+        telemetryControlLocal.telemetryUpdate("wrist pos", String.valueOf(wrist.getCurrentPosition()));
+
+    }
+
+    ElapsedTime clawTime = new ElapsedTime();
+
+    public void clawColorAutoTest(boolean servoToggle, double shoulderSpeed, double elbowSpeed, double wristSpeed) {
+
+        if (((clawColor.red() > 500 || clawColor.blue() > 500)) && !auto && elbow.getCurrentPosition() < -2000 && shoulder.getCurrentPosition() < 654) {
+
+            shoulder.setPower(0);
+            elbow.setPower(0);
+            wrist.setPower(0);
 
             shoulderpos = 0;
             elbowpos = -911;
             wristpos = 6;
             auto = true; // variable to keep track of if the button was recently pressed
 
-            this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
+            clawTime.reset();
 
-        } else if (upButton) { // checks for score button, and if true sets automatic positions for scoring
-
-            shoulderpos = 4188;
-            elbowpos = -4337;
-            wristpos = -37;
-            auto = true; // variable to keep track of if the button was recently pressed
-
-            this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
+            this.setArmTargetPositions(shoulderpos, elbowpos, wristpos);
 
         }
 
@@ -358,7 +571,19 @@ public class AttachmentControl {
 
         if (auto && !isArmAtPosition) { // checks if autonomous is true, and if the arm hasn't reached its position, and if both of those are correct it continues with the automatic code
 
-            this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
+            if (clawTime.seconds() > 0.33) {
+
+                claw.setPosition(0);
+
+            }
+
+            if (clawTime.seconds() > 0.58) {
+
+                this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
+
+            }
+
+            servoToggle = false;
 
         } else { // if the arm reaches its position, or if the autonomous arm variable is false, return manual control to the user
 
@@ -377,15 +602,15 @@ public class AttachmentControl {
             elbow.setPower(elbows);
             wrist.setPower(wrists);
 
-        }
+            if (servoToggle) {
 
-        if (servoToggle) {
+                claw.setPosition(1);
 
-            claw.setPosition(1);
+            } else {
 
-        } else {
+                claw.setPosition(0);
 
-            claw.setPosition(0);
+            }
 
         }
 
@@ -394,10 +619,10 @@ public class AttachmentControl {
         telemetryControlLocal.telemetryUpdate("wrist pos", String.valueOf(wrist.getCurrentPosition()));
         telemetryControlLocal.telemetryUpdate("shoulder target pos", String.valueOf(shoulder.getTargetPosition()));
         telemetryControlLocal.telemetryUpdate("elbow target pos", String.valueOf(elbow.getTargetPosition()));
+        telemetryControlLocal.telemetryUpdate("wrist target pos", String.valueOf(wrist.getTargetPosition()));
         telemetryControlLocal.telemetryUpdate("claw pos", String.valueOf(claw.getPosition()));
         telemetryControlLocal.telemetryUpdate("auto", String.valueOf(auto));
-        telemetryControlLocal.telemetryUpdate("pickUp", String.valueOf(pickUp));
-        telemetryControlLocal.telemetryUpdate("upButton", String.valueOf(upButton));
+        telemetryControlLocal.telemetryUpdate("timer", String.valueOf(clawTime.seconds()));
 
     }
 
