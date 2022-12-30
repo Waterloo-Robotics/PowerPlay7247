@@ -183,10 +183,10 @@ public class TeleOpComp extends LinearOpMode {
 //            } else {
 //
 //                pickUp = false;
-//                score = false;
 //
 //            }
-
+            score = false;
+//
 //
 //            attachmentControl.armAuto(pickUp, score, claw);
 //            if (gamepad2.right_bumper) { attachmentControl.armToCatch(); }

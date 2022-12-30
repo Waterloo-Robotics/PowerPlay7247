@@ -86,9 +86,13 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         TrajectorySequence drive_to_stack = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(0, 12, 0))
-                .lineToLinearHeading(new Pose2d(50, 12, 0))
+                .lineToLinearHeading(new Pose2d(0, 9, 0))
+                .lineToLinearHeading(new Pose2d(55, 9, 0))
                 .turn(Math.toRadians(-90))
+                .forward(4)
+                .strafeLeft(7)
+
+
 //                .lineToLinearHeading(new Pose2d(53, -3, Math.toRadians(-90)))
                 .build();
 
@@ -124,6 +128,10 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
 
         drive.followTrajectorySequence(drive_to_stack);
         drive.setMotorPowers(0,0,0,0);
+        this.score(attachmentControl);
+        this.pickup(attachmentControl);
+        this.score(attachmentControl);
+
 
         // Values for arm location for scoring
         int elbowScore = -1082;
@@ -147,7 +155,7 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
 
 
 
-        sleep(3000);
+        //sleep(3000);
     }
 
     private void initVuforia() {
@@ -179,6 +187,29 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
         // Use loadModelFromFile() if you have downloaded a custom team model to the Robot Controller's FLASH.
 //        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
         tfod.loadModelFromFile(TFOD_MODEL_FILE, LABELS);
+    }
+
+    public void score(AttachmentControl attachmentControl) { // rudimentary scoring position (medium junction)
+
+        attachmentControl.setArmPositions(3899, -2404, -726, true);
+
+        //attachmentControl.setArmPositions(4497, -1755, -801, true);
+
+    }
+
+    public void pickup(AttachmentControl attachmentControl) { // down position to prevent hitting the wall
+
+        attachmentControl.setArmPositions(0, -3348, -11, true);
+
+    }
+
+    public void servo(AttachmentControl attachmentControl, double position) { // servo setposition function (yes I know there's a function for closing and opening the servo I forgot and am too lazy to fix it
+
+        AttachmentControl.claw.setPosition(position);
+
+        timer.reset();
+        while (timer.seconds() < 0.375) {}
+
     }
 
 }
