@@ -83,6 +83,8 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
 
         Pose2d startPose = new Pose2d(0,0,0);
 
+
+
         drive.setPoseEstimate(startPose);
 
         TrajectorySequence drive_to_stack = drive.trajectorySequenceBuilder(startPose)
@@ -91,11 +93,7 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
                 .turn(Math.toRadians(-90))
                 .forward(4)
                 .strafeLeft(7)
-
-
-//                .lineToLinearHeading(new Pose2d(53, -3, Math.toRadians(-90)))
                 .build();
-
 
         timer.reset();
 
@@ -127,35 +125,11 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
         }
 
         drive.followTrajectorySequence(drive_to_stack);
-        drive.setMotorPowers(0,0,0,0);
+        drive.setMotorPowers(0,0,0,0); // about 10 Seconds
         this.score(attachmentControl);
         this.pickup(attachmentControl);
         this.score(attachmentControl);
-
-
-        // Values for arm location for scoring
-        int elbowScore = -1082;
-        int shoulderScore = 4107;
-        int wristScore = -732;
-        // Values for arm location to grab cone 5
-        int elbowGrab = -3483;
-        int shoulderGrab = 209;
-        int wristGrab = 0;
-
-
-//            attachmentControl.setArmPositions(shoulderScore,elbowScore,wristScore,true); // Need to rotate opposite direction
-//            attachmentControl.openClaw();
-//            attachmentControl.setArmPositions(shoulderGrab,elbowGrab,wristGrab,true); //
-//            attachmentControl.closeClaw();
-            //Decrement shoulder and arm position to grab each cone on the stack
-
-
-        //TODO
-        //Drive to park Zone
-
-
-
-        //sleep(3000);
+        //Drive to Park
     }
 
     private void initVuforia() {
@@ -192,14 +166,14 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
     public void score(AttachmentControl attachmentControl) { // rudimentary scoring position (medium junction)
 
         attachmentControl.setArmPositions(3899, -2404, -726, true);
-
-        //attachmentControl.setArmPositions(4497, -1755, -801, true);
+        attachmentControl.openClaw();
 
     }
 
     public void pickup(AttachmentControl attachmentControl) { // down position to prevent hitting the wall
 
         attachmentControl.setArmPositions(0, -3348, -11, true);
+        attachmentControl.closeClaw();
 
     }
 
