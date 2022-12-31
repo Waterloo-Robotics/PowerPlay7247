@@ -44,8 +44,8 @@ public class AttachmentTest extends LinearOpMode {
 
             attachmentControl.clawColorTelemetry();
 
-//            attachmentControl.armManual(-gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir, claw, telemetryControl);
-            attachmentControl.clawColorAutoTest(claw, -gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir);
+            attachmentControl.armManual(-gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir, claw, telemetryControl);
+//            attachmentControl.clawColorAutoTest(claw, -gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir);
 
 //            attachmentControl.touchSensor();
 

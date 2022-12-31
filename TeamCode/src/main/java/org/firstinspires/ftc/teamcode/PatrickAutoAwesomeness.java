@@ -89,7 +89,7 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
 
         TrajectorySequence drive_to_stack = drive.trajectorySequenceBuilder(startPose)
                 .lineToLinearHeading(new Pose2d(0, 9, 0))
-                .lineToLinearHeading(new Pose2d(55, 9, 0))
+                .lineToLinearHeading(new Pose2d(53, 9, 0))
                 .turn(Math.toRadians(-90))
                 .forward(4)
                 .strafeLeft(7)
@@ -125,11 +125,13 @@ public class PatrickAutoAwesomeness extends LinearOpMode {
         }
 
         drive.followTrajectorySequence(drive_to_stack);
-        drive.setMotorPowers(0,0,0,0); // about 10 Seconds
-        this.score(attachmentControl);
-        this.pickup(attachmentControl);
-        this.score(attachmentControl);
-        //Drive to Park
+        drive.setMotorPowers(0,0,0,0); // about 10
+        attachmentControl.setArmPositions(3899, -2404, -726, true); //To Score
+        this.servo(attachmentControl, 1); //Open
+        attachmentControl.setArmPositions(0, -3348, -11, true); //To Pickup
+        this.servo(attachmentControl,0);
+        attachmentControl.setArmPositions(3899, -2404, -726, true); //To Score
+        this.servo(attachmentControl, 1);
     }
 
     private void initVuforia() {
