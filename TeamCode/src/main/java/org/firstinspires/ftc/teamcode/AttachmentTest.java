@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.ftc.waterloo.h2oloobots.AttachmentControl;
+import com.ftc.waterloo.h2oloobots.DriveTrain;
 import com.ftc.waterloo.h2oloobots.TelemetryControl;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -15,6 +16,7 @@ public class AttachmentTest extends LinearOpMode {
     public void runOpMode() { // actively updated attachment test file, used to test new parts of the robot and control the arm without all the other dangerous parts of the robot active
 
         TelemetryControl telemetryControl = new TelemetryControl(telemetry);
+        DriveTrain driveTrain = new DriveTrain(hardwareMap, telemetryControl);
         AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl, AttachmentControl.ServoPosition.open, true, home);
 
         double wristDir = 0; // variable to combine the triggers to define wrist speed
@@ -40,11 +42,14 @@ public class AttachmentTest extends LinearOpMode {
 
             }
 
+            driveTrain.MecanumTeleOp(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
 //            attachmentControl.touchSensor();
 
-            attachmentControl.clawColorTelemetry();
+//            attachmentControl.clawColorTelemetry();
 
-            attachmentControl.armManual(-gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir, claw, telemetryControl);
+            attachmentControl.distanceSensor();
+
+            attachmentControl.armManual(-gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir, claw);
 //            attachmentControl.clawColorAutoTest(claw, -gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir);
 
 //            attachmentControl.touchSensor();

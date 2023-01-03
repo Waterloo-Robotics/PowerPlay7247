@@ -117,6 +117,14 @@ public class TeleOpComp extends LinearOpMode {
 
         boolean colorEnabled = true;
 
+        boolean home = true;
+
+        boolean isAPressed = false;
+
+        boolean isAPressedOnce = false;
+
+        ElapsedTime aTimer = new ElapsedTime();
+
         waitForStart();
 
         while (opModeIsActive()) {
@@ -283,9 +291,35 @@ public class TeleOpComp extends LinearOpMode {
 
             }
 
+            if (gamepad1.a && !isAPressed) {
+
+                if (isAPressedOnce && aTimer.seconds() < 0.67) {
+
+                    home = true;
+
+                    isAPressedOnce = false;
+
+                } else {
+
+                    aTimer.reset();
+
+                    isAPressedOnce = true;
+
+                }
+
+                isAPressed = true;
+
+            } else if (!gamepad1.a) {
+
+                isAPressed = false;
+
+                home = false;
+
+            }
+
 //            attachmentControl.touchSensor();
 
-            attachmentControl.armCompWithAutomation(autoEnabled, colorEnabled, gamepad2.a, gamepad2.right_bumper, gamepad2.left_bumper, claw, gamepad2.b, -gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir, gamepad2.dpad_left, gamepad2.dpad_right);
+            attachmentControl.armCompWithAutomation(home, autoEnabled, gamepad2.dpad_down || gamepad2.a, gamepad2.right_bumper, gamepad2.left_bumper, claw, gamepad2.b, -gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir, gamepad2.dpad_left, gamepad2.dpad_right);
 
             pickUp = false;
             score = false;

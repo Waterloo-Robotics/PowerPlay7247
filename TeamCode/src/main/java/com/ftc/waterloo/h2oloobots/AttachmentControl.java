@@ -21,6 +21,8 @@ public class AttachmentControl {
     // color sensor on claw
     public static ColorSensor clawColor;
 
+    public static DistanceSensor distance;
+
     // shoulderHub is the shoulder motor closer to the REV hubs
     public static DcMotorEx shoulder;
     public static DcMotorEx shoulderHub;
@@ -118,6 +120,8 @@ public class AttachmentControl {
 
         clawColor = hardwareMap.colorSensor.get("clawColor");
 
+        distance = hardwareMap.get(DistanceSensor.class, "distance");
+
         if (home) {
             // moves until touch sensor is pressed, then zeroes out motors
 
@@ -160,6 +164,12 @@ public class AttachmentControl {
             shoulderHub.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         }
+
+    }
+
+    public void distanceSensor() {
+
+        telemetryControlLocal.telemetryUpdate("Distance", String.valueOf(distance.getDistance(DistanceUnit.MM)));
 
     }
 
@@ -209,31 +219,12 @@ public class AttachmentControl {
 
     }
 
-    public void setShoulderManual(double speed) {
-
-        shoulder.setPower(speed * 0.5);
-        shoulderHub.setPower(speed * 0.5);
-
-    }
-
-    public void setElbowManual(double speed) {
-
-        elbow.setPower(speed * 0.5);
-
-    }
-
-    public void setWristManual(double speed) {
-
-        wrist.setPower(speed * 0.5);
-
-    }
-
     double shoulders, elbows, wrists = 0;
 
     int shoulderpos, elbowpos, wristpos = 0;
 
     // moves the arm manually without the aid of encoder counts, only limits are touch sensors
-    public void armManual(double shoulderSpeed, double elbowSpeed, double wristSpeed, boolean servoOpen, TelemetryControl telemetryControl) {
+    public void armManual(double shoulderSpeed, double elbowSpeed, double wristSpeed, boolean servoOpen) {
 
         if (bottom.isPressed() && shoulderSpeed < 0) shoulders = 0; else if (eltouch2.isPressed() && shoulderSpeed > 0) shoulders = 0; else shoulders = shoulderSpeed * 0.75;
         if (eltouch1.isPressed() && elbowSpeed < 0) elbows = 0; else if (eltouch2.isPressed() && elbowSpeed > 0) elbows = 0; else elbows = elbowSpeed;
@@ -254,10 +245,10 @@ public class AttachmentControl {
 
         }
 
-        telemetryControl.telemetryUpdate("shoulder pos", String.valueOf(shoulder.getCurrentPosition()));
-        telemetryControl.telemetryUpdate("elbow pos", String.valueOf(elbow.getCurrentPosition()));
-        telemetryControl.telemetryUpdate("wrist pos", String.valueOf(wrist.getCurrentPosition()));
-        telemetryControl.telemetryUpdate("claw pos", String.valueOf(claw.getPosition()));
+        telemetryControlLocal.telemetryUpdate("shoulder pos", String.valueOf(shoulder.getCurrentPosition()));
+        telemetryControlLocal.telemetryUpdate("elbow pos", String.valueOf(elbow.getCurrentPosition()));
+        telemetryControlLocal.telemetryUpdate("wrist pos", String.valueOf(wrist.getCurrentPosition()));
+        telemetryControlLocal.telemetryUpdate("claw pos", String.valueOf(claw.getPosition()));
     }
 
     // moves the arm, supposed to have encoder limits to prevent driver error however it doesn't quite work right
@@ -336,7 +327,6 @@ public class AttachmentControl {
                 telemetryControlLocal.telemetryUpdate("Shoulder Pos", String.valueOf(shoulder.getCurrentPosition()));
                 telemetryControlLocal.telemetryUpdate("Elbow Pos", String.valueOf(elbow.getCurrentPosition()));
                 telemetryControlLocal.telemetryUpdate("Wrist Pos", String.valueOf(wrist.getCurrentPosition()));
-
                 telemetryControlLocal.update();
 
             }
@@ -365,10 +355,146 @@ public class AttachmentControl {
     public static boolean clawAuto = false;
 
     boolean isArmAtPosition = false;
-    // code to move the arm between 2 positions while maintaining manual control
-    public void armCompWithAutomation(boolean autoEnabled, boolean colorSensorEnabled, boolean pickUp, boolean middlePos, boolean upButton, boolean servoToggle, boolean servoButton, double shoulderSpeed, double elbowSpeed, double wristSpeed, boolean leftWrist, boolean rightWrist) {
+
+    public void armCompWithAutomation(boolean driver1Arm, boolean autoEnabled, boolean pickUp, boolean middlePos, boolean upButton, boolean servoToggle, boolean servoButton, double shoulderSpeed, double elbowSpeed, double wristSpeed, boolean leftWrist, boolean rightWrist) {
 
         if (autoEnabled) {
+
+            if (driver1Arm) {
+
+                shoulderpos = 0;
+                elbowpos = 0;
+                wristpos = 0;
+                auto = true;
+
+                this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
+
+            }
+
+            if (middlePos) { // checks for pickup button, and if true sets automatic positions for a close to pickup position (to prevent hitting the wall)
+
+                shoulderpos = 0;
+                elbowpos = -2252;
+                wristpos = -10;
+                auto = true; // variable to keep track of if the button was recently pressed
+
+                this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
+
+            } else if (upButton && elbow.getCurrentPosition() > -2888) { // checks for score button, and if true sets automatic positions for scoring
+
+                shoulderpos = 3972;
+                elbowpos = -2254;
+                wristpos = -37;
+                auto = true; // variable to keep track of if the button was recently pressed
+
+                this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
+
+            } else if (leftWrist && !auto) {
+
+                shoulderpos = shoulder.getCurrentPosition();
+                elbowpos = elbow.getCurrentPosition();
+                wristpos = -10;
+                auto = true; // variable to keep track of if the button was recently pressed
+
+                this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
+
+            } else if (rightWrist && !auto) {
+
+                shoulderpos = shoulder.getCurrentPosition();
+                elbowpos = elbow.getCurrentPosition();
+                wristpos = -700;
+                auto = true; // variable to keep track of if the button was recently pressed
+
+                this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
+
+            } else if (pickUp && shoulder.getCurrentPosition() < 100) {
+
+                shoulderpos = 0;
+                elbowpos = -3722;
+                wristpos = -10;
+                claw.setPosition(1);
+                auto = true; // variable to keep track of if the button was recently pressed
+
+                this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
+
+            }
+
+        }
+
+        if (this.reachedTargetPosition(shoulder) && this.reachedTargetPosition(elbow) && this.reachedTargetPosition(wrist)) isArmAtPosition = true; else isArmAtPosition = false; // checks for if the arm is at position, and sets a boolean to reflect that value
+
+        if (auto && !isArmAtPosition && autoEnabled) { // checks if autonomous is true, and if the arm hasn't reached its position, and if both of those are correct it continues with the automatic code
+
+            if (clawTime.seconds() > 0.33 && clawTime.seconds() < 0.58) {
+
+                claw.setPosition(0);
+
+                clawAuto = true;
+
+            }
+
+            if (clawTime.seconds() > 0.58) {
+
+                this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
+
+            }
+
+        } else { // if the arm reaches its position, or if the autonomous arm variable is false, return manual control to the user
+
+            auto = false;
+            if (bottom.isPressed() && shoulderSpeed < 0) shoulders = 0; else shoulders = shoulderSpeed;
+            if (eltouch1.isPressed() && elbowSpeed < 0) elbows = 0; else if (eltouch2.isPressed() && elbowSpeed > 0) elbows = 0; else elbows = -elbowSpeed;
+            if (wristTouch.isPressed() && wristSpeed > 0) wrists = 0; else wrists = wristSpeed * 0.6;
+
+            shoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            shoulderHub.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            wrist.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            shoulder.setPower(shoulders);
+            shoulderHub.setPower(shoulders);
+            elbow.setPower(elbows);
+            wrist.setPower(wrists);
+
+            if (servoButton) {
+
+                clawAuto = false;
+
+            }
+
+            if (servoToggle && !clawAuto) {
+
+                claw.setPosition(0);
+
+            } else if (!clawAuto) {
+
+                claw.setPosition(1);
+
+            }
+
+        }
+
+        telemetryControlLocal.telemetryUpdate("shoulder pos", String.valueOf(shoulder.getCurrentPosition()));
+        telemetryControlLocal.telemetryUpdate("elbow pos", String.valueOf(elbow.getCurrentPosition()));
+        telemetryControlLocal.telemetryUpdate("wrist pos", String.valueOf(wrist.getCurrentPosition()));
+
+    }
+
+    // code to move the arm between 2 positions while maintaining manual control
+    public void armCompWithAutomationAndColor(boolean driver1Arm, boolean autoEnabled, boolean colorSensorEnabled, boolean pickUp, boolean middlePos, boolean upButton, boolean servoToggle, boolean servoButton, double shoulderSpeed, double elbowSpeed, double wristSpeed, boolean leftWrist, boolean rightWrist) {
+
+        if (autoEnabled) {
+
+            if (driver1Arm) {
+
+                shoulderpos = 0;
+                elbowpos = 0;
+                wristpos = 0;
+                auto = true;
+
+                this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
+
+            }
 
             if (colorSensorEnabled) {
 

@@ -132,14 +132,12 @@ public class SidewaysAutoTest extends LinearOpMode {
     public void score(AttachmentControl attachmentControl) { // rudimentary scoring position (medium junction)
 
         attachmentControl.setArmPositions(3899, -2404, -726, true);
-        attachmentControl.openClaw();
 
     }
 
     public void pickup(AttachmentControl attachmentControl) { // down position to prevent hitting the wall
 
         attachmentControl.setArmPositions(0, -3348, -11, true);
-        attachmentControl.closeClaw();
 
     }
 
