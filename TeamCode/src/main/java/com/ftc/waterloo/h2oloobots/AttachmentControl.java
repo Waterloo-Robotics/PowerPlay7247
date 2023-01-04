@@ -169,7 +169,7 @@ public class AttachmentControl {
 
     public void distanceSensor() {
 
-        telemetryControlLocal.telemetryUpdate("Distance", String.valueOf(distance.getDistance(DistanceUnit.MM)));
+        telemetryControlLocal.addData("Distance", String.valueOf(distance.getDistance(DistanceUnit.MM)));
 
     }
 
@@ -185,16 +185,16 @@ public class AttachmentControl {
 
         }
 
-        telemetryControlLocal.telemetryUpdate("Claw Pos", String.valueOf(claw.getPosition()));
+        telemetryControlLocal.addData("Claw Pos", String.valueOf(claw.getPosition()));
 
     }
 
     public void clawColorTelemetry() {
 
-        telemetryControlLocal.telemetryUpdate("Red", String.valueOf(clawColor.red()));
-        telemetryControlLocal.telemetryUpdate("Green", String.valueOf(clawColor.green()));
-        telemetryControlLocal.telemetryUpdate("Blue", String.valueOf(clawColor.blue()));
-        telemetryControlLocal.telemetryUpdate("Distance", String.valueOf(((DistanceSensor) clawColor).getDistance(DistanceUnit.CM)));
+        telemetryControlLocal.addData("Red", String.valueOf(clawColor.red()));
+        telemetryControlLocal.addData("Green", String.valueOf(clawColor.green()));
+        telemetryControlLocal.addData("Blue", String.valueOf(clawColor.blue()));
+        telemetryControlLocal.addData("Distance", String.valueOf(((DistanceSensor) clawColor).getDistance(DistanceUnit.CM)));
 
     }
 
@@ -212,10 +212,10 @@ public class AttachmentControl {
 
     public void touchSensor() { // returns whether or not all three touch sensors are pressed
 
-        telemetryControlLocal.telemetryUpdate("Elbow Touch 1", String.valueOf(eltouch1.isPressed()));
-        telemetryControlLocal.telemetryUpdate("Elbow Touch 2", String.valueOf(eltouch2.isPressed()));
-        telemetryControlLocal.telemetryUpdate("Bottom Touch", String.valueOf(bottom.isPressed()));
-        telemetryControlLocal.telemetryUpdate("Wrist Touch", String.valueOf(wristTouch.isPressed()));
+        telemetryControlLocal.addData("Elbow Touch 1", String.valueOf(eltouch1.isPressed()));
+        telemetryControlLocal.addData("Elbow Touch 2", String.valueOf(eltouch2.isPressed()));
+        telemetryControlLocal.addData("Bottom Touch", String.valueOf(bottom.isPressed()));
+        telemetryControlLocal.addData("Wrist Touch", String.valueOf(wristTouch.isPressed()));
 
     }
 
@@ -245,10 +245,10 @@ public class AttachmentControl {
 
         }
 
-        telemetryControlLocal.telemetryUpdate("shoulder pos", String.valueOf(shoulder.getCurrentPosition()));
-        telemetryControlLocal.telemetryUpdate("elbow pos", String.valueOf(elbow.getCurrentPosition()));
-        telemetryControlLocal.telemetryUpdate("wrist pos", String.valueOf(wrist.getCurrentPosition()));
-        telemetryControlLocal.telemetryUpdate("claw pos", String.valueOf(claw.getPosition()));
+        telemetryControlLocal.addData("shoulder pos", String.valueOf(shoulder.getCurrentPosition()));
+        telemetryControlLocal.addData("elbow pos", String.valueOf(elbow.getCurrentPosition()));
+        telemetryControlLocal.addData("wrist pos", String.valueOf(wrist.getCurrentPosition()));
+        telemetryControlLocal.addData("claw pos", String.valueOf(claw.getPosition()));
     }
 
     // moves the arm, supposed to have encoder limits to prevent driver error however it doesn't quite work right
@@ -258,9 +258,9 @@ public class AttachmentControl {
         if (eltouch1.isPressed() && elbowSpeed < 0) elbows = 0; else if (eltouch2.isPressed() && elbowSpeed < 0) elbows = 0; else elbows = elbowSpeed;
         if (wristTouch.isPressed() && wristSpeed > 0) wrists = 0; else wrists = wristSpeed * 0.6;
 
-        telemetryControl.telemetryUpdate("bottom", String.valueOf(bottom.isPressed()));
-        telemetryControl.telemetryUpdate("eltouch1", String.valueOf(eltouch1.isPressed()));
-        telemetryControl.telemetryUpdate("eltouch2", String.valueOf(eltouch2.isPressed()));
+        telemetryControl.addData("bottom", String.valueOf(bottom.isPressed()));
+        telemetryControl.addData("eltouch1", String.valueOf(eltouch1.isPressed()));
+        telemetryControl.addData("eltouch2", String.valueOf(eltouch2.isPressed()));
 
 //        if (wrist.getCurrentPosition() < -150 && wristSpeed < 0) wristSpeed = 0; else if (wrist.getCurrentPosition() > 850 && wristSpeed > 0) wristSpeed = 0;
 
@@ -279,10 +279,10 @@ public class AttachmentControl {
 
         }
 
-        telemetryControl.telemetryUpdate("shoulder pos", String.valueOf(shoulder.getCurrentPosition()));
-        telemetryControl.telemetryUpdate("elbow pos", String.valueOf(elbow.getCurrentPosition()));
-        telemetryControl.telemetryUpdate("wrist pos", String.valueOf(wrist.getCurrentPosition()));
-        telemetryControl.telemetryUpdate("claw pos", String.valueOf(claw.getPosition()));
+        telemetryControl.addData("shoulder pos", String.valueOf(shoulder.getCurrentPosition()));
+        telemetryControl.addData("elbow pos", String.valueOf(elbow.getCurrentPosition()));
+        telemetryControl.addData("wrist pos", String.valueOf(wrist.getCurrentPosition()));
+        telemetryControl.addData("claw pos", String.valueOf(claw.getPosition()));
 
     }
 
@@ -324,9 +324,9 @@ public class AttachmentControl {
 
             while (!reachedTargetPosition(shoulder) || !reachedTargetPosition(elbow) || !reachedTargetPosition(wrist)) {
 
-                telemetryControlLocal.telemetryUpdate("Shoulder Pos", String.valueOf(shoulder.getCurrentPosition()));
-                telemetryControlLocal.telemetryUpdate("Elbow Pos", String.valueOf(elbow.getCurrentPosition()));
-                telemetryControlLocal.telemetryUpdate("Wrist Pos", String.valueOf(wrist.getCurrentPosition()));
+                telemetryControlLocal.addData("Shoulder Pos", String.valueOf(shoulder.getCurrentPosition()));
+                telemetryControlLocal.addData("Elbow Pos", String.valueOf(elbow.getCurrentPosition()));
+                telemetryControlLocal.addData("Wrist Pos", String.valueOf(wrist.getCurrentPosition()));
                 telemetryControlLocal.update();
 
             }
@@ -474,9 +474,9 @@ public class AttachmentControl {
 
         }
 
-        telemetryControlLocal.telemetryUpdate("shoulder pos", String.valueOf(shoulder.getCurrentPosition()));
-        telemetryControlLocal.telemetryUpdate("elbow pos", String.valueOf(elbow.getCurrentPosition()));
-        telemetryControlLocal.telemetryUpdate("wrist pos", String.valueOf(wrist.getCurrentPosition()));
+        telemetryControlLocal.addData("shoulder pos", String.valueOf(shoulder.getCurrentPosition()));
+        telemetryControlLocal.addData("elbow pos", String.valueOf(elbow.getCurrentPosition()));
+        telemetryControlLocal.addData("wrist pos", String.valueOf(wrist.getCurrentPosition()));
 
     }
 
@@ -666,9 +666,9 @@ public class AttachmentControl {
 
         }
 
-        telemetryControlLocal.telemetryUpdate("shoulder pos", String.valueOf(shoulder.getCurrentPosition()));
-        telemetryControlLocal.telemetryUpdate("elbow pos", String.valueOf(elbow.getCurrentPosition()));
-        telemetryControlLocal.telemetryUpdate("wrist pos", String.valueOf(wrist.getCurrentPosition()));
+        telemetryControlLocal.addData("shoulder pos", String.valueOf(shoulder.getCurrentPosition()));
+        telemetryControlLocal.addData("elbow pos", String.valueOf(elbow.getCurrentPosition()));
+        telemetryControlLocal.addData("wrist pos", String.valueOf(wrist.getCurrentPosition()));
 
     }
 
@@ -740,15 +740,15 @@ public class AttachmentControl {
 
         }
 
-        telemetryControlLocal.telemetryUpdate("shoulder pos", String.valueOf(shoulder.getCurrentPosition()));
-        telemetryControlLocal.telemetryUpdate("elbow pos", String.valueOf(elbow.getCurrentPosition()));
-        telemetryControlLocal.telemetryUpdate("wrist pos", String.valueOf(wrist.getCurrentPosition()));
-        telemetryControlLocal.telemetryUpdate("shoulder target pos", String.valueOf(shoulder.getTargetPosition()));
-        telemetryControlLocal.telemetryUpdate("elbow target pos", String.valueOf(elbow.getTargetPosition()));
-        telemetryControlLocal.telemetryUpdate("wrist target pos", String.valueOf(wrist.getTargetPosition()));
-        telemetryControlLocal.telemetryUpdate("claw pos", String.valueOf(claw.getPosition()));
-        telemetryControlLocal.telemetryUpdate("auto", String.valueOf(auto));
-        telemetryControlLocal.telemetryUpdate("timer", String.valueOf(clawTime.seconds()));
+        telemetryControlLocal.addData("shoulder pos", String.valueOf(shoulder.getCurrentPosition()));
+        telemetryControlLocal.addData("elbow pos", String.valueOf(elbow.getCurrentPosition()));
+        telemetryControlLocal.addData("wrist pos", String.valueOf(wrist.getCurrentPosition()));
+        telemetryControlLocal.addData("shoulder target pos", String.valueOf(shoulder.getTargetPosition()));
+        telemetryControlLocal.addData("elbow target pos", String.valueOf(elbow.getTargetPosition()));
+        telemetryControlLocal.addData("wrist target pos", String.valueOf(wrist.getTargetPosition()));
+        telemetryControlLocal.addData("claw pos", String.valueOf(claw.getPosition()));
+        telemetryControlLocal.addData("auto", String.valueOf(auto));
+        telemetryControlLocal.addData("timer", String.valueOf(clawTime.seconds()));
 
     }
 

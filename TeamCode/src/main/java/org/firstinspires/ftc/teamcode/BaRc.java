@@ -5,14 +5,11 @@ import android.annotation.SuppressLint;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.ftc.waterloo.h2oloobots.AttachmentControl;
 import com.ftc.waterloo.h2oloobots.TelemetryControl;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -107,7 +104,7 @@ public class BaRc extends LinearOpMode {
 
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                 if (updatedRecognitions != null) {
-                    telemetryControl.telemetryUpdate("# Objects Detected", String.valueOf(updatedRecognitions.size()));
+                    telemetryControl.addData("# Objects Detected", String.valueOf(updatedRecognitions.size()));
 
                     if (updatedRecognitions.size() == 1) {
                         // setting the different Y-axis coordinates for the different detected object detected on the signal sleeve.
@@ -141,7 +138,7 @@ public class BaRc extends LinearOpMode {
                         }
 
                     }
-                    telemetryControl.telemetryUpdate("Identification", String.valueOf(label));
+                    telemetryControl.addData("Identification", String.valueOf(label));
                     telemetryControl.update();
 
                 }

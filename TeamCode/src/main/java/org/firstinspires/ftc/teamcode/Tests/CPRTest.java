@@ -29,7 +29,7 @@ public class CPRTest extends LinearOpMode {
 
             motorPos = motor.getCurrentPosition();
 
-            telemetryControl.telemetryUpdate("Motor Position", String.valueOf(motorPos));
+            telemetryControl.addData("Motor Position", String.valueOf(motorPos));
             telemetryControl.update();
 
         }

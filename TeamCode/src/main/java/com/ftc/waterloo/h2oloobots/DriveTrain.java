@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -106,6 +105,7 @@ public class DriveTrain {
             bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
+
     }
 
     // Four Motor Init without encoder initialisation
@@ -340,31 +340,31 @@ public class DriveTrain {
             flvelo = fl.getVelocity(AngleUnit.DEGREES);
             flveloavg = (flveloavg + flvelo);
             fl.setPower(speed * flweightco * fldirweight);
-            telemetryControl.telemetryUpdate("fl pos", String.valueOf(flpos));
-            telemetryControl.telemetryUpdate("fl velo", String.valueOf(flvelo));
-            telemetryControl.telemetryUpdate("flveloavg", String.valueOf(flveloavg));
-            telemetryControl.telemetryUpdate("fl avg velo", String.valueOf(flveloavg / counter));
+            telemetryControl.addData("fl pos", String.valueOf(flpos));
+            telemetryControl.addData("fl velo", String.valueOf(flvelo));
+            telemetryControl.addData("flveloavg", String.valueOf(flveloavg));
+            telemetryControl.addData("fl avg velo", String.valueOf(flveloavg / counter));
             frpos = fr.getCurrentPosition();
             frvelo = fr.getVelocity(AngleUnit.DEGREES);
             frveloavg = (frveloavg + frvelo);
             fr.setPower(speed * frweightco * frdirweight);
-            telemetryControl.telemetryUpdate("fr pos", String.valueOf(frpos));
-            telemetryControl.telemetryUpdate("fr velo", String.valueOf(frvelo));
-            telemetryControl.telemetryUpdate("fr avg velo", String.valueOf(frveloavg / counter));
+            telemetryControl.addData("fr pos", String.valueOf(frpos));
+            telemetryControl.addData("fr velo", String.valueOf(frvelo));
+            telemetryControl.addData("fr avg velo", String.valueOf(frveloavg / counter));
             blpos = bl.getCurrentPosition();
             blvelo = bl.getVelocity(AngleUnit.DEGREES);
             blveloavg = (blveloavg + blvelo);
             bl.setPower(speed * blweightco * bldirweight);
-            telemetryControl.telemetryUpdate("bl pos", String.valueOf(blpos));
-            telemetryControl.telemetryUpdate("bl velo", String.valueOf(blvelo));
-            telemetryControl.telemetryUpdate("bl avg velo", String.valueOf(blveloavg / counter));
+            telemetryControl.addData("bl pos", String.valueOf(blpos));
+            telemetryControl.addData("bl velo", String.valueOf(blvelo));
+            telemetryControl.addData("bl avg velo", String.valueOf(blveloavg / counter));
             brpos = br.getCurrentPosition();
             brvelo = br.getVelocity(AngleUnit.DEGREES);
             brveloavg = (brveloavg + brvelo);
             br.setPower(speed * brweightco * brdirweight);
-            telemetryControl.telemetryUpdate("br pos", String.valueOf(brpos));
-            telemetryControl.telemetryUpdate("br velo", String.valueOf(brvelo));
-            telemetryControl.telemetryUpdate("br avg velo", String.valueOf(brveloavg / counter));
+            telemetryControl.addData("br pos", String.valueOf(brpos));
+            telemetryControl.addData("br velo", String.valueOf(brvelo));
+            telemetryControl.addData("br avg velo", String.valueOf(brveloavg / counter));
             telemetryControl.update();
         }
 
