@@ -40,7 +40,7 @@ public class OdoTest extends LinearOpMode {
 
         waitForStart();
 
-        straight(DISTANCE);
+        turn(DISTANCE);
 
     }
 
@@ -91,7 +91,7 @@ public class OdoTest extends LinearOpMode {
 
 
 
-    public void straight(double INCHES) {
+    public void forward(double INCHES) {
 
         double rightOffset = 0, leftOffset = 0, genPower = 0, rightPower = 0, leftPower = 0;
 
@@ -178,7 +178,117 @@ public class OdoTest extends LinearOpMode {
             if (!waited) {
                 time.reset();
 
-                while (time.seconds() < 15);
+                while (time.seconds() < 7);
+                waited = true;
+            }
+
+            //Set motor powers
+            fr.setPower(rightPower);
+            br.setPower(rightPower);
+            fl.setPower(leftPower);
+            bl.setPower(leftPower);
+
+            if (distanceTravelled > INCHES) {
+                destinationReached = true;
+            }
+
+        }
+
+        fl.setPower(0);
+        fr.setPower(0);
+        bl.setPower(0);
+        br.setPower(0);
+
+    }
+
+    public void turn(double INCHES) {
+
+        double rightOffset = 0, leftOffset = 0, genPower = 0, rightPower = 0, leftPower = 0;
+
+        double distanceTravelled = 0;
+        double error = 0;
+        double differentialError = 0;
+
+        double rightTravelled, leftTravelled;
+
+        boolean destinationReached = false;
+
+        double seconds = 0;
+        zeroEncoders();
+
+        boolean waited = false;
+
+        while (!destinationReached && !isStopRequested()) {
+
+            rightTravelled = fr.getCurrentPosition() * INCHES_PER_COUNT;
+            leftTravelled = fl.getCurrentPosition() * INCHES_PER_COUNT;
+
+            distanceTravelled = ((leftTravelled + rightTravelled) / 2.0);
+
+            error = distanceTravelled - INCHES;
+
+            differentialError = rightTravelled + leftTravelled;
+
+            genPower = (genPower + (error * P_gen)) / 2.0;
+
+            if (differentialError > 0) { //Turning left, right faster
+                rightOffset = (rightOffset + ( (leftTravelled - rightTravelled) * P_differential) )/ 2.0;
+                leftOffset = 0;
+            } else {
+                rightOffset = 0;
+                leftOffset = (leftOffset - ( (rightTravelled - leftTravelled) * P_differential) ) / 2.0;
+            }
+
+            telemetryControlLocal.addData("Right", String.valueOf(rightTravelled));
+            telemetryControlLocal.addData("Left", String.valueOf(leftTravelled));
+            telemetryControlLocal.addData("distanceTravelled", String.valueOf(distanceTravelled));
+            telemetryControlLocal.addData("Right Offset", String.valueOf(rightOffset));
+            telemetryControlLocal.addData("Left Offset", String.valueOf(leftOffset));
+            telemetryControlLocal.addData("Seconds", String.valueOf(seconds));
+
+            telemetryControlLocal.addData("Diff Error", String.valueOf(differentialError));
+            telemetryControlLocal.addData("GenPower", String.valueOf(genPower));
+            telemetryControlLocal.addData("fl", fl.getPower());
+            telemetryControlLocal.addData("fr", fr.getPower());
+            telemetryControlLocal.addData("bl", bl.getPower());
+            telemetryControlLocal.addData("br", br.getPower());
+            telemetryControlLocal.update();
+
+
+            //Calc side powers
+            rightPower = genPower - rightOffset;
+            leftPower = -genPower + leftOffset;
+
+            //Cap +/- at MAX_POWER
+            if (rightPower > MAX_POWER) {
+                rightPower = MAX_POWER;
+            } else if (rightPower < -MAX_POWER) {
+                rightPower = -MAX_POWER;
+            }
+
+            if (leftPower > MAX_POWER) {
+                leftPower = MAX_POWER;
+            } else if (leftPower < -MAX_POWER) {
+                leftPower = -MAX_POWER;
+            }
+
+            //Cap +/- at MIN_POWER
+            if (rightPower < MIN_POWER && rightPower > 0) {
+                rightPower = MIN_POWER;
+            } else if (rightPower > -MIN_POWER && rightPower < 0) {
+                rightPower = -MIN_POWER;
+            }
+
+            if (leftPower < MIN_POWER && leftPower > 0) {
+                leftPower = MIN_POWER;
+            } else if (leftPower > -MIN_POWER && leftPower < 0) {
+                leftPower = -MIN_POWER;
+            }
+
+            if (!waited) {
+                time.reset();
+
+                while (time.seconds() < 7);
                 waited = true;
             }
 
