@@ -20,7 +20,7 @@ public class OdometryControl {
 
 
     public static double MAX_POWER = 0.85;
-    public static double MIN_POWER_STRAIGHT = 0.12;
+    public static double MIN_POWER_STRAIGHT = 0.2;
     public static double MIN_POWER_TURNSTRAFE = 0.25;
 
     public static double DISTANCE = 53;
@@ -92,7 +92,7 @@ public class OdometryControl {
 
         boolean waited = false;
 
-        while (!destinationReached) {
+        while (!destinationReached && time.seconds() < 10 + TIME) {
 
             rightTravelled = fr.getCurrentPosition() * INCHES_PER_COUNT;
             leftTravelled = -fl.getCurrentPosition() * INCHES_PER_COUNT;
@@ -210,7 +210,7 @@ public class OdometryControl {
 
         boolean waited = false;
 
-        while (!destinationReached) {
+        while (!destinationReached && time.seconds() < 10 + TIME) {
 
             rightTravelled = -fr.getCurrentPosition() * INCHES_PER_COUNT;
             leftTravelled = fl.getCurrentPosition() * INCHES_PER_COUNT;
@@ -329,7 +329,7 @@ public class OdometryControl {
 
         boolean waited = false;
 
-        while (!destinationReached) {
+        while (!destinationReached && time.seconds() < 10 + TIME) {
 
             rightTravelled = fr.getCurrentPosition() * INCHES_PER_COUNT;
             leftTravelled = -fl.getCurrentPosition() * INCHES_PER_COUNT;
@@ -442,7 +442,7 @@ public class OdometryControl {
 
         boolean waited = false;
 
-        while (!destinationReached) {
+        while (!destinationReached && time.seconds() < 10 + TIME) {
 
             rightTravelled = -fr.getCurrentPosition() * INCHES_PER_COUNT;
             leftTravelled = -fl.getCurrentPosition() * INCHES_PER_COUNT;
@@ -542,7 +542,7 @@ public class OdometryControl {
 
         boolean waited = false;
 
-        while (!destinationReached) {
+        while (!destinationReached && time.seconds() < 10 + TIME) {
 
             rightTravelled = fr.getCurrentPosition() * INCHES_PER_COUNT;
             leftTravelled = fl.getCurrentPosition() * INCHES_PER_COUNT;
