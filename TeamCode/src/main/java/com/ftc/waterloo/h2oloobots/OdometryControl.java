@@ -17,11 +17,12 @@ public class OdometryControl {
     public static double P_gen_strafe = 0.05;
     public static double P_gen_turn = 0.03;
     public static double P_differential = 0.1;
+    public static double P_differential_Strafe = 0.1;
 
 
     public static double MAX_POWER = 0.85;
-    public static double MIN_POWER_STRAIGHT = 0.2;
-    public static double MIN_POWER_TURNSTRAFE = 0.25;
+    public static double MIN_POWER_STRAIGHT = 0.3;
+    public static double MIN_POWER_TURNSTRAFE = 0.55;
 
     public static double DISTANCE = 53;
 
@@ -92,6 +93,7 @@ public class OdometryControl {
 
         boolean waited = false;
 
+        time.reset();
         while (!destinationReached && time.seconds() < 10 + TIME) {
 
             rightTravelled = fr.getCurrentPosition() * INCHES_PER_COUNT;
@@ -210,6 +212,7 @@ public class OdometryControl {
 
         boolean waited = false;
 
+        time.reset();
         while (!destinationReached && time.seconds() < 10 + TIME) {
 
             rightTravelled = -fr.getCurrentPosition() * INCHES_PER_COUNT;
@@ -318,7 +321,7 @@ public class OdometryControl {
         double distanceTravelled = 0;
         double distanceTravelledForward = 0;
         double error = 0;
-        double differentialError = 0;
+        double headingError = 0;
 
         double rightTravelled, leftTravelled, horizTravelled;
 
@@ -329,7 +332,8 @@ public class OdometryControl {
 
         boolean waited = false;
 
-        while (!destinationReached && time.seconds() < 10 + TIME) {
+        time.reset();
+        while (!destinationReached && time.seconds() < 6 + TIME) {
 
             rightTravelled = fr.getCurrentPosition() * INCHES_PER_COUNT;
             leftTravelled = -fl.getCurrentPosition() * INCHES_PER_COUNT;
@@ -340,17 +344,9 @@ public class OdometryControl {
 
             error = distanceTravelled - INCHES;
 
-            differentialError = rightTravelled - leftTravelled;
+            headingError = rightTravelled - leftTravelled;
 
             genPower = (genPower + (error * P_gen_strafe)) / 2.0;
-
-//            if (differentialError > 0) { //Turning left, right faster
-//                rightOffset = (rightOffset + ( (rightTravelled - leftTravelled) * P_differential) )/ 2.0;
-//                leftOffset = 0;
-//            } else {
-//                rightOffset = 0;
-//                leftOffset = (leftOffset + ( (leftTravelled - rightTravelled) * P_differential) ) / 2.0;
-//            }
 
             telemetryControlLocal.addData("Right", String.valueOf(rightTravelled));
             telemetryControlLocal.addData("Left", String.valueOf(leftTravelled));
@@ -360,7 +356,7 @@ public class OdometryControl {
             telemetryControlLocal.addData("Left Offset", String.valueOf(leftOffset));
             telemetryControlLocal.addData("Seconds", String.valueOf(seconds));
 
-            telemetryControlLocal.addData("Diff Error", String.valueOf(differentialError));
+            telemetryControlLocal.addData("Diff Error", String.valueOf(headingError));
             telemetryControlLocal.addData("GenPower", String.valueOf(genPower));
             telemetryControlLocal.addData("fl", fl.getPower());
             telemetryControlLocal.addData("fr", fr.getPower());
@@ -442,6 +438,7 @@ public class OdometryControl {
 
         boolean waited = false;
 
+        time.reset();
         while (!destinationReached && time.seconds() < 10 + TIME) {
 
             rightTravelled = -fr.getCurrentPosition() * INCHES_PER_COUNT;

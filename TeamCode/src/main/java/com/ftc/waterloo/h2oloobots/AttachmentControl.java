@@ -21,8 +21,6 @@ public class AttachmentControl {
     // color sensor on claw
     public static ColorSensor clawColor;
 
-    public static DistanceSensor distance;
-
     // shoulderHub is the shoulder motor closer to the REV hubs
     public static DcMotorEx shoulder;
     public static DcMotorEx shoulderHub;
@@ -39,6 +37,8 @@ public class AttachmentControl {
     public static TouchSensor eltouch1;
     public static TouchSensor eltouch2;
     public static TouchSensor wristTouch;
+
+    public static DistanceSensor distance;
 
     // old stuff from testing REV core hex motors, useless now
     public static double cpr = 288;
@@ -169,7 +169,7 @@ public class AttachmentControl {
 
     public void distanceSensor() {
 
-        telemetryControlLocal.addData("Distance", String.valueOf(distance.getDistance(DistanceUnit.MM)));
+        telemetryControlLocal.addData("Distance", distance.getDistance(DistanceUnit.MM));
 
     }
 
@@ -410,7 +410,7 @@ public class AttachmentControl {
             } else if (pickUp && shoulder.getCurrentPosition() < 100) {
 
                 shoulderpos = 0;
-                elbowpos = -3722;
+                elbowpos = -3902;
                 wristpos = -10;
                 claw.setPosition(1);
                 auto = true; // variable to keep track of if the button was recently pressed

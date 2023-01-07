@@ -37,6 +37,13 @@ public class TelemetryControl {
 
     }
 
+    public void addLine(String line) {
+
+        telemetryLocal.addLine(line);
+        packet.addLine(line);
+
+    }
+
     // motor direction obtainer for debugging purposes, positives and negatives will need flipped based on drive base
     public void motorTelemetryUpdate(double flpower, double frpower, double blpower, double brpower) {
 
@@ -92,6 +99,7 @@ public class TelemetryControl {
 
         telemetryLocal.update();
         dashboard.sendTelemetryPacket(packet);
+        packet.clearLines();
 
     }
 

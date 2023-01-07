@@ -45,10 +45,6 @@ public class AttachmentTest extends LinearOpMode {
             driveTrain.MecanumTeleOp(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
 //            attachmentControl.touchSensor();
 
-//            attachmentControl.clawColorTelemetry();
-
-            attachmentControl.distanceSensor();
-
             attachmentControl.armManual(-gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir, claw);
 //            attachmentControl.clawColorAutoTest(claw, -gamepad2.left_stick_y, gamepad2.right_stick_y, wristDir);
 

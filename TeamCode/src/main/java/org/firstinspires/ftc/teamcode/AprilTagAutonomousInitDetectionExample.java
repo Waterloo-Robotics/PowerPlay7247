@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.ftc.waterloo.h2oloobots.TelemetryControl;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -12,11 +14,12 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 
 import java.util.ArrayList;
 
-@TeleOp
+@TeleOp(name = "AprilTags")
 public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
 {
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
+    FtcDashboard dashboard = FtcDashboard.getInstance();
 
     static final double FEET_PER_METER = 3.28084;
 
@@ -41,34 +44,35 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
     @Override
     public void runOpMode()
     {
+        TelemetryControl telemetryControl = new TelemetryControl(telemetry);
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
 
         camera.setPipeline(aprilTagDetectionPipeline);
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
-            public void onOpened()
-            {
+            public void onOpened() {
                 camera.startStreaming(800,448, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
-            public void onError(int errorCode)
-            {
+            public void onError(int errorCode) {
 
             }
+
         });
 
-        telemetry.setMsTransmissionInterval(50);
+        dashboard.startCameraStream(camera, 60);
 
         /*
          * The INIT-loop:
          * This REPLACES waitForStart!
          */
-        while (!isStarted() && !isStopRequested())
-        {
+        while (!isStarted() && !isStopRequested()) {
+
+            dashboard.startCameraStream(camera, 60);
+
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
 
             if(currentDetections.size() != 0)
@@ -87,42 +91,42 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
 
                 if(tagFound)
                 {
-                    telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
-                    tagToTelemetry(tagOfInterest);
+                    telemetryControl.addLine("Tag of interest is in sight! Location data:");
+                    tagToTelemetry(tagOfInterest, telemetryControl);
                 }
                 else
                 {
-                    telemetry.addLine("Don't see tag of interest :(");
+                    telemetryControl.addLine("Don't see tag of interest :(");
 
                     if(tagOfInterest == null)
                     {
-                        telemetry.addLine("(The tag has never been seen)");
+                        telemetryControl.addLine("(The tag has never been seen)");
                     }
                     else
                     {
-                        telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                        tagToTelemetry(tagOfInterest);
+                        telemetryControl.addLine("But we HAVE seen the tag before; last seen at:");
+                        tagToTelemetry(tagOfInterest, telemetryControl);
                     }
                 }
 
             }
             else
             {
-                telemetry.addLine("Don't see tag of interest :(");
+                telemetryControl.addLine("Don't see tag of interest :(");
 
                 if(tagOfInterest == null)
                 {
-                    telemetry.addLine("(The tag has never been seen)");
+                    telemetryControl.addLine("(The tag has never been seen)");
                 }
                 else
                 {
-                    telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                    tagToTelemetry(tagOfInterest);
+                    telemetryControl.addLine("But we HAVE seen the tag before; last seen at:");
+                    tagToTelemetry(tagOfInterest, telemetryControl);
                 }
 
             }
 
-            telemetry.update();
+            telemetryControl.update();
             sleep(20);
         }
 
@@ -134,14 +138,14 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
         /* Update the telemetry */
         if(tagOfInterest != null)
         {
-            telemetry.addLine("Tag snapshot:\n");
-            tagToTelemetry(tagOfInterest);
-            telemetry.update();
+            telemetryControl.addLine("Tag snapshot:");
+            tagToTelemetry(tagOfInterest, telemetryControl);
+            telemetryControl.update();
         }
         else
         {
-            telemetry.addLine("No tag snapshot available, it was never sighted during the init loop :(");
-            telemetry.update();
+            telemetryControl.addLine("No tag snapshot available, it was never sighted during the init loop :(");
+            telemetryControl.update();
         }
 
         /* Actually do something useful */
@@ -154,11 +158,11 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode
         }
 
         /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
-       // while (opModeIsActive()) {sleep(20);}
+        while (opModeIsActive()) {sleep(20);}
     }
 
-    void tagToTelemetry(AprilTagDetection detection)
+    void tagToTelemetry(AprilTagDetection detection, TelemetryControl telemetryControl)
     {
-        telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
+        telemetryControl.addLine("Detected tag ID=" + detection.id);
     }
 }

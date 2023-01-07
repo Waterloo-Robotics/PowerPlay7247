@@ -45,7 +45,7 @@ public class TeleOpComp extends LinearOpMode {
         BLUE
     }
 
-    BaRc.Labels label = BaRc.Labels.RED;
+    Labels label = Labels.RED;
 
     private static final String VUFORIA_KEY =
             "ARZRc7b/////AAABmdYJzscFYUPwkOkgBgmpjAgFqkg6LxHmXPnonXKPGrqHxZBHhNRmsyDoNVz/o9XfL9Dc9224rfZHzQ5gvbFPQYchZztz+A+SeQt4Ql4xUxAiYviidC0RpPC9TRRBOaaGlNLAAupCmG8jtnsbnLlVFECI4DC3Heg20nvyWce+A4anUbW+kFkQu9uGyD1JzToWPN8MV7wsnsJ+1/oe6F7+g8C9dtMW3MgktiWWuty0g4RLNrc4qz/3htZe6w2efr1e34EZ+0JJc9la+bV08IMlSlEKGy2QOPBUIODemnFxyu+JLAkleQtV+Pke4qOf9hm8jTeqhyu5rL7B9QVZQ1x5p/u1vSsFJs2ihWJ9O1TvtPCs";
@@ -75,7 +75,7 @@ public class TeleOpComp extends LinearOpMode {
 
         TelemetryControl telemetryControl = new TelemetryControl(telemetry);
         DriveTrain driveTrain = new DriveTrain(hardwareMap, telemetryControl);
-        AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl, AttachmentControl.ServoPosition.open, true, true);
+        AttachmentControl attachmentControl = new AttachmentControl(hardwareMap, telemetryControl, AttachmentControl.ServoPosition.closed, true, true);
 
         // Declaring variables for joystick controls (greyed out ones are no longer used)
 
