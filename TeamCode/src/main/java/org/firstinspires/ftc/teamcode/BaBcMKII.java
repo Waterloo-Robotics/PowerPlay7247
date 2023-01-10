@@ -16,8 +16,8 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "Red Corner MK II")
-public class BaRcMKII extends LinearOpMode {
+@Autonomous(name = "Blue Corner MK II")
+public class BaBcMKII extends LinearOpMode {
 
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -138,7 +138,7 @@ public class BaRcMKII extends LinearOpMode {
 //        odometryControl.back(2.5, 0.0625);
         odometryControl.strafeLeft(2.5, 0.0625);
         odometryControl.forward(50.5, 0.0625);
-        odometryControl.turnAnti(10.5, 0.0625);
+        odometryControl.turn(7.5, 0.0625);
         odometryControl.forward(6.5, 0.0625);
         odometryControl.strafeLeft(0.5, 0.0625);
 

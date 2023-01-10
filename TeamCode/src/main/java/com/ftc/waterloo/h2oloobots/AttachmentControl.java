@@ -25,7 +25,7 @@ public class AttachmentControl {
     public static DcMotorEx shoulder;
     public static DcMotorEx shoulderHub;
 
-    public static DcMotorEx elbow;
+    public static DcMotorEx lateralEpicondyle;
 
     public static DcMotorEx wrist;
 
@@ -77,10 +77,10 @@ public class AttachmentControl {
         shoulderHub.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         shoulderHub.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        elbow = (DcMotorEx) hardwareMap.dcMotor.get("elbow");
-        elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        elbow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lateralEpicondyle = (DcMotorEx) hardwareMap.dcMotor.get("elbow");
+        lateralEpicondyle.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lateralEpicondyle.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lateralEpicondyle.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         wrist = (DcMotorEx) hardwareMap.dcMotor.get("wrist");
         wrist.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -90,7 +90,7 @@ public class AttachmentControl {
         // did this because code was casting errors at a time, useless now (I think, don't remove just to be safe)
         shoulder.setTargetPosition(0);
         shoulderHub.setTargetPosition(0);
-        elbow.setTargetPosition(0);
+        lateralEpicondyle.setTargetPosition(0);
         wrist.setTargetPosition(0);
 
         // scales claw so we can use 0 and 1 always, and only have to change one number with hardware changes
@@ -141,13 +141,13 @@ public class AttachmentControl {
 
                 if (eltouch2.isPressed()) elSpeed = -elSpeed;
 
-                elbow.setPower(elSpeed);
+                lateralEpicondyle.setPower(elSpeed);
 
             }
 
-            elbow.setPower(0);
-            elbow.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            lateralEpicondyle.setPower(0);
+            lateralEpicondyle.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            lateralEpicondyle.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             while (!bottom.isPressed()) {
 
@@ -232,7 +232,7 @@ public class AttachmentControl {
 
         shoulder.setPower(shoulders);
         shoulderHub.setPower(shoulders);
-        elbow.setPower(-elbows);
+        lateralEpicondyle.setPower(-elbows);
         wrist.setPower(wrists);
 
         if (servoOpen) {
@@ -246,7 +246,7 @@ public class AttachmentControl {
         }
 
         telemetryControlLocal.addData("shoulder pos", String.valueOf(shoulder.getCurrentPosition()));
-        telemetryControlLocal.addData("elbow pos", String.valueOf(elbow.getCurrentPosition()));
+        telemetryControlLocal.addData("elbow pos", String.valueOf(lateralEpicondyle.getCurrentPosition()));
         telemetryControlLocal.addData("wrist pos", String.valueOf(wrist.getCurrentPosition()));
         telemetryControlLocal.addData("claw pos", String.valueOf(claw.getPosition()));
     }
@@ -266,7 +266,7 @@ public class AttachmentControl {
 
         shoulder.setPower(shoulders);
         shoulderHub.setPower(shoulders);
-        elbow.setPower(-elbows);
+        lateralEpicondyle.setPower(-elbows);
         wrist.setPower(wrists);
 
         if (servoOpen) {
@@ -280,7 +280,7 @@ public class AttachmentControl {
         }
 
         telemetryControl.addData("shoulder pos", String.valueOf(shoulder.getCurrentPosition()));
-        telemetryControl.addData("elbow pos", String.valueOf(elbow.getCurrentPosition()));
+        telemetryControl.addData("elbow pos", String.valueOf(lateralEpicondyle.getCurrentPosition()));
         telemetryControl.addData("wrist pos", String.valueOf(wrist.getCurrentPosition()));
         telemetryControl.addData("claw pos", String.valueOf(claw.getPosition()));
 
@@ -297,7 +297,7 @@ public class AttachmentControl {
 
         shoulder.setTargetPosition(shoulderp);
         shoulderHub.setTargetPosition(shoulderp);
-        elbow.setTargetPosition(elbowp);
+        lateralEpicondyle.setTargetPosition(elbowp);
         wrist.setTargetPosition(wristp);
 
     }
@@ -307,25 +307,25 @@ public class AttachmentControl {
 
         shoulder.setTargetPosition(shoulderp);
         shoulderHub.setTargetPosition(shoulderp);
-        elbow.setTargetPosition(elbowp);
+        lateralEpicondyle.setTargetPosition(elbowp);
         wrist.setTargetPosition(wristp);
 
         shoulder.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         shoulderHub.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        elbow.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lateralEpicondyle.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         wrist.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         shoulder.setPower(1);
         shoulderHub.setPower(1);
-        elbow.setPower(1);
+        lateralEpicondyle.setPower(1);
         wrist.setPower(0.75);
 
         if (WAIT) {
 
-            while (!reachedTargetPosition(shoulder) || !reachedTargetPosition(elbow) || !reachedTargetPosition(wrist)) {
+            while (!reachedTargetPosition(shoulder) || !reachedTargetPosition(lateralEpicondyle) || !reachedTargetPosition(wrist)) {
 
                 telemetryControlLocal.addData("Shoulder Pos", String.valueOf(shoulder.getCurrentPosition()));
-                telemetryControlLocal.addData("Elbow Pos", String.valueOf(elbow.getCurrentPosition()));
+                telemetryControlLocal.addData("Elbow Pos", String.valueOf(lateralEpicondyle.getCurrentPosition()));
                 telemetryControlLocal.addData("Wrist Pos", String.valueOf(wrist.getCurrentPosition()));
                 telemetryControlLocal.update();
 
@@ -380,7 +380,7 @@ public class AttachmentControl {
 
                 this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
 
-            } else if (upButton && elbow.getCurrentPosition() > -2888) { // checks for score button, and if true sets automatic positions for scoring
+            } else if (upButton && lateralEpicondyle.getCurrentPosition() > -2888) { // checks for score button, and if true sets automatic positions for scoring
 
                 shoulderpos = 3972;
                 elbowpos = -2254;
@@ -392,7 +392,7 @@ public class AttachmentControl {
             } else if (leftWrist && !auto) {
 
                 shoulderpos = shoulder.getCurrentPosition();
-                elbowpos = elbow.getCurrentPosition();
+                elbowpos = lateralEpicondyle.getCurrentPosition();
                 wristpos = -10;
                 auto = true; // variable to keep track of if the button was recently pressed
 
@@ -401,7 +401,7 @@ public class AttachmentControl {
             } else if (rightWrist && !auto) {
 
                 shoulderpos = shoulder.getCurrentPosition();
-                elbowpos = elbow.getCurrentPosition();
+                elbowpos = lateralEpicondyle.getCurrentPosition();
                 wristpos = -700;
                 auto = true; // variable to keep track of if the button was recently pressed
 
@@ -421,7 +421,7 @@ public class AttachmentControl {
 
         }
 
-        if (this.reachedTargetPosition(shoulder) && this.reachedTargetPosition(elbow) && this.reachedTargetPosition(wrist)) isArmAtPosition = true; else isArmAtPosition = false; // checks for if the arm is at position, and sets a boolean to reflect that value
+        if (this.reachedTargetPosition(shoulder) && this.reachedTargetPosition(lateralEpicondyle) && this.reachedTargetPosition(wrist)) isArmAtPosition = true; else isArmAtPosition = false; // checks for if the arm is at position, and sets a boolean to reflect that value
 
         if (auto && !isArmAtPosition && autoEnabled) { // checks if autonomous is true, and if the arm hasn't reached its position, and if both of those are correct it continues with the automatic code
 
@@ -448,12 +448,12 @@ public class AttachmentControl {
 
             shoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             shoulderHub.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            lateralEpicondyle.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             wrist.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             shoulder.setPower(shoulders);
             shoulderHub.setPower(shoulders);
-            elbow.setPower(elbows);
+            lateralEpicondyle.setPower(elbows);
             wrist.setPower(wrists);
 
             if (servoButton) {
@@ -475,7 +475,7 @@ public class AttachmentControl {
         }
 
         telemetryControlLocal.addData("shoulder pos", String.valueOf(shoulder.getCurrentPosition()));
-        telemetryControlLocal.addData("elbow pos", String.valueOf(elbow.getCurrentPosition()));
+        telemetryControlLocal.addData("elbow pos", String.valueOf(lateralEpicondyle.getCurrentPosition()));
         telemetryControlLocal.addData("wrist pos", String.valueOf(wrist.getCurrentPosition()));
 
     }
@@ -507,7 +507,7 @@ public class AttachmentControl {
 
                     this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
 
-                } else if (upButton && elbow.getCurrentPosition() > -2888 && ((DistanceSensor) clawColor).getDistance(DistanceUnit.CM) < 4.5) { // checks for score button, and if true sets automatic positions for scoring
+                } else if (upButton && lateralEpicondyle.getCurrentPosition() > -2888 && ((DistanceSensor) clawColor).getDistance(DistanceUnit.CM) < 4.5) { // checks for score button, and if true sets automatic positions for scoring
 
                     shoulderpos = 3972;
                     elbowpos = -2254;
@@ -519,7 +519,7 @@ public class AttachmentControl {
                 } else if (leftWrist && !auto) {
 
                     shoulderpos = shoulder.getCurrentPosition();
-                    elbowpos = elbow.getCurrentPosition();
+                    elbowpos = lateralEpicondyle.getCurrentPosition();
                     wristpos = -10;
                     auto = true; // variable to keep track of if the button was recently pressed
 
@@ -528,7 +528,7 @@ public class AttachmentControl {
                 } else if (rightWrist && !auto) {
 
                     shoulderpos = shoulder.getCurrentPosition();
-                    elbowpos = elbow.getCurrentPosition();
+                    elbowpos = lateralEpicondyle.getCurrentPosition();
                     wristpos = -700;
                     auto = true; // variable to keep track of if the button was recently pressed
 
@@ -543,10 +543,10 @@ public class AttachmentControl {
 
                     this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
 
-                } else if (((clawColor.red() > 100 || clawColor.blue() > 100)) && !auto && elbow.getCurrentPosition() < -2000 && shoulder.getCurrentPosition() < 654 && ((DistanceSensor) clawColor).getDistance(DistanceUnit.CM) < 4.5) {
+                } else if (((clawColor.red() > 100 || clawColor.blue() > 100)) && !auto && lateralEpicondyle.getCurrentPosition() < -2000 && shoulder.getCurrentPosition() < 654 && ((DistanceSensor) clawColor).getDistance(DistanceUnit.CM) < 4.5) {
 
                     shoulder.setPower(0);
-                    elbow.setPower(0);
+                    lateralEpicondyle.setPower(0);
                     wrist.setPower(0);
 
                     shoulderpos = 0;
@@ -571,7 +571,7 @@ public class AttachmentControl {
 
                     this.setArmPositions(shoulderpos, elbowpos, wristpos, false);
 
-                } else if (upButton && elbow.getCurrentPosition() > -2888) { // checks for score button, and if true sets automatic positions for scoring
+                } else if (upButton && lateralEpicondyle.getCurrentPosition() > -2888) { // checks for score button, and if true sets automatic positions for scoring
 
                     shoulderpos = 3972;
                     elbowpos = -2254;
@@ -583,7 +583,7 @@ public class AttachmentControl {
                 } else if (leftWrist && !auto) {
 
                     shoulderpos = shoulder.getCurrentPosition();
-                    elbowpos = elbow.getCurrentPosition();
+                    elbowpos = lateralEpicondyle.getCurrentPosition();
                     wristpos = -10;
                     auto = true; // variable to keep track of if the button was recently pressed
 
@@ -592,7 +592,7 @@ public class AttachmentControl {
                 } else if (rightWrist && !auto) {
 
                     shoulderpos = shoulder.getCurrentPosition();
-                    elbowpos = elbow.getCurrentPosition();
+                    elbowpos = lateralEpicondyle.getCurrentPosition();
                     wristpos = -700;
                     auto = true; // variable to keep track of if the button was recently pressed
 
@@ -613,7 +613,7 @@ public class AttachmentControl {
 
         }
 
-        if (this.reachedTargetPosition(shoulder) && this.reachedTargetPosition(elbow) && this.reachedTargetPosition(wrist)) isArmAtPosition = true; else isArmAtPosition = false; // checks for if the arm is at position, and sets a boolean to reflect that value
+        if (this.reachedTargetPosition(shoulder) && this.reachedTargetPosition(lateralEpicondyle) && this.reachedTargetPosition(wrist)) isArmAtPosition = true; else isArmAtPosition = false; // checks for if the arm is at position, and sets a boolean to reflect that value
 
         if (auto && !isArmAtPosition && autoEnabled) { // checks if autonomous is true, and if the arm hasn't reached its position, and if both of those are correct it continues with the automatic code
 
@@ -640,12 +640,12 @@ public class AttachmentControl {
 
             shoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             shoulderHub.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            lateralEpicondyle.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             wrist.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             shoulder.setPower(shoulders);
             shoulderHub.setPower(shoulders);
-            elbow.setPower(elbows);
+            lateralEpicondyle.setPower(elbows);
             wrist.setPower(wrists);
 
             if (servoButton) {
@@ -667,7 +667,7 @@ public class AttachmentControl {
         }
 
         telemetryControlLocal.addData("shoulder pos", String.valueOf(shoulder.getCurrentPosition()));
-        telemetryControlLocal.addData("elbow pos", String.valueOf(elbow.getCurrentPosition()));
+        telemetryControlLocal.addData("elbow pos", String.valueOf(lateralEpicondyle.getCurrentPosition()));
         telemetryControlLocal.addData("wrist pos", String.valueOf(wrist.getCurrentPosition()));
 
     }
@@ -676,10 +676,10 @@ public class AttachmentControl {
 
     public void clawColorAutoTest(boolean servoToggle, double shoulderSpeed, double elbowSpeed, double wristSpeed) {
 
-        if (((clawColor.red() > 500 || clawColor.blue() > 500)) && !auto && elbow.getCurrentPosition() < -2000 && shoulder.getCurrentPosition() < 654) {
+        if (((clawColor.red() > 500 || clawColor.blue() > 500)) && !auto && lateralEpicondyle.getCurrentPosition() < -2000 && shoulder.getCurrentPosition() < 654) {
 
             shoulder.setPower(0);
-            elbow.setPower(0);
+            lateralEpicondyle.setPower(0);
             wrist.setPower(0);
 
             shoulderpos = 0;
@@ -693,7 +693,7 @@ public class AttachmentControl {
 
         }
 
-        if (this.reachedTargetPosition(shoulder) && this.reachedTargetPosition(elbow) && this.reachedTargetPosition(wrist)) isArmAtPosition = true; else isArmAtPosition = false; // checks for if the arm is at position, and sets a boolean to reflect that value
+        if (this.reachedTargetPosition(shoulder) && this.reachedTargetPosition(lateralEpicondyle) && this.reachedTargetPosition(wrist)) isArmAtPosition = true; else isArmAtPosition = false; // checks for if the arm is at position, and sets a boolean to reflect that value
 
         if (auto && !isArmAtPosition) { // checks if autonomous is true, and if the arm hasn't reached its position, and if both of those are correct it continues with the automatic code
 
@@ -720,12 +720,12 @@ public class AttachmentControl {
 
             shoulder.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             shoulderHub.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            elbow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            lateralEpicondyle.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             wrist.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             shoulder.setPower(shoulders);
             shoulderHub.setPower(shoulders);
-            elbow.setPower(elbows);
+            lateralEpicondyle.setPower(elbows);
             wrist.setPower(wrists);
 
             if (servoToggle) {
@@ -741,10 +741,10 @@ public class AttachmentControl {
         }
 
         telemetryControlLocal.addData("shoulder pos", String.valueOf(shoulder.getCurrentPosition()));
-        telemetryControlLocal.addData("elbow pos", String.valueOf(elbow.getCurrentPosition()));
+        telemetryControlLocal.addData("elbow pos", String.valueOf(lateralEpicondyle.getCurrentPosition()));
         telemetryControlLocal.addData("wrist pos", String.valueOf(wrist.getCurrentPosition()));
         telemetryControlLocal.addData("shoulder target pos", String.valueOf(shoulder.getTargetPosition()));
-        telemetryControlLocal.addData("elbow target pos", String.valueOf(elbow.getTargetPosition()));
+        telemetryControlLocal.addData("elbow target pos", String.valueOf(lateralEpicondyle.getTargetPosition()));
         telemetryControlLocal.addData("wrist target pos", String.valueOf(wrist.getTargetPosition()));
         telemetryControlLocal.addData("claw pos", String.valueOf(claw.getPosition()));
         telemetryControlLocal.addData("auto", String.valueOf(auto));

@@ -4,9 +4,11 @@ import com.acmerobotics.dashboard.config.Config;
 import com.ftc.waterloo.h2oloobots.AttachmentControl;
 import com.ftc.waterloo.h2oloobots.TelemetryControl;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+@Disabled
 @Config
 @Autonomous(name = "ArmTestAuto2")
 public class ArmTestAuto2 extends LinearOpMode {

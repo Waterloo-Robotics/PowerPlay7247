@@ -2,14 +2,17 @@ package com.ftc.waterloo.h2oloobots;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.ftc.waterloo.h2oloobots.TelemetryControl;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.apache.commons.math3.geometry.euclidean.twod.Line;
+
 @Config
-public class OdometryControl {
+public class OdometryControl extends LinearOpMode {
 
     public DcMotorEx fl, fr, bl, br;
 
@@ -64,6 +67,8 @@ public class OdometryControl {
 
     }
 
+    public void runOpMode() {}
+
     public void zeroEncoders() {
 
         fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -94,7 +99,7 @@ public class OdometryControl {
         boolean waited = false;
 
         time.reset();
-        while (!destinationReached && time.seconds() < 10 + TIME) {
+        while (!destinationReached && time.seconds() < 10 + TIME && !isStopRequested()) {
 
             rightTravelled = fr.getCurrentPosition() * INCHES_PER_COUNT;
             leftTravelled = -fl.getCurrentPosition() * INCHES_PER_COUNT;
@@ -213,7 +218,7 @@ public class OdometryControl {
         boolean waited = false;
 
         time.reset();
-        while (!destinationReached && time.seconds() < 10 + TIME) {
+        while (!destinationReached && time.seconds() < 10 + TIME && !isStopRequested()) {
 
             rightTravelled = -fr.getCurrentPosition() * INCHES_PER_COUNT;
             leftTravelled = fl.getCurrentPosition() * INCHES_PER_COUNT;
@@ -333,7 +338,7 @@ public class OdometryControl {
         boolean waited = false;
 
         time.reset();
-        while (!destinationReached && time.seconds() < 6 + TIME) {
+        while (!destinationReached && time.seconds() < 6 + TIME && !isStopRequested()) {
 
             rightTravelled = fr.getCurrentPosition() * INCHES_PER_COUNT;
             leftTravelled = -fl.getCurrentPosition() * INCHES_PER_COUNT;
@@ -421,6 +426,113 @@ public class OdometryControl {
 
     }
 
+    public void strafeRight(double INCHES, double TIME) {
+
+        double rightOffset = 0, leftOffset = 0, genPower = 0, rightPower = 0, leftPower = 0;
+
+        double distanceTravelled = 0;
+        double distanceTravelledForward = 0;
+        double error = 0;
+        double headingError = 0;
+
+        double rightTravelled, leftTravelled, horizTravelled;
+
+        boolean destinationReached = false;
+
+        double seconds = 0;
+        zeroEncoders();
+
+        boolean waited = false;
+
+        time.reset();
+        while (!destinationReached && time.seconds() < 6 + TIME && !isStopRequested()) {
+
+            rightTravelled = fr.getCurrentPosition() * INCHES_PER_COUNT;
+            leftTravelled = -fl.getCurrentPosition() * INCHES_PER_COUNT;
+            horizTravelled = br.getCurrentPosition() * INCHES_PER_COUNT;
+
+            distanceTravelledForward = ((leftTravelled + rightTravelled) / 2.0);
+            distanceTravelled = horizTravelled;
+
+            error = distanceTravelled - INCHES;
+
+            headingError = rightTravelled - leftTravelled;
+
+            genPower = (genPower + (error * P_gen_strafe)) / 2.0;
+
+            telemetryControlLocal.addData("Right", String.valueOf(rightTravelled));
+            telemetryControlLocal.addData("Left", String.valueOf(leftTravelled));
+            telemetryControlLocal.addData("distanceTravelled", String.valueOf(horizTravelled));
+            telemetryControlLocal.addData("distanceTravelledForward", String.valueOf(distanceTravelledForward));
+            telemetryControlLocal.addData("Right Offset", String.valueOf(rightOffset));
+            telemetryControlLocal.addData("Left Offset", String.valueOf(leftOffset));
+            telemetryControlLocal.addData("Seconds", String.valueOf(seconds));
+
+            telemetryControlLocal.addData("Diff Error", String.valueOf(headingError));
+            telemetryControlLocal.addData("GenPower", String.valueOf(genPower));
+            telemetryControlLocal.addData("fl", fl.getPower());
+            telemetryControlLocal.addData("fr", fr.getPower());
+            telemetryControlLocal.addData("bl", bl.getPower());
+            telemetryControlLocal.addData("br", br.getPower());
+            telemetryControlLocal.update();
+
+
+            //Calc side powers
+            rightPower = genPower + rightOffset;
+            leftPower = genPower + leftOffset;
+
+            //Cap +/- at MAX_POWER
+            if (rightPower > MAX_POWER) {
+                rightPower = MAX_POWER;
+            } else if (rightPower < -MAX_POWER) {
+                rightPower = -MAX_POWER;
+            }
+
+            if (leftPower > MAX_POWER) {
+                leftPower = MAX_POWER;
+            } else if (leftPower < -MAX_POWER) {
+                leftPower = -MAX_POWER;
+            }
+
+            //Cap +/- at MIN_POWER
+            if (rightPower < MIN_POWER_TURNSTRAFE && rightPower > 0) {
+                rightPower = MIN_POWER_TURNSTRAFE;
+            } else if (rightPower > -MIN_POWER_TURNSTRAFE && rightPower < 0) {
+                rightPower = -MIN_POWER_TURNSTRAFE;
+            }
+
+            if (leftPower < MIN_POWER_TURNSTRAFE && leftPower > 0) {
+                leftPower = MIN_POWER_TURNSTRAFE;
+            } else if (leftPower > -MIN_POWER_TURNSTRAFE && leftPower < 0) {
+                leftPower = -MIN_POWER_TURNSTRAFE;
+            }
+
+            if (!waited) {
+                time.reset();
+
+                while (time.seconds() < TIME);
+                waited = true;
+            }
+
+            //Set motor powers
+            fr.setPower(-rightPower);
+            br.setPower(rightPower);
+            fl.setPower(leftPower);
+            bl.setPower(-leftPower);
+
+            if (distanceTravelled > INCHES) {
+                destinationReached = true;
+            }
+
+        }
+
+        fl.setPower(0);
+        fr.setPower(0);
+        bl.setPower(0);
+        br.setPower(0);
+
+    }
+
     public void turn(double INCHES, double TIME) {
 
         double rightOffset = 0, leftOffset = 0, genPower = 0, rightPower = 0, leftPower = 0;
@@ -439,7 +551,7 @@ public class OdometryControl {
         boolean waited = false;
 
         time.reset();
-        while (!destinationReached && time.seconds() < 10 + TIME) {
+        while (!destinationReached && time.seconds() < 10 + TIME && !isStopRequested()) {
 
             rightTravelled = -fr.getCurrentPosition() * INCHES_PER_COUNT;
             leftTravelled = -fl.getCurrentPosition() * INCHES_PER_COUNT;
@@ -539,7 +651,7 @@ public class OdometryControl {
 
         boolean waited = false;
 
-        while (!destinationReached && time.seconds() < 10 + TIME) {
+        while (!destinationReached && time.seconds() < 10 + TIME && !isStopRequested()) {
 
             rightTravelled = fr.getCurrentPosition() * INCHES_PER_COUNT;
             leftTravelled = fl.getCurrentPosition() * INCHES_PER_COUNT;

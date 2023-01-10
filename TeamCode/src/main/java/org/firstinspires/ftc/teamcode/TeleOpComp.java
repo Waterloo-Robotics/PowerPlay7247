@@ -20,7 +20,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 import java.util.List;
 
-@TeleOp
+@TeleOp(name = "Competition TeleOp", group = "!")
 @Config
 public class TeleOpComp extends LinearOpMode {
     double flpower, frpower, blpower, brpower;
