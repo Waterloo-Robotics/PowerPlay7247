@@ -40,7 +40,7 @@ public class TelemetryControl {
     public void addLine(String line) {
 
         telemetryLocal.addLine(line);
-        packet.addLine(line);
+        packet.put(line, "");
 
     }
 
@@ -99,7 +99,6 @@ public class TelemetryControl {
 
         telemetryLocal.update();
         dashboard.sendTelemetryPacket(packet);
-        packet.clearLines();
 
     }
 

@@ -138,65 +138,65 @@ public class BaRcMKII extends LinearOpMode {
 //        odometryControl.back(2.5, 0.0625);
         odometryControl.strafeLeft(2.5, 0.0625);
         odometryControl.forward(50.5, 0.0625);
-        odometryControl.turnAnti(10.5, 0.0625);
-        odometryControl.forward(6.5, 0.0625);
-        odometryControl.strafeLeft(0.5, 0.0625);
+        odometryControl.turnAnti(10.25, 0.0625);
+        odometryControl.forward(12.25, 0.0625);
+        odometryControl.strafeLeft(1.25, 0.0625);
 
-        attachmentControl.setArmPositions(4000, -2199, 0, true); //To Score
-        attachmentControl.setArmPositions(4000, -2199, -750, true); //To Score
-        this.servo(1); //Open
-
-        attachmentControl.setArmPositions(0, -2252, -15, false);
-        timer.reset();
-        while (timer.seconds() < 1.5);
-        attachmentControl.setArmPositions(0, -3360, -15, true);
-        this.servo(0); //Closed
-//
-        attachmentControl.setArmPositions(0, -2252, -15, false);
-        timer.reset();
-        while (timer.seconds() < 0.5);
-        attachmentControl.setArmPositions(4000, -2199, 0, true); //To Score
-        attachmentControl.setArmPositions(4000, -2199, -750, true); //To Score
+        attachmentControl.setArmPositions(4042, -1426, 0, true); //To Score
+        attachmentControl.setArmPositions(4042, -1426, -747, true); //To Score
         this.servo(1); //Open
 //
         attachmentControl.setArmPositions(0, -2252, -15, false);
         timer.reset();
         while (timer.seconds() < 1.5);
-        attachmentControl.setArmPositions(0, -3534, -6, true);
+        attachmentControl.setArmPositions(0, -3303, -15, true);
         this.servo(0); //Closed
 //
-        attachmentControl.setArmPositions(0, -2252, -6, false);
-        timer.reset();
-        while (timer.seconds() < 0.5);
-        attachmentControl.setArmPositions(4000, -2199, 0, true); //To Score
-        attachmentControl.setArmPositions(4000, -2199, -750, true); //To Score
-        this.servo(1); //Open
-
-        attachmentControl.setArmPositions(0, 0, 0, false);
-
-        switch (detectionNumber) {
-
-            case 3:
-
-                attachmentControl.setArmPositions(0, 0, 0, true);
-                odometryControl.forward(12, 0.0625);
-
-                break;
-
-            case 2:
-
-                odometryControl.back(8, 0.0625);
-
-                break;
-
-            case 1:
-
-                odometryControl.back(34, 0.0625);
-
-                break;
-
-        }
-
+//        attachmentControl.setArmPositions(0, -2252, -15, false);
+//        timer.reset();
+//        while (timer.seconds() < 0.5);
+//        attachmentControl.setArmPositions(4000, -2199, 0, true); //To Score
+//        attachmentControl.setArmPositions(4000, -2199, -750, true); //To Score
+//        this.servo(1); //Open
+//
+//        attachmentControl.setArmPositions(0, -2252, -15, false);
+//        timer.reset();
+//        while (timer.seconds() < 1.5);
+//        attachmentControl.setArmPositions(0, -3534, -6, true);
+//        this.servo(0); //Closed
+//
+//        attachmentControl.setArmPositions(0, -2252, -6, false);
+//        timer.reset();
+//        while (timer.seconds() < 0.5);
+//        attachmentControl.setArmPositions(4000, -2199, 0, true); //To Score
+//        attachmentControl.setArmPositions(4000, -2199, -750, true); //To Score
+//        this.servo(1); //Open
+//
+//        attachmentControl.setArmPositions(0, 0, 0, false);
+//
+//        switch (detectionNumber) {
+//
+//            case 3:
+//
+//                attachmentControl.setArmPositions(0, 0, 0, true);
+//                odometryControl.forward(12, 0.0625);
+//
+//                break;
+//
+//            case 2:
+//
+//                odometryControl.back(8, 0.0625);
+//
+//                break;
+//
+//            case 1:
+//
+//                odometryControl.back(34, 0.0625);
+//
+//                break;
+//
+//        }
+//
         attachmentControl.setArmPositions(0, 0, 0, true);
 
 
