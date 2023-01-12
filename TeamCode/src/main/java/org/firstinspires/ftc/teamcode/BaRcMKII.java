@@ -149,15 +149,15 @@ public class BaRcMKII extends LinearOpMode {
         attachmentControl.setArmPositions(0, -2252, -15, false);
         timer.reset();
         while (timer.seconds() < 1.5);
-        attachmentControl.setArmPositions(0, -3303, -15, true);
+        attachmentControl.setArmPositions(0, -3590, -15, true);
         this.servo(0); //Closed
 //
-//        attachmentControl.setArmPositions(0, -2252, -15, false);
-//        timer.reset();
-//        while (timer.seconds() < 0.5);
-//        attachmentControl.setArmPositions(4000, -2199, 0, true); //To Score
-//        attachmentControl.setArmPositions(4000, -2199, -750, true); //To Score
-//        this.servo(1); //Open
+        attachmentControl.setArmPositions(0, -2252, -15, false);
+        timer.reset();
+        while (timer.seconds() < 0.5);
+        attachmentControl.setArmPositions(4042, -1426, 0, true); //To Score
+        attachmentControl.setArmPositions(4042, -1426, -747, true); //To Score
+        this.servo(1); //Open
 //
 //        attachmentControl.setArmPositions(0, -2252, -15, false);
 //        timer.reset();

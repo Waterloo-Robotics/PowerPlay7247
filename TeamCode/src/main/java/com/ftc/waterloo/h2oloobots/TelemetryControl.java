@@ -40,7 +40,8 @@ public class TelemetryControl {
     public void addLine(String line) {
 
         telemetryLocal.addLine(line);
-        packet.put(line, "");
+        packet.clearLines();
+        packet.addLine(line);
 
     }
 

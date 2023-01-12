@@ -94,12 +94,12 @@ public class OdometryControl extends LinearOpMode {
         boolean destinationReached = false;
 
         double seconds = 0;
-        zeroEncoders();
+        zeroEncoders(); // resets encoders
 
         boolean waited = false;
 
         time.reset();
-        while (!destinationReached && time.seconds() < 10 + TIME && !isStopRequested()) {
+        while (!destinationReached && time.seconds() < 10 + TIME && !isStopRequested()) { // while loop that only ends once distance is reached
 
             rightTravelled = fr.getCurrentPosition() * INCHES_PER_COUNT;
             leftTravelled = -fl.getCurrentPosition() * INCHES_PER_COUNT;
@@ -110,7 +110,7 @@ public class OdometryControl extends LinearOpMode {
 
             differentialError = rightTravelled - leftTravelled;
 
-            if (DISTANCE > 10) {
+            if (DISTANCE > 10) { // speeds up 5x if distance is less than 10 inches
 
                 genPower = (genPower + (error * P_gen_forwardback)) / 2.0;
 
@@ -121,11 +121,11 @@ public class OdometryControl extends LinearOpMode {
             }
 
             if (differentialError > 0) { //Turning left, right faster
-                rightOffset = (rightOffset + ( (rightTravelled - leftTravelled) * P_differential) )/ 2.0;
+                rightOffset = (rightOffset + ((rightTravelled - leftTravelled) * P_differential)) / 2.0;
                 leftOffset = 0;
             } else {
                 rightOffset = 0;
-                leftOffset = (leftOffset + ( (leftTravelled - rightTravelled) * P_differential) ) / 2.0;
+                leftOffset = (leftOffset + ((leftTravelled - rightTravelled) * P_differential)) / 2.0;
             }
 
             telemetryControlLocal.addData("Right", String.valueOf(rightTravelled));
@@ -206,9 +206,8 @@ public class OdometryControl extends LinearOpMode {
 
         double distanceTravelled = 0;
         double error = 0;
-        double differentialError = 0;
-
         double rightTravelled, leftTravelled;
+        double differentialError = 0;
 
         boolean destinationReached = false;
 
